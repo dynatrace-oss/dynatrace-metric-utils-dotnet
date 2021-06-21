@@ -8,3 +8,13 @@ artifacts/
 *.userprefs
 *DS_Store
 *.sln.ide
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+.history/
+.history
+.ionide
