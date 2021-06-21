@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Logging;
 
 namespace Dynatrace.MetricUtils.Example
 {
@@ -6,7 +7,16 @@ namespace Dynatrace.MetricUtils.Example
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.SetMinimumLevel(LogLevel.Debug)
+                        .AddConsole();
+            });
+			var logger = loggerFactory.CreateLogger<DynatraceMetricSerializer>();
+
+            DynatraceMetricSerializer serializer = new DynatraceMetricSerializer(logger);
+
+
         }
     }
 }
