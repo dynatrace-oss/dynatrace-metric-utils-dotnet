@@ -22,7 +22,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Dynatrace.MetricUtils
 {
-	public class DynatraceMetricSerializer
+	public class MetricSerializer
 	{
 		private readonly ILogger _logger;
 		private readonly string _prefix;
@@ -31,7 +31,7 @@ namespace Dynatrace.MetricUtils
 		private static readonly int MaxDimensions = 50;
 
 		// public constructor.
-		public DynatraceMetricSerializer(ILogger logger, string prefix = null, IEnumerable<KeyValuePair<string, string>> defaultDimensions = null, bool enrichWithOneAgentMetadata = true)
+		public MetricSerializer(ILogger logger, string prefix = null, IEnumerable<KeyValuePair<string, string>> defaultDimensions = null, bool enrichWithOneAgentMetadata = true)
 		: this(logger, prefix, defaultDimensions, PrepareOneAgentDimensions(logger, enrichWithOneAgentMetadata)) { }
 
 		// this is required to read the OneAgent dimensions and still use constructor chaining
@@ -49,7 +49,7 @@ namespace Dynatrace.MetricUtils
 		}
 
 		// internal constructor offers an interface for testing and is used by the public constructor
-		internal DynatraceMetricSerializer(ILogger logger, string prefix, IEnumerable<KeyValuePair<string, string>> defaultDimensions, IEnumerable<KeyValuePair<string, string>> oneAgentDimensions)
+		internal MetricSerializer(ILogger logger, string prefix, IEnumerable<KeyValuePair<string, string>> defaultDimensions, IEnumerable<KeyValuePair<string, string>> oneAgentDimensions)
 		{
 			this._logger = logger;
 			this._prefix = prefix;
