@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8C9A1FB5-2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynatrace.MetricUtilsTests", "test\Dynatrace.MetricUtilsTests\Dynatrace.MetricUtilsTests.csproj", "{372C6FDC-BBA4-4F9B-A487-07BE9EB66384}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dynatrace.MetricUtils.Example", "src\Dynatrace.MetricUtils.Example\Dynatrace.MetricUtils.Example.csproj", "{A58EECA5-6CBC-42D6-85D2-B1681D3DC4DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,9 +50,22 @@ Global
 		{372C6FDC-BBA4-4F9B-A487-07BE9EB66384}.Release|x64.Build.0 = Release|Any CPU
 		{372C6FDC-BBA4-4F9B-A487-07BE9EB66384}.Release|x86.ActiveCfg = Release|Any CPU
 		{372C6FDC-BBA4-4F9B-A487-07BE9EB66384}.Release|x86.Build.0 = Release|Any CPU
+		{A58EECA5-6CBC-42D6-85D2-B1681D3DC4DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A58EECA5-6CBC-42D6-85D2-B1681D3DC4DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A58EECA5-6CBC-42D6-85D2-B1681D3DC4DE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A58EECA5-6CBC-42D6-85D2-B1681D3DC4DE}.Debug|x64.Build.0 = Debug|Any CPU
+		{A58EECA5-6CBC-42D6-85D2-B1681D3DC4DE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A58EECA5-6CBC-42D6-85D2-B1681D3DC4DE}.Debug|x86.Build.0 = Debug|Any CPU
+		{A58EECA5-6CBC-42D6-85D2-B1681D3DC4DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A58EECA5-6CBC-42D6-85D2-B1681D3DC4DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A58EECA5-6CBC-42D6-85D2-B1681D3DC4DE}.Release|x64.ActiveCfg = Release|Any CPU
+		{A58EECA5-6CBC-42D6-85D2-B1681D3DC4DE}.Release|x64.Build.0 = Release|Any CPU
+		{A58EECA5-6CBC-42D6-85D2-B1681D3DC4DE}.Release|x86.ActiveCfg = Release|Any CPU
+		{A58EECA5-6CBC-42D6-85D2-B1681D3DC4DE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{35050C1F-A51F-49A7-8B8B-69D901C1DC8F} = {7697D579-B9F1-484B-A8D3-AB74644313E2}
 		{372C6FDC-BBA4-4F9B-A487-07BE9EB66384} = {8C9A1FB5-2AF4-43E8-B337-E155CF57774E}
+		{A58EECA5-6CBC-42D6-85D2-B1681D3DC4DE} = {7697D579-B9F1-484B-A8D3-AB74644313E2}
 	EndGlobalSection
 EndGlobal
