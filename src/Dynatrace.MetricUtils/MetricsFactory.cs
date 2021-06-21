@@ -19,19 +19,15 @@ using System.Collections.Generic;
 
 namespace Dynatrace.MetricUtils
 {
-	public class Metric
+	public static class MetricsFactory
 	{
-		public string MetricName { get; }
-		public IEnumerable<KeyValuePair<string, string>> Dimensions { get; }
-		public IMetricValue Value { get; }
-		public DateTime Timestamp { get; }
-
-		internal Metric(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, IMetricValue value, DateTime timestamp)
+		public static Metric CreateLongTotalCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long value)
 		{
-			MetricName = metricName;
-			Dimensions = dimensions;
-			Value = value;
-			Timestamp = timestamp;
+			return CreateLongTotalCounter(metricName, dimensions, value, DateTime.Now);
+		}
+		public static Metric CreateLongTotalCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimension, long value, DateTime timestamp)
+		{
+			return new Metric(metricName, dimension, new MetricValue.LongCounterValue(value, false), timestamp);
 		}
 	}
 }

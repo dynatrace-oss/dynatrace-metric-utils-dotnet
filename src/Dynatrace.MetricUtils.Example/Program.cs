@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 
 namespace Dynatrace.MetricUtils.Example
@@ -15,7 +16,9 @@ namespace Dynatrace.MetricUtils.Example
 			var logger = loggerFactory.CreateLogger<DynatraceMetricSerializer>();
 
 			DynatraceMetricSerializer serializer = new DynatraceMetricSerializer(logger);
-
+            var dimensions = new List<KeyValuePair<string, string>>{new KeyValuePair<string, string>("dim1", "val1")};
+			Metric metric = MetricsFactory.CreateLongTotalCounter("counter", dimensions, 3L, DateTime.Now );
+            Console.WriteLine(serializer.SerializeMetric(metric));
 
 		}
 	}
