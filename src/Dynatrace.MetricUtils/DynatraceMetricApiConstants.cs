@@ -16,21 +16,21 @@
 
 namespace Dynatrace.MetricUtils
 {
-    public static class DynatraceMetricApiConstants
-    {
-        private const string defaultOneAgentEndpoint = "http://localhost:14499/metrics/ingest";
-        private const int payloadLinesLimit = 1000;
+	public static class DynatraceMetricApiConstants
+	{
+		private const string defaultOneAgentEndpoint = "http://localhost:14499/metrics/ingest";
+		private const int payloadLinesLimit = 1000;
 
-        public static string DefaultOneAgentEndpoint
-        {
-            get { return defaultOneAgentEndpoint; }
-            private set { }
-        }
+		public static string DefaultOneAgentEndpoint
+		{
+			get { return defaultOneAgentEndpoint; }
+			private set { }
+		}
 
-        public static int PayloadLinesLimit
-        {
-            get { return payloadLinesLimit; }
-            private set { }
-        }
-    }
+		public static int PayloadLinesLimit
+		{
+			get { return payloadLinesLimit; }
+			private set { }
+		}
+	}
 }
