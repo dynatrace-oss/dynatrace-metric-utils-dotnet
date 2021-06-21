@@ -25,9 +25,80 @@ namespace Dynatrace.MetricUtils
 		{
 			return CreateLongTotalCounter(metricName, dimensions, value, DateTime.Now);
 		}
-		public static Metric CreateLongTotalCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimension, long value, DateTime timestamp)
+
+		public static Metric CreateLongTotalCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long value, DateTime timestamp)
 		{
-			return new Metric(metricName, dimension, new MetricValue.LongCounterValue(value, false), timestamp);
+			return new Metric(metricName, dimensions, new MetricValue.LongCounterValue(value, false), timestamp);
+		}
+
+		public static Metric CreateLongDeltaCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long value)
+		{
+			return CreateLongDeltaCounter(metricName, dimensions, value, DateTime.Now);
+		}
+
+		public static Metric CreateLongDeltaCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long value, DateTime timestamp)
+		{
+			return new Metric(metricName, dimensions, new MetricValue.LongCounterValue(value, true), timestamp);
+		}
+
+		public static Metric CreateLongGauge(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long value)
+		{
+			return CreateLongGauge(metricName, dimensions, value, DateTime.Now);
+		}
+
+		public static Metric CreateLongGauge(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long value, DateTime timestamp)
+		{
+			return new Metric(metricName, dimensions, new MetricValue.LongGaugeValue(value), timestamp);
+		}
+
+		public static Metric CreateLongSummary(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long min, long max, long sum, long count)
+		{
+			return CreateLongSummary(metricName, dimensions, min, max, sum, count, DateTime.Now);
+		}
+
+		public static Metric CreateLongSummary(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long min, long max, long sum, long count, DateTime timestamp)
+		{
+			return new Metric(metricName, dimensions, new MetricValue.LongSummaryValue(min, max, sum, count), timestamp);
+		}
+
+		public static Metric CreateDoubleTotalCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double value)
+		{
+			return CreateDoubleTotalCounter(metricName, dimensions, value, DateTime.Now);
+		}
+
+		public static Metric CreateDoubleTotalCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double value, DateTime timestamp)
+		{
+			return new Metric(metricName, dimensions, new MetricValue.DoubleCounterValue(value, false), timestamp);
+		}
+
+		public static Metric CreateDoubleDeltaCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double value)
+		{
+			return CreateDoubleDeltaCounter(metricName, dimensions, value, DateTime.Now);
+		}
+
+		public static Metric CreateDoubleDeltaCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double value, DateTime timestamp)
+		{
+			return new Metric(metricName, dimensions, new MetricValue.DoubleCounterValue(value, true), timestamp);
+		}
+
+		public static Metric CreateDoubleGauge(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double value)
+		{
+			return CreateDoubleGauge(metricName, dimensions, value, DateTime.Now);
+		}
+
+		public static Metric CreateDoubleGauge(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double value, DateTime timestamp)
+		{
+			return new Metric(metricName, dimensions, new MetricValue.DoubleGaugeValue(value), timestamp);
+		}
+
+		public static Metric CreateDoubleSummary(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double min, double max, double sum, long count)
+		{
+			return CreateDoubleSummary(metricName, dimensions, min, max, sum, count, DateTime.Now);
+		}
+
+		public static Metric CreateDoubleSummary(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double min, double max, double sum, long count, DateTime timestamp)
+		{
+			return new Metric(metricName, dimensions, new MetricValue.DoubleSummaryValue(min, max, sum, count), timestamp);
 		}
 	}
 }

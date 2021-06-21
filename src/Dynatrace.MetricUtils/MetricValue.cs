@@ -21,7 +21,6 @@ namespace Dynatrace.MetricUtils
 		string Serialize();
 	}
 
-
 	static class MetricValue
 	{
 		internal sealed class LongCounterValue : IMetricValue
@@ -44,13 +43,60 @@ namespace Dynatrace.MetricUtils
 			}
 		}
 
-		internal sealed class DoubleCounterValue: IMetricValue {
-			private double value;
-			private bool isDelta;
+		internal sealed class LongGaugeValue : IMetricValue
+		{
+			private readonly long value;
+
+			public LongGaugeValue(long value)
+			{
+				this.value = value;
+			}
+
+			public string Serialize()
+			{
+				return $"gauge,{value}";
+			}
+		}
+
+		internal sealed class LongSummaryValue : IMetricValue
+		{
+			private readonly long min;
+			private readonly long max;
+			private readonly long sum;
+			private readonly long count;
+
+			public LongSummaryValue(long min, long max, long sum, long count)
+			{
+				if (count < 0)
+				{
+					throw new MetricException("Count cannot be less than 0.");
+				}
+
+				if (min > max)
+				{
+					throw new MetricException("Min cannot be larger than max.");
+				}
+
+				this.min = min;
+				this.max = max;
+				this.sum = sum;
+				this.count = count;
+			}
+
+			public string Serialize()
+			{
+				return $"gauge,min={min},max={max},sum={sum},count={count}";
+			}
+		}
+
+		internal sealed class DoubleCounterValue : IMetricValue
+		{
+			private readonly double value;
+			private readonly bool isDelta;
 
 			public DoubleCounterValue(double value, bool isDelta)
 			{
-				// todo ensure that double counter value is not Nan or inf
+				ThrowOnNanOrInfDouble(value);
 				this.value = value;
 				this.isDelta = isDelta;
 			}
@@ -64,6 +110,75 @@ namespace Dynatrace.MetricUtils
 			}
 		}
 
-	}
+		internal sealed class DoubleGaugeValue : IMetricValue
+		{
+			private readonly double value;
 
+			public DoubleGaugeValue(double value)
+			{
+				ThrowOnNanOrInfDouble(value);
+				this.value = value;
+			}
+
+			public string Serialize()
+			{
+				return $"gauge,{value}";
+			}
+		}
+
+		internal sealed class DoubleSummaryValue : IMetricValue
+		{
+			private readonly double min;
+			private readonly double max;
+			private readonly double sum;
+			private readonly long count;
+
+			public DoubleSummaryValue(double min, double max, double sum, long count)
+			{
+				if (count < 0)
+				{
+					throw new MetricException("Count cannot be less than 0.");
+				}
+
+				if (min > max)
+				{
+					throw new MetricException("Min cannot be larger than max.");
+				}
+
+				ThrowOnNanOrInfDoubles(min, max, sum);
+
+				this.min = min;
+				this.max = max;
+				this.sum = sum;
+				this.count = count;
+			}
+
+			public string Serialize()
+			{
+				return $"gauge,min={min},max={max},sum={sum},count={count}";
+			}
+		}
+
+		private static void ThrowOnNanOrInfDouble(double d)
+		{
+			if (double.IsNaN(d))
+			{
+				throw new MetricException("Value is NaN.");
+			}
+
+			if (double.IsInfinity(d))
+			{
+				throw new MetricException("Value is infinite");
+
+			}
+		}
+
+		private static void ThrowOnNanOrInfDoubles(params double[] doubles)
+		{
+			foreach (var d in doubles)
+			{
+				ThrowOnNanOrInfDouble(d);
+			}
+		}
+	}
 }
