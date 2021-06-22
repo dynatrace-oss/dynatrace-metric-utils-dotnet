@@ -168,7 +168,7 @@ namespace Dynatrace.MetricUtils
 
 			if (double.IsInfinity(d))
 			{
-				throw new MetricException("Value is infinite");
+				throw new MetricException("Value is infinite.");
 
 			}
 		}
