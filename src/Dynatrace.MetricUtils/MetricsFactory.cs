@@ -16,88 +16,97 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dynatrace.MetricUtils
 {
 	public static class MetricsFactory
 	{
-		public static Metric CreateLongTotalCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long value)
+		public static Metric CreateLongTotalCounter(string metricName, long value, IEnumerable<KeyValuePair<string, string>> dimensions = default, DateTime timestamp = default)
 		{
-			return CreateLongTotalCounter(metricName, dimensions, value, DateTime.Now);
-		}
+			if (default(IEnumerable<KeyValuePair<string, string>>) == dimensions)
+				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 
-		public static Metric CreateLongTotalCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long value, DateTime timestamp)
-		{
+			if (default(DateTime) == timestamp) 
+				timestamp = DateTime.Now;
+
 			return new Metric(metricName, dimensions, new MetricValue.LongCounterValue(value, false), timestamp);
 		}
 
-		public static Metric CreateLongDeltaCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long value)
+		public static Metric CreateLongDeltaCounter(string metricName, long value, IEnumerable<KeyValuePair<string, string>> dimensions = default, DateTime timestamp = default)
 		{
-			return CreateLongDeltaCounter(metricName, dimensions, value, DateTime.Now);
-		}
+			if (default(IEnumerable<KeyValuePair<string, string>>) == dimensions)
+				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 
-		public static Metric CreateLongDeltaCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long value, DateTime timestamp)
-		{
+			if (default(DateTime) == timestamp) 
+				timestamp = DateTime.Now;
+
 			return new Metric(metricName, dimensions, new MetricValue.LongCounterValue(value, true), timestamp);
 		}
 
-		public static Metric CreateLongGauge(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long value)
+		public static Metric CreateLongGauge(string metricName, long value, IEnumerable<KeyValuePair<string, string>> dimensions = default, DateTime timestamp = default)
 		{
-			return CreateLongGauge(metricName, dimensions, value, DateTime.Now);
-		}
+			if (default(IEnumerable<KeyValuePair<string, string>>) == dimensions)
+				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 
-		public static Metric CreateLongGauge(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long value, DateTime timestamp)
-		{
+			if (default(DateTime) == timestamp) 
+				timestamp = DateTime.Now;
+
 			return new Metric(metricName, dimensions, new MetricValue.LongGaugeValue(value), timestamp);
 		}
 
-		public static Metric CreateLongSummary(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long min, long max, long sum, long count)
+		public static Metric CreateLongSummary(string metricName, long min, long max, long sum, long count, IEnumerable<KeyValuePair<string, string>> dimensions = default, DateTime timestamp = default)
 		{
-			return CreateLongSummary(metricName, dimensions, min, max, sum, count, DateTime.Now);
-		}
+			if (default(IEnumerable<KeyValuePair<string, string>>) == dimensions)
+				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 
-		public static Metric CreateLongSummary(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, long min, long max, long sum, long count, DateTime timestamp)
-		{
+			if (default(DateTime) == timestamp) 
+				timestamp = DateTime.Now;
+
 			return new Metric(metricName, dimensions, new MetricValue.LongSummaryValue(min, max, sum, count), timestamp);
 		}
 
-		public static Metric CreateDoubleTotalCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double value)
+		public static Metric CreateDoubleTotalCounter(string metricName, double value, IEnumerable<KeyValuePair<string, string>> dimensions = default, DateTime timestamp = default)
 		{
-			return CreateDoubleTotalCounter(metricName, dimensions, value, DateTime.Now);
-		}
+			if (default(IEnumerable<KeyValuePair<string, string>>) == dimensions)
+				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 
-		public static Metric CreateDoubleTotalCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double value, DateTime timestamp)
-		{
+			if (default(DateTime) == timestamp) 
+				timestamp = DateTime.Now;
+
 			return new Metric(metricName, dimensions, new MetricValue.DoubleCounterValue(value, false), timestamp);
 		}
 
-		public static Metric CreateDoubleDeltaCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double value)
+		public static Metric CreateDoubleDeltaCounter(string metricName, double value, IEnumerable<KeyValuePair<string, string>> dimensions = default, DateTime timestamp = default)
 		{
-			return CreateDoubleDeltaCounter(metricName, dimensions, value, DateTime.Now);
-		}
+			if (default(IEnumerable<KeyValuePair<string, string>>) == dimensions)
+				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 
-		public static Metric CreateDoubleDeltaCounter(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double value, DateTime timestamp)
-		{
+			if (default(DateTime) == timestamp) 
+				timestamp = DateTime.Now;
+
 			return new Metric(metricName, dimensions, new MetricValue.DoubleCounterValue(value, true), timestamp);
 		}
 
-		public static Metric CreateDoubleGauge(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double value)
+		public static Metric CreateDoubleGauge(string metricName, double value, IEnumerable<KeyValuePair<string, string>> dimensions = default, DateTime timestamp = default)
 		{
-			return CreateDoubleGauge(metricName, dimensions, value, DateTime.Now);
-		}
+			if (default(IEnumerable<KeyValuePair<string, string>>) == dimensions)
+				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 
-		public static Metric CreateDoubleGauge(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double value, DateTime timestamp)
-		{
+			if (default(DateTime) == timestamp) 
+				timestamp = DateTime.Now;
+
 			return new Metric(metricName, dimensions, new MetricValue.DoubleGaugeValue(value), timestamp);
 		}
 
-		public static Metric CreateDoubleSummary(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double min, double max, double sum, long count)
+		public static Metric CreateDoubleSummary(string metricName, double min, double max, double sum, long count, IEnumerable<KeyValuePair<string, string>> dimensions = default, DateTime timestamp = default)
 		{
-			return CreateDoubleSummary(metricName, dimensions, min, max, sum, count, DateTime.Now);
-		}
+			if (default(IEnumerable<KeyValuePair<string, string>>) == dimensions)
+				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 
-		public static Metric CreateDoubleSummary(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, double min, double max, double sum, long count, DateTime timestamp)
-		{
+			if (default(DateTime) == timestamp) 
+				timestamp = DateTime.Now;
+
 			return new Metric(metricName, dimensions, new MetricValue.DoubleSummaryValue(min, max, sum, count), timestamp);
 		}
 	}

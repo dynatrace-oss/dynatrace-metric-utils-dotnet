@@ -15,7 +15,6 @@
 // </copyright>
 
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using FluentAssertions;
 using System;
@@ -30,15 +29,13 @@ namespace Dynatrace.MetricUtils.Tests
 				new KeyValuePair<string, string>("dim2", "val2")
 			};
 
-		private static IEnumerable<KeyValuePair<string, string>> emptyDims = Enumerable.Empty<KeyValuePair<string, string>>();
-
 		private static DateTime testTimestamp = new DateTime(2021, 1, 1, 6, 00, 00);
 		private static DateTimeOffset testTimeOffset = new DateTimeOffset(testTimestamp.ToLocalTime());
 
 		[Fact]
 		public void TestLongTotalCounter()
 		{
-			Metric metric = MetricsFactory.CreateLongTotalCounter("mymetric", testDims, 100);
+			Metric metric = MetricsFactory.CreateLongTotalCounter("mymetric", 100, testDims);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(testDims);
 			metric.Value.Serialize().Should().Be("count,100");
@@ -49,7 +46,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestLongTotalCounterTimestamp()
 		{
-			Metric metric = MetricsFactory.CreateLongTotalCounter("mymetric", testDims, 100, testTimestamp);
+			Metric metric = MetricsFactory.CreateLongTotalCounter("mymetric", 100, testDims, testTimestamp);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(testDims);
 			metric.Value.Serialize().Should().Be("count,100");
@@ -57,19 +54,19 @@ namespace Dynatrace.MetricUtils.Tests
 		}
 
 		[Fact]
-		public void TestLongTotalCounterEmptyDimensions()
+		public void TestLongTotalCounterMinimal()
 		{
-			Metric metric = MetricsFactory.CreateLongTotalCounter("mymetric", emptyDims, 100, testTimestamp);
+			Metric metric = MetricsFactory.CreateLongTotalCounter("mymetric", 100);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().BeEmpty();
+			metric.Dimensions.Should().NotBeNull().And.BeEmpty();
 			metric.Value.Serialize().Should().Be("count,100");
-			metric.Timestamp.Should().Be(testTimestamp);
+			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
 		}
 
 		[Fact]
 		public void TestLongDeltaCounter()
 		{
-			var metric = MetricsFactory.CreateLongDeltaCounter("mymetric", testDims, 100);
+			var metric = MetricsFactory.CreateLongDeltaCounter("mymetric", 100, testDims);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(testDims);
 			metric.Value.Serialize().Should().Be("count,delta=100");
@@ -80,7 +77,7 @@ namespace Dynatrace.MetricUtils.Tests
 		public void TestLongDeltaCounterTimestamp()
 		{
 
-			var metric = MetricsFactory.CreateLongDeltaCounter("mymetric", testDims, 100, testTimestamp);
+			var metric = MetricsFactory.CreateLongDeltaCounter("mymetric", 100, testDims, testTimestamp);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(testDims);
 			metric.Value.Serialize().Should().Be("count,delta=100");
@@ -88,20 +85,20 @@ namespace Dynatrace.MetricUtils.Tests
 		}
 
 		[Fact]
-		public void TestLongDeltaCounterEmptyDimensions()
+		public void TestLongDeltaCounterMinimal()
 		{
-			var metric = MetricsFactory.CreateLongDeltaCounter("mymetric", emptyDims, 100, testTimestamp);
+			var metric = MetricsFactory.CreateLongDeltaCounter("mymetric", 100);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().BeEmpty();
 			metric.Value.Serialize().Should().Be("count,delta=100");
-			metric.Timestamp.Should().Be(testTimestamp);
+			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
 		}
 
 
 		[Fact]
 		public void TestLongGauge()
 		{
-			var metric = MetricsFactory.CreateLongGauge("mymetric", testDims, 100);
+			var metric = MetricsFactory.CreateLongGauge("mymetric", 100, testDims);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(testDims);
 			metric.Value.Serialize().Should().Be("gauge,100");
@@ -111,7 +108,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestLongGaugeTimestamp()
 		{
-			var metric = MetricsFactory.CreateLongGauge("mymetric", testDims, 100, testTimestamp);
+			var metric = MetricsFactory.CreateLongGauge("mymetric", 100, testDims, testTimestamp);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(testDims);
 			metric.Value.Serialize().Should().Be("gauge,100");
@@ -119,19 +116,19 @@ namespace Dynatrace.MetricUtils.Tests
 		}
 
 		[Fact]
-		public void TestLongGaugeEmptyDimensions()
+		public void TestLongGaugeMinimal()
 		{
-			var metric = MetricsFactory.CreateLongGauge("mymetric", emptyDims, 100, testTimestamp);
+			var metric = MetricsFactory.CreateLongGauge("mymetric", 100);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().BeEmpty();
 			metric.Value.Serialize().Should().Be("gauge,100");
-			metric.Timestamp.Should().Be(testTimestamp);
+			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
 		}
 
 		[Fact]
 		public void TestLongSummary()
 		{
-			var metric = MetricsFactory.CreateLongSummary("mymetric", testDims, 2, 5, 12, 4);
+			var metric = MetricsFactory.CreateLongSummary("mymetric", 2, 5, 12, 4, testDims);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(testDims);
 			metric.Value.Serialize().Should().Be("gauge,min=2,max=5,sum=12,count=4");
@@ -141,7 +138,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestLongSummaryTimestamp()
 		{
-			var metric = MetricsFactory.CreateLongSummary("mymetric", testDims, 2, 5, 12, 4, testTimestamp);
+			var metric = MetricsFactory.CreateLongSummary("mymetric", 2, 5, 12, 4, testDims, testTimestamp);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(testDims);
 			metric.Value.Serialize().Should().Be("gauge,min=2,max=5,sum=12,count=4");
@@ -149,29 +146,29 @@ namespace Dynatrace.MetricUtils.Tests
 		}
 
 		[Fact]
-		public void TestLongSummaryEmptyDimensions()
+		public void TestLongSummaryMinimal()
 		{
-			var metric = MetricsFactory.CreateLongSummary("mymetric", emptyDims, 2, 5, 12, 4, testTimestamp);
+			var metric = MetricsFactory.CreateLongSummary("mymetric", 2, 5, 12, 4);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().BeEmpty();
 			metric.Value.Serialize().Should().Be("gauge,min=2,max=5,sum=12,count=4");
-			metric.Timestamp.Should().Be(testTimestamp);
+			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
 		}
 
 		[Fact]
 		public void TestLongSummaryInvalidNumbers()
 		{
-			FluentActions.Invoking(() => MetricsFactory.CreateLongSummary("mymetric", testDims, 14, 5, 12, 4))
+			FluentActions.Invoking(() => MetricsFactory.CreateLongSummary("mymetric", 14, 5, 12, 4))
 				.Should().Throw<MetricException>().WithMessage("Min cannot be larger than max.");
 
-			FluentActions.Invoking(() => MetricsFactory.CreateLongSummary("mymetric", testDims, 2, 5, 12, -1))
+			FluentActions.Invoking(() => MetricsFactory.CreateLongSummary("mymetric", 2, 5, 12, -1))
 				.Should().Throw<MetricException>().WithMessage("Count cannot be less than 0.");
 		}
 
 		[Fact]
 		public void TestDoubleTotalCounter()
 		{
-			Metric metric = MetricsFactory.CreateDoubleTotalCounter("mymetric", testDims, 100.123);
+			Metric metric = MetricsFactory.CreateDoubleTotalCounter("mymetric", 100.123, testDims);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(testDims);
 			metric.Value.Serialize().Should().Be("count,100.123");
@@ -181,7 +178,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleTotalCounterTimestamp()
 		{
-			Metric metric = MetricsFactory.CreateDoubleTotalCounter("mymetric", testDims, 100.123, testTimestamp);
+			Metric metric = MetricsFactory.CreateDoubleTotalCounter("mymetric", 100.123, testDims, testTimestamp);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(testDims);
 			metric.Value.Serialize().Should().Be("count,100.123");
@@ -189,32 +186,32 @@ namespace Dynatrace.MetricUtils.Tests
 		}
 
 		[Fact]
-		public void TestDoubleTotalCounterNoDimensions()
+		public void TestDoubleTotalCounterMinimal()
 		{
-			Metric metric = MetricsFactory.CreateDoubleTotalCounter("mymetric", emptyDims, 100.123, testTimestamp);
+			Metric metric = MetricsFactory.CreateDoubleTotalCounter("mymetric", 100.123);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().BeEmpty();
 			metric.Value.Serialize().Should().Be("count,100.123");
-			metric.Timestamp.Should().Be(testTimestamp);
+			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
 		}
 
 		[Fact]
 		public void TestDoubleTotalCounterInvalidNumbers()
 		{
-			FluentActions.Invoking(() => MetricsFactory.CreateDoubleTotalCounter("mymetric", testDims, double.NegativeInfinity))
+			FluentActions.Invoking(() => MetricsFactory.CreateDoubleTotalCounter("mymetric", double.NegativeInfinity))
 			.Should().Throw<MetricException>().WithMessage("Value is infinite.");
 
-			FluentActions.Invoking(() => MetricsFactory.CreateDoubleTotalCounter("mymetric", testDims, -double.NegativeInfinity))
+			FluentActions.Invoking(() => MetricsFactory.CreateDoubleTotalCounter("mymetric", -double.NegativeInfinity))
 			.Should().Throw<MetricException>().WithMessage("Value is infinite.");
 
-			FluentActions.Invoking(() => MetricsFactory.CreateDoubleTotalCounter("mymetric", testDims, double.NaN))
+			FluentActions.Invoking(() => MetricsFactory.CreateDoubleTotalCounter("mymetric", double.NaN))
 			.Should().Throw<MetricException>().WithMessage("Value is NaN.");
 		}
 
 		[Fact]
 		public void TestDoubleDeltaCounter()
 		{
-			Metric metric = MetricsFactory.CreateDoubleDeltaCounter("mymetric", testDims, 100.123);
+			Metric metric = MetricsFactory.CreateDoubleDeltaCounter("mymetric", 100.123, testDims);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(testDims);
 			metric.Value.Serialize().Should().Be("count,delta=100.123");
@@ -224,7 +221,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleDeltaCounterTimestamp()
 		{
-			Metric metric = MetricsFactory.CreateDoubleDeltaCounter("mymetric", testDims, 100.123, testTimestamp);
+			Metric metric = MetricsFactory.CreateDoubleDeltaCounter("mymetric", 100.123, testDims, testTimestamp);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(testDims);
 			metric.Value.Serialize().Should().Be("count,delta=100.123");
@@ -232,53 +229,133 @@ namespace Dynatrace.MetricUtils.Tests
 		}
 
 		[Fact]
-		public void TestDoubleDeltaCounterNoDimensions()
+		public void TestDoubleDeltaCounterMinimal()
 		{
-			Metric metric = MetricsFactory.CreateDoubleDeltaCounter("mymetric", emptyDims, 100.123, testTimestamp);
+			Metric metric = MetricsFactory.CreateDoubleDeltaCounter("mymetric", 100.123);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().BeEmpty();
 			metric.Value.Serialize().Should().Be("count,delta=100.123");
-			metric.Timestamp.Should().Be(testTimestamp);
+			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
 		}
 
 		[Fact]
 		public void TestDoubleDeltaCounterInvalidNumbers()
 		{
-			FluentActions.Invoking(() => MetricsFactory.CreateDoubleDeltaCounter("mymetric", testDims, double.NegativeInfinity))
+			FluentActions.Invoking(() => MetricsFactory.CreateDoubleDeltaCounter("mymetric", double.NegativeInfinity))
 			.Should().Throw<MetricException>().WithMessage("Value is infinite.");
 
-			FluentActions.Invoking(() => MetricsFactory.CreateDoubleDeltaCounter("mymetric", testDims, -double.NegativeInfinity))
+			FluentActions.Invoking(() => MetricsFactory.CreateDoubleDeltaCounter("mymetric", -double.NegativeInfinity))
 			.Should().Throw<MetricException>().WithMessage("Value is infinite.");
 
-			FluentActions.Invoking(() => MetricsFactory.CreateDoubleDeltaCounter("mymetric", testDims, double.NaN))
+			FluentActions.Invoking(() => MetricsFactory.CreateDoubleDeltaCounter("mymetric", double.NaN))
 			.Should().Throw<MetricException>().WithMessage("Value is NaN.");
 		}
 
 		[Fact]
 		public void TestDoubleGauge()
 		{
-			var metric = MetricsFactory.CreateDoubleGauge("mymetric", testDims, 123.456);
+			var metric = MetricsFactory.CreateDoubleGauge("mymetric", 123.456, testDims);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(testDims);
 			metric.Value.Serialize().Should().Be("gauge,123.456");
 			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
 		}
+		[Fact]
+		public void TestDoubleGaugeTimestamp()
+		{
+			var metric = MetricsFactory.CreateDoubleGauge("mymetric", 123.456, testDims, testTimestamp);
+			metric.MetricName.Should().Be("mymetric");
+			metric.Dimensions.Should().Equal(testDims);
+			metric.Value.Serialize().Should().Be("gauge,123.456");
+			metric.Timestamp.Should().Be(testTimestamp);
+		}
 
-		// [Fact]
-		// public void TestDoubleGauge()
-		// {
-		// }
+		[Fact]
+		public void TestDoubleGaugeMinimal()
+		{
+			var metric = MetricsFactory.CreateDoubleGauge("mymetric", 123.456);
+			metric.MetricName.Should().Be("mymetric");
+			metric.Dimensions.Should().BeEmpty();
+			metric.Value.Serialize().Should().Be("gauge,123.456");
+			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
+		}
 
-		// [Fact]
-		// public void TestDoubleSummary()
-		// {
-		// }
+		[Fact]
+		public void TestDoubleGaugeInvalidNumbers()
+		{
+			FluentActions.Invoking(() => MetricsFactory.CreateDoubleGauge("mymetric", double.NegativeInfinity))
+			.Should().Throw<MetricException>().WithMessage("Value is infinite.");
 
-		// [Fact]
-		// public void TestDoubleSummary()
-		// {
-		// }
+			FluentActions.Invoking(() => MetricsFactory.CreateDoubleGauge("mymetric", -double.NegativeInfinity))
+			.Should().Throw<MetricException>().WithMessage("Value is infinite.");
 
-		// TODO test invalid names
+			FluentActions.Invoking(() => MetricsFactory.CreateDoubleGauge("mymetric", double.NaN))
+			.Should().Throw<MetricException>().WithMessage("Value is NaN.");
+		}
+
+		[Fact]
+		public void TestDoubleSummary()
+		{
+			var metric = MetricsFactory.CreateDoubleSummary("mymetric", 2.5, 5.7, 12.3, 4, testDims);
+			metric.MetricName.Should().Be("mymetric");
+			metric.Dimensions.Should().Equal(testDims);
+			metric.Value.Serialize().Should().Be("gauge,min=2.5,max=5.7,sum=12.3,count=4");
+			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
+		}
+
+		[Fact]
+		public void TestDoubleSummaryTimestamp()
+		{
+			var metric = MetricsFactory.CreateDoubleSummary("mymetric", 2.5, 5.7, 12.3, 4, testDims, testTimestamp);
+			metric.MetricName.Should().Be("mymetric");
+			metric.Dimensions.Should().Equal(testDims);
+			metric.Value.Serialize().Should().Be("gauge,min=2.5,max=5.7,sum=12.3,count=4");
+			metric.Timestamp.Should().Be(testTimestamp);
+		}
+
+		[Fact]
+		public void TestDoubleSummaryMinimal()
+		{
+			var metric = MetricsFactory.CreateDoubleSummary("mymetric", 2.5, 5.7, 12.3, 4);
+			metric.MetricName.Should().Be("mymetric");
+			metric.Dimensions.Should().BeEmpty();
+			metric.Value.Serialize().Should().Be("gauge,min=2.5,max=5.7,sum=12.3,count=4");
+			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
+		}
+
+		[Fact]
+		public void TestDoubleSummaryInvalidNumbers()
+		{
+			FluentActions.Invoking(() => MetricsFactory.CreateDoubleSummary("mymetric", 14.6, 5.3, 12.7, 4))
+				.Should().Throw<MetricException>().WithMessage("Min cannot be larger than max.");
+
+			FluentActions.Invoking(() => MetricsFactory.CreateDoubleSummary("mymetric", 2.5, 5.7, 12.3, -1))
+				.Should().Throw<MetricException>().WithMessage("Count cannot be less than 0.");
+		}
+
+		[Fact]
+		public void TestDoubleSummaryNanAndInf()
+		{
+			var values = new List<double> { 1.1, double.PositiveInfinity, double.NegativeInfinity, double.NaN };
+			foreach (var i in values)
+			{
+				foreach (var j in values)
+				{
+					foreach (var k in values)
+					{
+						if (i == 1.1 && j == 1.1 && k == 1.1)
+						{
+							// if all values are 1.1, this is a valid configuration. Therefore, check that its correctly serialized.
+							Metric metric = MetricsFactory.CreateDoubleSummary("mymetric", i, j, k, 1);
+							metric.Value.Serialize().Should().Be("gauge,min=1.1,max=1.1,sum=1.1,count=1");
+							continue;
+						}
+						// any of the other configurations are invalid and should throw.
+						FluentActions.Invoking(() => MetricsFactory.CreateDoubleSummary("mymetric", i, j, k, 1))
+						.Should().Throw<MetricException>();
+					}
+				}
+			}
+		}
 	}
 }
