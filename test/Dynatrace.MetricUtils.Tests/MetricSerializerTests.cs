@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using FluentAssertions;
 
 namespace Dynatrace.MetricUtils.Tests
 {
@@ -28,28 +29,82 @@ namespace Dynatrace.MetricUtils.Tests
 
 		private static readonly DateTime testTimestamp = DateTimeOffset.FromUnixTimeMilliseconds(1604660600000).UtcDateTime;
 
+		private static readonly IEnumerable<KeyValuePair<string, string>> testDimensions =
+		new List<KeyValuePair<string, string>> {
+				new KeyValuePair<string, string>("label1", "value1"),
+				new KeyValuePair<string, string>("label2", "value2")
+			};
+
+		// todo add static dims, prefix etc
+        // todo tests for Doubles.
+
 		[Fact]
 		public void SerializeLongDeltaCounter()
 		{
 			var serializer = new MetricSerializer(_logger);
 
-			var dimensions = new List<KeyValuePair<string, string>> {
-				new KeyValuePair<string, string>("label1", "value1"),
-				new KeyValuePair<string, string>("label2", "value2")
-			};
-			var metric = MetricsFactory.CreateLongDeltaCounter("metric1", 100, dimensions, testTimestamp);
-
-			string serialized = serializer.SerializeMetric(metric);
+			string serialized = serializer.SerializeMetric(MetricsFactory.CreateLongDeltaCounter("metric1", 100, testDimensions, testTimestamp));
 			string expected = "metric1,label1=value1,label2=value2,dt.metrics.source=opentelemetry count,delta=100 1604660600000" + Environment.NewLine;
-			Assert.Equal(expected, serialized);
+			serialized.Should().Be(expected);
 
-			var metricWithCurrentTimestamp = MetricsFactory.CreateLongDeltaCounter("metric2", 200, dimensions);
+			var metricWithCurrentTimestamp = MetricsFactory.CreateLongDeltaCounter("metric2", 200, testDimensions);
 			string serializedWithCurrentTimestamp = serializer.SerializeMetric(metricWithCurrentTimestamp);
 
-			Assert.Equal(expected.Length, serializedWithCurrentTimestamp.Length);
-			Assert.StartsWith("metric2,label1=value1,label2=value2,dt.metrics.source=opentelemetry count,delta=200 ", serializedWithCurrentTimestamp);
+			serializedWithCurrentTimestamp.Should()
+			.HaveLength(expected.Length)
+			.And.StartWith("metric2,label1=value1,label2=value2,dt.metrics.source=opentelemetry count,delta=200 ");
 		}
 
+		[Fact]
+		public void SerializeLongTotalCounter()
+		{
+			var serializer = new MetricSerializer(_logger);
+
+			string serialized = serializer.SerializeMetric(MetricsFactory.CreateLongTotalCounter("metric1", 100, testDimensions, testTimestamp));
+			string expected = "metric1,label1=value1,label2=value2,dt.metrics.source=opentelemetry count,100 1604660600000" + Environment.NewLine;
+			serialized.Should().Be(expected);
+
+			var metricWithCurrentTimestamp = MetricsFactory.CreateLongTotalCounter("metric2", 200, testDimensions);
+			string serializedWithCurrentTimestamp = serializer.SerializeMetric(metricWithCurrentTimestamp);
+
+			serializedWithCurrentTimestamp.Should()
+			.HaveLength(expected.Length)
+			.And.StartWith("metric2,label1=value1,label2=value2,dt.metrics.source=opentelemetry count,200 ");
+		}
+
+		[Fact]
+		public void SerializeLongGauge()
+		{
+			var serializer = new MetricSerializer(_logger);
+
+			string serialized = serializer.SerializeMetric(MetricsFactory.CreateLongGauge("metric1", 100, testDimensions, testTimestamp));
+			string expected = "metric1,label1=value1,label2=value2,dt.metrics.source=opentelemetry gauge,100 1604660600000" + Environment.NewLine;
+			serialized.Should().Be(expected);
+
+			var metricWithCurrentTimestamp = MetricsFactory.CreateLongGauge("metric2", 200, testDimensions);
+			string serializedWithCurrentTimestamp = serializer.SerializeMetric(metricWithCurrentTimestamp);
+
+			serializedWithCurrentTimestamp.Should()
+			.HaveLength(expected.Length)
+			.And.StartWith("metric2,label1=value1,label2=value2,dt.metrics.source=opentelemetry gauge,200 ");
+		}
+
+		[Fact]
+		public void SerializeLongSummary()
+		{
+			var serializer = new MetricSerializer(_logger);
+
+			string serialized = serializer.SerializeMetric(MetricsFactory.CreateLongSummary("metric1", 1, 3, 7, 4, testDimensions, testTimestamp));
+			string expected = "metric1,label1=value1,label2=value2,dt.metrics.source=opentelemetry gauge,min=1,max=3,sum=7,count=4 1604660600000" + Environment.NewLine;
+			serialized.Should().Be(expected);
+
+			var metricWithCurrentTimestamp = MetricsFactory.CreateLongSummary("metric2", 1, 3, 7, 4, testDimensions);
+			string serializedWithCurrentTimestamp = serializer.SerializeMetric(metricWithCurrentTimestamp);
+
+			serializedWithCurrentTimestamp.Should()
+			.HaveLength(expected.Length)
+			.And.StartWith("metric2,label1=value1,label2=value2,dt.metrics.source=opentelemetry gauge,min=1,max=3,sum=7,count=4 ");
+		}
 
 		// [Fact]
 		// public void TestDimensionValuesNormalized()
