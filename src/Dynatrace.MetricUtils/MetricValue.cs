@@ -44,6 +44,15 @@ namespace Dynatrace.MetricUtils
 			}
 		}
 
+		internal static string FormatDouble(double d){
+			// todo
+			if (d == -0) {
+				return "0";
+			}
+			// todo mantissa with .0
+			return d.ToString();
+		}
+
 		internal sealed class LongCounterValue : IMetricValue
 		{
 			private readonly bool _isDelta;

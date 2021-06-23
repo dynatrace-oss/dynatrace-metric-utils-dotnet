@@ -23,7 +23,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit;
 
-namespace Dynatrace.MetricUtils
+namespace Dynatrace.MetricUtils.Tests
 {
 	public class OneAgentMetadataEnricherTests
 	{
