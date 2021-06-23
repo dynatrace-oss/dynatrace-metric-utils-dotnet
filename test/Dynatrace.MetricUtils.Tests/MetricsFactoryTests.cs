@@ -24,7 +24,7 @@ namespace Dynatrace.MetricUtils.Tests
 	public class MetricsFactoryTests
 	{
 		private static readonly IEnumerable<KeyValuePair<string, string>> TestDims =
-			new List<KeyValuePair<string, string>> {new("dim1", "val1"), new("dim2", "val2")};
+			new List<KeyValuePair<string, string>> { new("dim1", "val1"), new("dim2", "val2") };
 
 		private static readonly DateTime TestTimestamp = new(2021, 1, 1, 6, 00, 00);
 
@@ -332,14 +332,15 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleSummaryNanAndInf()
 		{
-			var values = new List<double> {1.1, double.PositiveInfinity, double.NegativeInfinity, double.NaN};
+			var values = new List<double> { 1.1, double.PositiveInfinity, double.NegativeInfinity, double.NaN };
+			Func<double, bool> notNanOrInf = (d) => double.IsFinite(d) && !double.IsNaN(d);
 			foreach (var i in values)
 			{
 				foreach (var j in values)
 				{
 					foreach (var k in values)
 					{
-						if (i == 1.1 && j == 1.1 && k == 1.1)
+						if (notNanOrInf(i) && notNanOrInf(j) && notNanOrInf(k))
 						{
 							// if all values are 1.1, this is a valid configuration. Therefore, check that its correctly serialized.
 							var metric = MetricsFactory.CreateDoubleSummary("mymetric", i, j, k, 1);
@@ -347,7 +348,7 @@ namespace Dynatrace.MetricUtils.Tests
 							continue;
 						}
 
-						// any of the other configurations are invalid and should throw.
+						// any of the other configuration is invalid and should throw.
 						FluentActions.Invoking(() => MetricsFactory.CreateDoubleSummary("mymetric", i, j, k, 1))
 							.Should().Throw<MetricException>();
 					}
