@@ -42,7 +42,6 @@ namespace Dynatrace.MetricUtils
 			if (enrichWithDynatraceMetadata)
 			{
 				var enricher = new OneAgentMetadataEnricher(logger);
-				var dimensions = new List<KeyValuePair<string, string>>();
 				enricher.EnrichWithDynatraceMetadata(staticDimensions);
 			}
 

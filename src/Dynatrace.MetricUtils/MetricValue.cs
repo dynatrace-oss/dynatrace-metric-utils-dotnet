@@ -25,45 +25,45 @@ namespace Dynatrace.MetricUtils
 	{
 		internal sealed class LongCounterValue : IMetricValue
 		{
-			private readonly long value;
-			private readonly bool isDelta;
+			private readonly long _value;
+			private readonly bool _isDelta;
 			public LongCounterValue(long value, bool isDelta)
 			{
-				this.value = value;
-				this.isDelta = isDelta;
+				this._value = value;
+				this._isDelta = isDelta;
 			}
 
 			public string Serialize()
 			{
-				if (isDelta)
+				if (_isDelta)
 				{
-					return $"count,delta={value}";
+					return $"count,delta={_value}";
 				}
-				return $"count,{value}";
+				return $"count,{_value}";
 			}
 		}
 
 		internal sealed class LongGaugeValue : IMetricValue
 		{
-			private readonly long value;
+			private readonly long _value;
 
 			public LongGaugeValue(long value)
 			{
-				this.value = value;
+				this._value = value;
 			}
 
 			public string Serialize()
 			{
-				return $"gauge,{value}";
+				return $"gauge,{_value}";
 			}
 		}
 
 		internal sealed class LongSummaryValue : IMetricValue
 		{
-			private readonly long min;
-			private readonly long max;
-			private readonly long sum;
-			private readonly long count;
+			private readonly long _min;
+			private readonly long _max;
+			private readonly long _sum;
+			private readonly long _count;
 
 			public LongSummaryValue(long min, long max, long sum, long count)
 			{
@@ -77,61 +77,61 @@ namespace Dynatrace.MetricUtils
 					throw new MetricException("Min cannot be larger than max.");
 				}
 
-				this.min = min;
-				this.max = max;
-				this.sum = sum;
-				this.count = count;
+				this._min = min;
+				this._max = max;
+				this._sum = sum;
+				this._count = count;
 			}
 
 			public string Serialize()
 			{
-				return $"gauge,min={min},max={max},sum={sum},count={count}";
+				return $"gauge,min={_min},max={_max},sum={_sum},count={_count}";
 			}
 		}
 
 		internal sealed class DoubleCounterValue : IMetricValue
 		{
-			private readonly double value;
-			private readonly bool isDelta;
+			private readonly double _value;
+			private readonly bool _isDelta;
 
 			public DoubleCounterValue(double value, bool isDelta)
 			{
 				ThrowOnNanOrInfDouble(value);
-				this.value = value;
-				this.isDelta = isDelta;
+				this._value = value;
+				this._isDelta = isDelta;
 			}
 			public string Serialize()
 			{
-				if (isDelta)
+				if (_isDelta)
 				{
-					return $"count,delta={value}";
+					return $"count,delta={_value}";
 				}
-				return $"count,{value}";
+				return $"count,{_value}";
 			}
 		}
 
 		internal sealed class DoubleGaugeValue : IMetricValue
 		{
-			private readonly double value;
+			private readonly double _value;
 
 			public DoubleGaugeValue(double value)
 			{
 				ThrowOnNanOrInfDouble(value);
-				this.value = value;
+				this._value = value;
 			}
 
 			public string Serialize()
 			{
-				return $"gauge,{value}";
+				return $"gauge,{_value}";
 			}
 		}
 
 		internal sealed class DoubleSummaryValue : IMetricValue
 		{
-			private readonly double min;
-			private readonly double max;
-			private readonly double sum;
-			private readonly long count;
+			private readonly double _min;
+			private readonly double _max;
+			private readonly double _sum;
+			private readonly long _count;
 
 			public DoubleSummaryValue(double min, double max, double sum, long count)
 			{
@@ -147,15 +147,15 @@ namespace Dynatrace.MetricUtils
 
 				ThrowOnNanOrInfDoubles(min, max, sum);
 
-				this.min = min;
-				this.max = max;
-				this.sum = sum;
-				this.count = count;
+				this._min = min;
+				this._max = max;
+				this._sum = sum;
+				this._count = count;
 			}
 
 			public string Serialize()
 			{
-				return $"gauge,min={min},max={max},sum={sum},count={count}";
+				return $"gauge,min={_min},max={_max},sum={_sum},count={_count}";
 			}
 		}
 

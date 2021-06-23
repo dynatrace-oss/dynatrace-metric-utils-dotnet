@@ -17,21 +17,24 @@
 using System;
 using System.Runtime.Serialization;
 
-public class MetricException : ArgumentException
+namespace Dynatrace.MetricUtils
 {
-	public MetricException()
+	public class MetricException : ArgumentException
 	{
-	}
+		public MetricException()
+		{
+		}
 
-	public MetricException(string message) : base(message)
-	{
-	}
+		public MetricException(string message) : base(message)
+		{
+		}
 
-	public MetricException(string message, Exception innerException) : base(message, innerException)
-	{
-	}
+		public MetricException(string message, Exception innerException) : base(message, innerException)
+		{
+		}
 
-	protected MetricException(SerializationInfo info, StreamingContext context) : base(info, context)
-	{
+		protected MetricException(SerializationInfo info, StreamingContext context) : base(info, context)
+		{
+		}
 	}
 }
