@@ -28,15 +28,20 @@ namespace Dynatrace.MetricUtils
 
 		//  Metric keys (mk)
 		//  characters not valid as leading characters in the first identifier key section
-		private static readonly Regex ReMkFirstIdentifierSectionStart = new Regex("^[^a-zA-Z_]+", RegexOptions.Compiled);
+		private static readonly Regex ReMkFirstIdentifierSectionStart =
+			new Regex("^[^a-zA-Z_]+", RegexOptions.Compiled);
+
 		// characters not valid as leading characters in subsequent subsections.
-		private static readonly Regex ReMkSubsequentIdentifierSectionStart = new Regex("^[^a-zA-Z0-9_]+", RegexOptions.Compiled);
+		private static readonly Regex ReMkSubsequentIdentifierSectionStart =
+			new Regex("^[^a-zA-Z0-9_]+", RegexOptions.Compiled);
+
 		// invalid characters for the rest of the key.
 		private static readonly Regex ReMkInvalidCharacters = new Regex("[^a-zA-Z0-9_\\-]+", RegexOptions.Compiled);
 
 		// Dimension keys (dk)
 		// Dimension keys start with a lowercase letter or an underscore.
 		private static readonly Regex ReDkSectionStart = new Regex("^[^a-z_]+", RegexOptions.Compiled);
+
 		// invalid characters in the rest of the dimension key
 		private static readonly Regex ReDkInvalidCharacters = new Regex("[^a-z0-9_\\-:]+", RegexOptions.Compiled);
 
@@ -47,10 +52,11 @@ namespace Dynatrace.MetricUtils
 
 		// This regex checks if there is an odd number of trailing backslashes in the string. It can be
 		// read as: {not a slash}{any number of 2-slash pairs}{one slash}{end line}.
-		private static readonly Regex ReDvHasOddNumberOfTrailingBackslashes = new Regex("[^\\\\](?:\\\\\\\\)*\\\\$", RegexOptions.Compiled);
+		private static readonly Regex ReDvHasOddNumberOfTrailingBackslashes =
+			new Regex("[^\\\\](?:\\\\\\\\)*\\\\$", RegexOptions.Compiled);
 
 		/// <summary>
-		/// Transforms OpenTelemetry metric names into Dynatrace-compatible metric keys
+		///     Transforms OpenTelemetry metric names into Dynatrace-compatible metric keys
 		/// </summary>
 		/// <returns>A valid Dynatrace metric key or null, if the input could not be normalized</returns>
 		internal static string MetricKey(string key)
@@ -70,10 +76,11 @@ namespace Dynatrace.MetricUtils
 			{
 				return null;
 			}
-			bool firstSection = true;
-			StringBuilder normalizedKeyBuilder = new StringBuilder();
 
-			foreach (string section in sections)
+			var firstSection = true;
+			var normalizedKeyBuilder = new StringBuilder();
+
+			foreach (var section in sections)
 			{
 				// check only if it is empty, and ignore a null check.
 				if (section.Length == 0)
@@ -82,17 +89,15 @@ namespace Dynatrace.MetricUtils
 					{
 						return null;
 					}
-					else
-					{
-						// skip empty sections
-						continue;
-					}
+
+					// skip empty sections
+					continue;
 				}
 
 				// first key section cannot start with a number while subsequent sections can.
-				string normalizedSection = firstSection ?
-					ReMkFirstIdentifierSectionStart.Replace(section, "_") :
-					ReMkSubsequentIdentifierSectionStart.Replace(section, "_");
+				var normalizedSection = firstSection
+					? ReMkFirstIdentifierSectionStart.Replace(section, "_")
+					: ReMkSubsequentIdentifierSectionStart.Replace(section, "_");
 
 				// replace invalid chars with an underscore
 				normalizedSection = ReMkInvalidCharacters.Replace(normalizedSection, "_");
@@ -109,6 +114,7 @@ namespace Dynatrace.MetricUtils
 
 				normalizedKeyBuilder.Append(normalizedSection);
 			}
+
 			return normalizedKeyBuilder.ToString();
 		}
 
@@ -118,6 +124,7 @@ namespace Dynatrace.MetricUtils
 			{
 				return "";
 			}
+
 			if (key.Length > MaxLengthDimensionKey)
 			{
 				key = key.Substring(0, MaxLengthDimensionKey);
@@ -125,14 +132,14 @@ namespace Dynatrace.MetricUtils
 
 			var sections = key.Split('.');
 			var normalizedKeyBuilder = new StringBuilder();
-			bool firstSection = true;
+			var firstSection = true;
 
-			foreach (string section in sections)
+			foreach (var section in sections)
 			{
 				if (section.Length > 0)
 				{
 					// move to lowercase
-					string normalizedSection = section.ToLower();
+					var normalizedSection = section.ToLower();
 					// replace consecutive leading chars with an underscore.
 					normalizedSection = ReDkSectionStart.Replace(normalizedSection, "_");
 					// replace consecutive invalid characters within the section with one underscore:
@@ -151,6 +158,7 @@ namespace Dynatrace.MetricUtils
 					normalizedKeyBuilder.Append(normalizedSection);
 				}
 			}
+
 			return normalizedKeyBuilder.ToString();
 		}
 
@@ -160,6 +168,7 @@ namespace Dynatrace.MetricUtils
 			{
 				return "";
 			}
+
 			if (value.Length > MaxLengthDimensionValue)
 			{
 				value = value.Substring(0, MaxLengthDimensionValue);
@@ -193,7 +202,8 @@ namespace Dynatrace.MetricUtils
 			return escaped;
 		}
 
-		internal static List<KeyValuePair<string, string>> DimensionList(IEnumerable<KeyValuePair<string, string>> dimensions)
+		internal static List<KeyValuePair<string, string>> DimensionList(
+			IEnumerable<KeyValuePair<string, string>> dimensions)
 		{
 			if (dimensions == null)
 			{
@@ -203,11 +213,11 @@ namespace Dynatrace.MetricUtils
 			var targetList = new List<KeyValuePair<string, string>>();
 			foreach (var dimension in dimensions)
 			{
-
 				var normalizedKey = DimensionKey(dimension.Key);
 				if (!string.IsNullOrEmpty(normalizedKey))
 				{
-					targetList.Add(new KeyValuePair<string, string>(normalizedKey, EscapeDimensionValue(DimensionValue(dimension.Value))));
+					targetList.Add(new KeyValuePair<string, string>(normalizedKey,
+						EscapeDimensionValue(DimensionValue(dimension.Value))));
 				}
 			}
 

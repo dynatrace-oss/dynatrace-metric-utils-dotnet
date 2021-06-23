@@ -19,8 +19,8 @@ using System.IO;
 namespace Dynatrace.MetricUtils
 {
 	/// <summary>
-	/// Provides specific file reading operations, which are passed through to the
-	/// respective methods on <c>System.IO.File</c>
+	///     Provides specific file reading operations, which are passed through to the
+	///     respective methods on <c>System.IO.File</c>
 	/// </summary>
 	internal interface IFileReader
 	{

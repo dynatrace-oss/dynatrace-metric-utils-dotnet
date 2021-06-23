@@ -21,17 +21,18 @@ namespace Dynatrace.MetricUtils
 {
 	public class Metric
 	{
+		internal Metric(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, IMetricValue value,
+			DateTime timestamp)
+		{
+			this.MetricName = metricName;
+			this.Dimensions = dimensions;
+			this.Value = value;
+			this.Timestamp = timestamp;
+		}
+
 		public string MetricName { get; }
 		public IEnumerable<KeyValuePair<string, string>> Dimensions { get; }
 		public IMetricValue Value { get; }
 		public DateTime Timestamp { get; }
-
-		internal Metric(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, IMetricValue value, DateTime timestamp)
-		{
-			MetricName = metricName;
-			Dimensions = dimensions;
-			Value = value;
-			Timestamp = timestamp;
-		}
 	}
 }

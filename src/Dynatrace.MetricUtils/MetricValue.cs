@@ -21,12 +21,34 @@ namespace Dynatrace.MetricUtils
 		string Serialize();
 	}
 
-	static class MetricValue
+	internal static class MetricValue
 	{
+		private static void ThrowOnNanOrInfDouble(double d)
+		{
+			if (double.IsNaN(d))
+			{
+				throw new MetricException("Value is NaN.");
+			}
+
+			if (double.IsInfinity(d))
+			{
+				throw new MetricException("Value is infinite.");
+			}
+		}
+
+		private static void ThrowOnNanOrInfDoubles(params double[] doubles)
+		{
+			foreach (var d in doubles)
+			{
+				ThrowOnNanOrInfDouble(d);
+			}
+		}
+
 		internal sealed class LongCounterValue : IMetricValue
 		{
-			private readonly long _value;
 			private readonly bool _isDelta;
+			private readonly long _value;
+
 			public LongCounterValue(long value, bool isDelta)
 			{
 				this._value = value;
@@ -35,11 +57,12 @@ namespace Dynatrace.MetricUtils
 
 			public string Serialize()
 			{
-				if (_isDelta)
+				if (this._isDelta)
 				{
-					return $"count,delta={_value}";
+					return $"count,delta={this._value}";
 				}
-				return $"count,{_value}";
+
+				return $"count,{this._value}";
 			}
 		}
 
@@ -54,16 +77,16 @@ namespace Dynatrace.MetricUtils
 
 			public string Serialize()
 			{
-				return $"gauge,{_value}";
+				return $"gauge,{this._value}";
 			}
 		}
 
 		internal sealed class LongSummaryValue : IMetricValue
 		{
-			private readonly long _min;
-			private readonly long _max;
-			private readonly long _sum;
 			private readonly long _count;
+			private readonly long _max;
+			private readonly long _min;
+			private readonly long _sum;
 
 			public LongSummaryValue(long min, long max, long sum, long count)
 			{
@@ -85,14 +108,14 @@ namespace Dynatrace.MetricUtils
 
 			public string Serialize()
 			{
-				return $"gauge,min={_min},max={_max},sum={_sum},count={_count}";
+				return $"gauge,min={this._min},max={this._max},sum={this._sum},count={this._count}";
 			}
 		}
 
 		internal sealed class DoubleCounterValue : IMetricValue
 		{
-			private readonly double _value;
 			private readonly bool _isDelta;
+			private readonly double _value;
 
 			public DoubleCounterValue(double value, bool isDelta)
 			{
@@ -100,13 +123,15 @@ namespace Dynatrace.MetricUtils
 				this._value = value;
 				this._isDelta = isDelta;
 			}
+
 			public string Serialize()
 			{
-				if (_isDelta)
+				if (this._isDelta)
 				{
-					return $"count,delta={_value}";
+					return $"count,delta={this._value}";
 				}
-				return $"count,{_value}";
+
+				return $"count,{this._value}";
 			}
 		}
 
@@ -122,16 +147,16 @@ namespace Dynatrace.MetricUtils
 
 			public string Serialize()
 			{
-				return $"gauge,{_value}";
+				return $"gauge,{this._value}";
 			}
 		}
 
 		internal sealed class DoubleSummaryValue : IMetricValue
 		{
-			private readonly double _min;
-			private readonly double _max;
-			private readonly double _sum;
 			private readonly long _count;
+			private readonly double _max;
+			private readonly double _min;
+			private readonly double _sum;
 
 			public DoubleSummaryValue(double min, double max, double sum, long count)
 			{
@@ -155,29 +180,7 @@ namespace Dynatrace.MetricUtils
 
 			public string Serialize()
 			{
-				return $"gauge,min={_min},max={_max},sum={_sum},count={_count}";
-			}
-		}
-
-		private static void ThrowOnNanOrInfDouble(double d)
-		{
-			if (double.IsNaN(d))
-			{
-				throw new MetricException("Value is NaN.");
-			}
-
-			if (double.IsInfinity(d))
-			{
-				throw new MetricException("Value is infinite.");
-
-			}
-		}
-
-		private static void ThrowOnNanOrInfDoubles(params double[] doubles)
-		{
-			foreach (var d in doubles)
-			{
-				ThrowOnNanOrInfDouble(d);
+				return $"gauge,min={this._min},max={this._max},sum={this._sum},count={this._count}";
 			}
 		}
 	}

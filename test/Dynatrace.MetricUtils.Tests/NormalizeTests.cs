@@ -19,7 +19,6 @@ using Xunit;
 
 namespace Dynatrace.MetricUtils.Tests
 {
-
 	public class NormalizeTests
 	{
 		[Theory]
@@ -66,7 +65,8 @@ namespace Dynatrace.MetricUtils.Tests
 		[InlineData("valid mixture dots underscores 2", "_._._.a_._", "_._._.a_._")]
 		[InlineData("invalid empty section", "an..empty.section", "an.empty.section")]
 		[InlineData("invalid characters", "a,,,b  c=d\\e\\ =,f", "a_b_c_d_e_f")]
-		[InlineData("invalid characters long", "a!b\"c#d$e%f&g'h(i)j*k+l,m-n.o/p:q;r<s=t>u?v@w[x]y\\z^0 1_2;3{4|5}6~7", "a_b_c_d_e_f_g_h_i_j_k_l_m-n.o_p_q_r_s_t_u_v_w_x_y_z_0_1_2_3_4_5_6_7")]
+		[InlineData("invalid characters long", "a!b\"c#d$e%f&g'h(i)j*k+l,m-n.o/p:q;r<s=t>u?v@w[x]y\\z^0 1_2;3{4|5}6~7",
+			"a_b_c_d_e_f_g_h_i_j_k_l_m-n.o_p_q_r_s_t_u_v_w_x_y_z_0_1_2_3_4_5_6_7")]
 		[InlineData("invalid trailing characters", "a.b.+", "a.b._")]
 		[InlineData("valid combined test", "metric.key-number-1.001", "metric.key-number-1.001")]
 		[InlineData("valid example 1", "MyMetric", "MyMetric")]
@@ -133,7 +133,8 @@ namespace Dynatrace.MetricUtils.Tests
 		[InlineData("invalid empty", "", "")]
 		[InlineData("valid combined key", "dim.val:count.val001", "dim.val:count.val001")]
 		[InlineData("invalid characters", "a,,,b  c=d\\e\\ =,f", "a_b_c_d_e_f")]
-		[InlineData("invalid characters long", "a!b\"c#d$e%f&g'h(i)j*k+l,m-n.o/p:q;r<s=t>u?v@w[x]y\\z^0 1_2;3{4|5}6~7", "a_b_c_d_e_f_g_h_i_j_k_l_m-n.o_p:q_r_s_t_u_v_w_x_y_z_0_1_2_3_4_5_6_7")]
+		[InlineData("invalid characters long", "a!b\"c#d$e%f&g'h(i)j*k+l,m-n.o/p:q;r<s=t>u?v@w[x]y\\z^0 1_2;3{4|5}6~7",
+			"a_b_c_d_e_f_g_h_i_j_k_l_m-n.o_p:q_r_s_t_u_v_w_x_y_z_0_1_2_3_4_5_6_7")]
 		[InlineData("invalid example 1", "Tag", "tag")]
 		[InlineData("invalid example 2", "0Tag", "_tag")]
 		[InlineData("invalid example 3", "tÄg", "t_g")]
@@ -207,16 +208,19 @@ namespace Dynatrace.MetricUtils.Tests
 		public void DimensionValueTruncatedCorrectlyAfterEscaping()
 		{
 			// escape too long string
-			Assert.Equal(string.Concat(Enumerable.Repeat("\\=", 125)), Normalize.EscapeDimensionValue(new string('=', 250)));
+			Assert.Equal(string.Concat(Enumerable.Repeat("\\=", 125)),
+				Normalize.EscapeDimensionValue(new string('=', 250)));
 			// escape sequence not broken apart 1
 			Assert.Equal(new string('a', 249), Normalize.EscapeDimensionValue(new string('a', 249) + '='));
 			//   escape sequence not broken apart 2
 			Assert.Equal(new string('a', 248) + "\\=", Normalize.EscapeDimensionValue(new string('a', 248) + "=="));
 			// escape sequence not broken apart 3:
 			// 3 trailing backslashes before escaping, 1 escaped trailing backslash
-			Assert.Equal(new string('a', 247) + "\\\\", Normalize.EscapeDimensionValue(new string('a', 247) + "\\\\\\"));
+			Assert.Equal(new string('a', 247) + "\\\\",
+				Normalize.EscapeDimensionValue(new string('a', 247) + "\\\\\\"));
 			// dimension value of only backslashes
-			Assert.Equal(string.Concat(Enumerable.Repeat("\\\\", 125)), Normalize.EscapeDimensionValue(new string('\\', 260)));
+			Assert.Equal(string.Concat(Enumerable.Repeat("\\\\", 125)),
+				Normalize.EscapeDimensionValue(new string('\\', 260)));
 		}
 	}
 }

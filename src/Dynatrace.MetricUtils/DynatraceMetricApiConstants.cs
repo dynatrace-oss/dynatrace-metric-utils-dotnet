@@ -21,14 +21,8 @@ namespace Dynatrace.MetricUtils
 		private const string OneAgentEndpoint = "http://localhost:14499/metrics/ingest";
 		private const int LinesLimit = 1000;
 
-		public static string DefaultOneAgentEndpoint
-		{
-			get { return OneAgentEndpoint; }
-		}
+		public static string DefaultOneAgentEndpoint => OneAgentEndpoint;
 
-		public static int PayloadLinesLimit
-		{
-			get { return LinesLimit; }
-		}
+		public static int PayloadLinesLimit => LinesLimit;
 	}
 }

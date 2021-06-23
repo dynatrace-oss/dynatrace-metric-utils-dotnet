@@ -24,18 +24,37 @@ namespace Dynatrace.MetricUtils
 {
 	public class MetricSerializer
 	{
+		private static readonly int MaxDimensions = 50;
+		private readonly List<KeyValuePair<string, string>> _defaultDimensions;
 		private readonly ILogger _logger;
 		private readonly string _prefix;
-		private readonly List<KeyValuePair<string, string>> _defaultDimensions;
 		private readonly List<KeyValuePair<string, string>> _staticDimensions;
-		private static readonly int MaxDimensions = 50;
 
 		// public constructor.
-		public MetricSerializer(ILogger logger, string prefix = null, IEnumerable<KeyValuePair<string, string>> defaultDimensions = null, bool enrichWithDynatraceMetadata = true, string metricsSource = null)
-		: this(logger, prefix, defaultDimensions, PrepareStaticDimensions(logger, enrichWithDynatraceMetadata, metricsSource)) { }
+		public MetricSerializer(ILogger logger, string prefix = null,
+			IEnumerable<KeyValuePair<string, string>> defaultDimensions = null, bool enrichWithDynatraceMetadata = true,
+			string metricsSource = null)
+			: this(logger, prefix, defaultDimensions,
+				PrepareStaticDimensions(logger, enrichWithDynatraceMetadata, metricsSource))
+		{
+		}
+
+		// internal constructor offers an interface for testing and is used by the public constructor
+		internal MetricSerializer(ILogger logger, string prefix,
+			IEnumerable<KeyValuePair<string, string>> defaultDimensions,
+			List<KeyValuePair<string, string>> staticDimensions)
+		{
+			this._logger = logger;
+			this._prefix = prefix;
+			this._defaultDimensions =
+				Normalize.DimensionList(defaultDimensions) ?? new List<KeyValuePair<string, string>>();
+			this._staticDimensions =
+				Normalize.DimensionList(staticDimensions) ?? new List<KeyValuePair<string, string>>();
+		}
 
 		// this is required to read the Dynatrace metadata dimensions and still use constructor chaining
-		private static List<KeyValuePair<string, string>> PrepareStaticDimensions(ILogger logger, bool enrichWithDynatraceMetadata, string metricsSource)
+		private static List<KeyValuePair<string, string>> PrepareStaticDimensions(ILogger logger,
+			bool enrichWithDynatraceMetadata, string metricsSource)
 		{
 			var staticDimensions = new List<KeyValuePair<string, string>>();
 
@@ -53,39 +72,33 @@ namespace Dynatrace.MetricUtils
 			return staticDimensions;
 		}
 
-		// internal constructor offers an interface for testing and is used by the public constructor
-		internal MetricSerializer(ILogger logger, string prefix, IEnumerable<KeyValuePair<string, string>> defaultDimensions, List<KeyValuePair<string, string>> staticDimensions)
-		{
-			this._logger = logger;
-			this._prefix = prefix;
-			this._defaultDimensions = Normalize.DimensionList(defaultDimensions) ?? new List<KeyValuePair<string, string>>();
-			this._staticDimensions = Normalize.DimensionList(staticDimensions) ?? new List<KeyValuePair<string, string>>();
-		}
-
 		public string SerializeMetric(Metric metric)
 		{
 			var sb = new StringBuilder();
-			SerializeMetric(sb, metric);
+			this.SerializeMetric(sb, metric);
 			return sb.ToString();
 		}
 
 		private void SerializeMetric(StringBuilder sb, Metric metric)
 		{
-			var metricKey = CreateMetricKey(metric);
+			var metricKey = this.CreateMetricKey(metric);
 			// skip lines with invalid metric keys.
 			if (string.IsNullOrEmpty(metricKey))
 			{
-				_logger.LogWarning("metric key was empty after normalization, skipping metric (original name {})", metric.MetricName);
+				this._logger.LogWarning("metric key was empty after normalization, skipping metric (original name {})",
+					metric.MetricName);
 				return;
 			}
+
 			sb.Append(metricKey);
 
 			// default dimensions and static dimensions are normalized once upon serializer creation.
 			// the labels from opentelemetry are normalized here, then all dimensions are merged.
-			var normalizedDimensions = MergeDimensions(this._defaultDimensions, Normalize.DimensionList(metric.Dimensions), this._staticDimensions);
+			var normalizedDimensions = MergeDimensions(this._defaultDimensions,
+				Normalize.DimensionList(metric.Dimensions), this._staticDimensions);
 
 			// merged dimensions are normalized and escaped since we called Normalize.DimensionList on each of the sublists.
-			WriteDimensions(sb, normalizedDimensions);
+			this.WriteDimensions(sb, normalizedDimensions);
 			sb.Append($" {metric.Value.Serialize()}");
 
 			this.WriteTimestamp(sb, metric.Timestamp);
@@ -97,21 +110,23 @@ namespace Dynatrace.MetricUtils
 			sb.Append($" {new DateTimeOffset(timestamp.ToLocalTime()).ToUnixTimeMilliseconds()}");
 		}
 
-		/// <summary>
-		/// Transforms OpenTelemetry metric names to metric keys valid in Dynatrace
-		/// </summary>
 		/// <returns>a valid metric key or null, if the input could not be normalized</returns>
 		private string CreateMetricKey(Metric metric)
 		{
 			var keyBuilder = new StringBuilder();
-			if (!string.IsNullOrEmpty(_prefix)) keyBuilder.Append($"{_prefix}.");
+			if (!string.IsNullOrEmpty(this._prefix))
+			{
+				keyBuilder.Append($"{this._prefix}.");
+			}
+
 			keyBuilder.Append(metric.MetricName);
 			return Normalize.MetricKey(keyBuilder.ToString());
 		}
 
 		// Items from Enumerables passed further right overwrite items from Enumerables passed further left.
 		// Pass only normalized dimension lists to this function.
-		internal static List<KeyValuePair<string, string>> MergeDimensions(params IEnumerable<KeyValuePair<string, string>>[] dimensionLists)
+		internal static List<KeyValuePair<string, string>> MergeDimensions(
+			params IEnumerable<KeyValuePair<string, string>>[] dimensionLists)
 		{
 			var dictionary = new Dictionary<string, string>();
 

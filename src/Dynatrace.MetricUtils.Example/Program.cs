@@ -20,20 +20,20 @@ using Microsoft.Extensions.Logging;
 
 namespace Dynatrace.MetricUtils.Example
 {
-	class Program
+	internal class Program
 	{
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
-			ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+			var loggerFactory = LoggerFactory.Create(builder =>
 			{
 				builder.SetMinimumLevel(LogLevel.Debug)
-						.AddConsole();
+					.AddConsole();
 			});
 			var logger = loggerFactory.CreateLogger<DynatraceMetricSerializer>();
 
-			DynatraceMetricSerializer serializer = new DynatraceMetricSerializer(logger);
-			var dimensions = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("dim1", "val1") };
-			Metric metric = MetricsFactory.CreateLongTotalCounter("counter", dimensions, 3L, DateTime.Now);
+			var serializer = new DynatraceMetricSerializer(logger);
+			var dimensions = new List<KeyValuePair<string, string>> {new("dim1", "val1")};
+			var metric = MetricsFactory.CreateLongTotalCounter("counter", dimensions, 3L, DateTime.Now);
 			Console.WriteLine(serializer.SerializeMetric(metric));
 		}
 	}
