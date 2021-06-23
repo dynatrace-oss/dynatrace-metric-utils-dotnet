@@ -35,25 +35,22 @@ namespace Dynatrace.MetricUtils.Tests
 			$"{new DateTimeOffset(TestDatetime.ToLocalTime()).ToUnixTimeMilliseconds()}";
 
 		private static readonly IEnumerable<KeyValuePair<string, string>> TestDimensions =
-			new List<KeyValuePair<string, string>> {new("label1", "value1"), new("label2", "value2")};
-
-		// todo add static dims, prefix, dt.metrics.source
-		// todo tests for Doubles.
+			new List<KeyValuePair<string, string>> { new("dim1", "value1"), new("dim2", "value2") };
 
 		[Fact]
 		public void SerializeLongDeltaCounter()
 		{
 			var serializer = new MetricSerializer(Logger);
 
-			var serializedAllParams =
+			var serializedWithAllParams =
 				serializer.SerializeMetric(
 					MetricsFactory.CreateLongDeltaCounter("metric1", 100, TestDimensions, TestDatetime));
-			serializedAllParams.Should()
-				.Be("metric1,label1=value1,label2=value2 count,delta=100 " + TestTimestamp + Environment.NewLine);
+			serializedWithAllParams.Should()
+				.Be("metric1,dim1=value1,dim2=value2 count,delta=100 " + TestTimestamp + Environment.NewLine);
 
 			var serializedWithCurrentTimestamp =
 				serializer.SerializeMetric(MetricsFactory.CreateLongDeltaCounter("metric2", 200, TestDimensions));
-			var currTimestampPrefix = "metric2,label1=value1,label2=value2 count,delta=200 ";
+			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 count,delta=200 ";
 			serializedWithCurrentTimestamp.Should()
 				.StartWith(currTimestampPrefix)
 				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
@@ -71,18 +68,25 @@ namespace Dynatrace.MetricUtils.Tests
 		{
 			var serializer = new MetricSerializer(Logger);
 
-			var serialized =
+			var serializedWithAllParams =
 				serializer.SerializeMetric(
 					MetricsFactory.CreateLongTotalCounter("metric1", 100, TestDimensions, TestDatetime));
-			var expected = "metric1,label1=value1,label2=value2 count,100 1604660600000" + Environment.NewLine;
-			serialized.Should().Be(expected);
+			serializedWithAllParams.Should()
+				.Be("metric1,dim1=value1,dim2=value2 count,100 " + TestTimestamp + Environment.NewLine);
 
-			var metricWithCurrentTimestamp = MetricsFactory.CreateLongTotalCounter("metric2", 200, TestDimensions);
-			var serializedWithCurrentTimestamp = serializer.SerializeMetric(metricWithCurrentTimestamp);
-
+			var serializedWithCurrentTimestamp =
+				serializer.SerializeMetric(MetricsFactory.CreateLongTotalCounter("metric2", 200, TestDimensions));
+			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 count,200 ";
 			serializedWithCurrentTimestamp.Should()
-				.HaveLength(expected.Length)
-				.And.StartWith("metric2,label1=value1,label2=value2 count,200 ");
+				.StartWith(currTimestampPrefix)
+				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
+
+			var serializedWithMinimalParams =
+				serializer.SerializeMetric(MetricsFactory.CreateLongTotalCounter("metric3", 300));
+			var minimalParamsPrefix = "metric3 count,300 ";
+			serializedWithMinimalParams.Should()
+				.StartWith(minimalParamsPrefix)
+				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
 		}
 
 		[Fact]
@@ -90,38 +94,51 @@ namespace Dynatrace.MetricUtils.Tests
 		{
 			var serializer = new MetricSerializer(Logger);
 
-			var serialized =
-				serializer.SerializeMetric(MetricsFactory.CreateLongGauge("metric1", 100, TestDimensions,
-					TestDatetime));
-			var expected = "metric1,label1=value1,label2=value2 gauge,100 1604660600000" + Environment.NewLine;
-			serialized.Should().Be(expected);
+			var serializedWithAllParams =
+				serializer.SerializeMetric(
+					MetricsFactory.CreateLongGauge("metric1", 100, TestDimensions, TestDatetime));
+			serializedWithAllParams.Should()
+				.Be("metric1,dim1=value1,dim2=value2 gauge,100 " + TestTimestamp + Environment.NewLine);
 
-			var metricWithCurrentTimestamp = MetricsFactory.CreateLongGauge("metric2", 200, TestDimensions);
-			var serializedWithCurrentTimestamp = serializer.SerializeMetric(metricWithCurrentTimestamp);
-
+			var serializedWithCurrentTimestamp =
+				serializer.SerializeMetric(MetricsFactory.CreateLongGauge("metric2", 200, TestDimensions));
+			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 gauge,200 ";
 			serializedWithCurrentTimestamp.Should()
-				.HaveLength(expected.Length)
-				.And.StartWith("metric2,label1=value1,label2=value2 gauge,200 ");
+				.StartWith(currTimestampPrefix)
+				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
+
+			var serializedWithMinimalParams =
+				serializer.SerializeMetric(MetricsFactory.CreateLongGauge("metric3", 300));
+			var minimalParamsPrefix = "metric3 gauge,300 ";
+			serializedWithMinimalParams.Should()
+				.StartWith(minimalParamsPrefix)
+				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
 		}
 
 		[Fact]
 		public void SerializeLongSummary()
 		{
 			var serializer = new MetricSerializer(Logger);
+			var serializedWithAllParams =
+				serializer.SerializeMetric(
+					MetricsFactory.CreateLongSummary("metric1", 1, 3, 7, 4, TestDimensions, TestDatetime));
+			serializedWithAllParams.Should()
+				.Be("metric1,dim1=value1,dim2=value2 gauge,min=1,max=3,sum=7,count=4 " + TestTimestamp +
+					Environment.NewLine);
 
-			var serialized =
-				serializer.SerializeMetric(MetricsFactory.CreateLongSummary("metric1", 1, 3, 7, 4, TestDimensions,
-					TestDatetime));
-			var expected = "metric1,label1=value1,label2=value2 gauge,min=1,max=3,sum=7,count=4 1604660600000" +
-			               Environment.NewLine;
-			serialized.Should().Be(expected);
-
-			var metricWithCurrentTimestamp = MetricsFactory.CreateLongSummary("metric2", 1, 3, 7, 4, TestDimensions);
-			var serializedWithCurrentTimestamp = serializer.SerializeMetric(metricWithCurrentTimestamp);
-
+			var serializedWithCurrentTimestamp =
+				serializer.SerializeMetric(MetricsFactory.CreateLongSummary("metric2", 1, 3, 7, 4, TestDimensions));
+			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 gauge,min=1,max=3,sum=7,count=4 ";
 			serializedWithCurrentTimestamp.Should()
-				.HaveLength(expected.Length)
-				.And.StartWith("metric2,label1=value1,label2=value2 gauge,min=1,max=3,sum=7,count=4 ");
+				.StartWith(currTimestampPrefix)
+				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
+
+			var serializedWithMinimalParams =
+				serializer.SerializeMetric(MetricsFactory.CreateLongSummary("metric3", 1, 3, 7, 4));
+			var minimalParamsPrefix = "metric3 gauge,min=1,max=3,sum=7,count=4 ";
+			serializedWithMinimalParams.Should()
+				.StartWith(minimalParamsPrefix)
+				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
 		}
 
 		[Fact]
@@ -129,20 +146,25 @@ namespace Dynatrace.MetricUtils.Tests
 		{
 			var serializer = new MetricSerializer(Logger);
 
-			var serialized =
+			var serializedWithAllParams =
 				serializer.SerializeMetric(
 					MetricsFactory.CreateDoubleDeltaCounter("metric1", 123.456, TestDimensions, TestDatetime));
-			var expected = "metric1,label1=value1,label2=value2 count,delta=123.456 1604660600000" +
-			               Environment.NewLine;
-			serialized.Should().Be(expected);
+			serializedWithAllParams.Should()
+				.Be("metric1,dim1=value1,dim2=value2 count,delta=123.456 " + TestTimestamp + Environment.NewLine);
 
-			var metricWithCurrentTimestamp =
-				MetricsFactory.CreateDoubleDeltaCounter("metric2", 223.456, TestDimensions);
-			var serializedWithCurrentTimestamp = serializer.SerializeMetric(metricWithCurrentTimestamp);
-
+			var serializedWithCurrentTimestamp =
+				serializer.SerializeMetric(MetricsFactory.CreateDoubleDeltaCounter("metric2", 223.456, TestDimensions));
+			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 count,delta=223.456 ";
 			serializedWithCurrentTimestamp.Should()
-				.HaveLength(expected.Length)
-				.And.StartWith("metric2,label1=value1,label2=value2 count,delta=223.456 ");
+				.StartWith(currTimestampPrefix)
+				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
+
+			var serializedWithMinimalParams =
+				serializer.SerializeMetric(MetricsFactory.CreateDoubleDeltaCounter("metric3", 323.456));
+			var minimalParamsPrefix = "metric3 count,delta=323.456 ";
+			serializedWithMinimalParams.Should()
+				.StartWith(minimalParamsPrefix)
+				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
 		}
 
 		[Fact]
@@ -150,19 +172,25 @@ namespace Dynatrace.MetricUtils.Tests
 		{
 			var serializer = new MetricSerializer(Logger);
 
-			var serialized =
+			var serializedWithAllParams =
 				serializer.SerializeMetric(
 					MetricsFactory.CreateDoubleTotalCounter("metric1", 123.456, TestDimensions, TestDatetime));
-			var expected = "metric1,label1=value1,label2=value2 count,123.456 1604660600000" + Environment.NewLine;
-			serialized.Should().Be(expected);
+			serializedWithAllParams.Should()
+				.Be("metric1,dim1=value1,dim2=value2 count,123.456 " + TestTimestamp + Environment.NewLine);
 
-			var metricWithCurrentTimestamp =
-				MetricsFactory.CreateDoubleTotalCounter("metric2", 234.567, TestDimensions);
-			var serializedWithCurrentTimestamp = serializer.SerializeMetric(metricWithCurrentTimestamp);
-
+			var serializedWithCurrentTimestamp =
+				serializer.SerializeMetric(MetricsFactory.CreateDoubleTotalCounter("metric2", 223.456, TestDimensions));
+			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 count,223.456 ";
 			serializedWithCurrentTimestamp.Should()
-				.HaveLength(expected.Length)
-				.And.StartWith("metric2,label1=value1,label2=value2 count,234.567 ");
+				.StartWith(currTimestampPrefix)
+				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
+
+			var serializedWithMinimalParams =
+				serializer.SerializeMetric(MetricsFactory.CreateDoubleTotalCounter("metric3", 323.456));
+			var minimalParamsPrefix = "metric3 count,323.456 ";
+			serializedWithMinimalParams.Should()
+				.StartWith(minimalParamsPrefix)
+				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
 		}
 
 		[Fact]
@@ -170,202 +198,199 @@ namespace Dynatrace.MetricUtils.Tests
 		{
 			var serializer = new MetricSerializer(Logger);
 
-			var serialized =
-				serializer.SerializeMetric(MetricsFactory.CreateDoubleGauge("metric1", 123.456, TestDimensions,
-					TestDatetime));
-			var expected = "metric1,label1=value1,label2=value2 gauge,123.456 1604660600000" + Environment.NewLine;
-			serialized.Should().Be(expected);
+			var serializedWithAllParams =
+				serializer.SerializeMetric(
+					MetricsFactory.CreateDoubleGauge("metric1", 123.456, TestDimensions, TestDatetime));
+			serializedWithAllParams.Should()
+				.Be("metric1,dim1=value1,dim2=value2 gauge,123.456 " + TestTimestamp + Environment.NewLine);
 
-			var metricWithCurrentTimestamp = MetricsFactory.CreateDoubleGauge("metric2", 234.567, TestDimensions);
-			var serializedWithCurrentTimestamp = serializer.SerializeMetric(metricWithCurrentTimestamp);
-
+			var serializedWithCurrentTimestamp =
+				serializer.SerializeMetric(MetricsFactory.CreateDoubleGauge("metric2", 223.456, TestDimensions));
+			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 gauge,223.456 ";
 			serializedWithCurrentTimestamp.Should()
-				.HaveLength(expected.Length)
-				.And.StartWith("metric2,label1=value1,label2=value2 gauge,234.567 ");
+				.StartWith(currTimestampPrefix)
+				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
+
+			var serializedWithMinimalParams =
+				serializer.SerializeMetric(MetricsFactory.CreateDoubleGauge("metric3", 323.456));
+			var minimalParamsPrefix = "metric3 gauge,323.456 ";
+			serializedWithMinimalParams.Should()
+				.StartWith(minimalParamsPrefix)
+				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
 		}
 
 		[Fact]
 		public void SerializeDoubleSummary()
 		{
 			var serializer = new MetricSerializer(Logger);
+			var serializedWithAllParams =
+				serializer.SerializeMetric(
+					MetricsFactory.CreateDoubleSummary("metric1", 1.2, 3.4, 7.8, 4, TestDimensions, TestDatetime));
+			serializedWithAllParams.Should()
+				.Be("metric1,dim1=value1,dim2=value2 gauge,min=1.2,max=3.4,sum=7.8,count=4 " + TestTimestamp +
+					Environment.NewLine);
 
-			var serialized = serializer.SerializeMetric(
-				MetricsFactory.CreateDoubleSummary("metric1", 1.2, 3.4, 7.8, 4, TestDimensions, TestDatetime));
-			var expected = "metric1,label1=value1,label2=value2 gauge,min=1.2,max=3.4,sum=7.8,count=4 1604660600000" +
-			               Environment.NewLine;
-			serialized.Should().Be(expected);
-
-			var metricWithCurrentTimestamp =
-				MetricsFactory.CreateDoubleSummary("metric2", 1.2, 3.4, 7.8, 4, TestDimensions);
-			var serializedWithCurrentTimestamp = serializer.SerializeMetric(metricWithCurrentTimestamp);
-
+			var serializedWithCurrentTimestamp =
+				serializer.SerializeMetric(
+					MetricsFactory.CreateDoubleSummary("metric2", 1.2, 3.4, 7.8, 4, TestDimensions));
+			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 gauge,min=1.2,max=3.4,sum=7.8,count=4 ";
 			serializedWithCurrentTimestamp.Should()
-				.HaveLength(expected.Length)
-				.And.StartWith("metric2,label1=value1,label2=value2 gauge,min=1.2,max=3.4,sum=7.8,count=4 ");
+				.StartWith(currTimestampPrefix)
+				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
+
+			var serializedWithMinimalParams =
+				serializer.SerializeMetric(MetricsFactory.CreateDoubleSummary("metric3", 1.2, 3.4, 7.8, 4));
+			var minimalParamsPrefix = "metric3 gauge,min=1.2,max=3.4,sum=7.8,count=4 ";
+			serializedWithMinimalParams.Should()
+				.StartWith(minimalParamsPrefix)
+				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
 		}
-		// [Fact]
-		// public void TestDimensionValuesNormalized()
-		// {
-		//     var timestamp = DateTimeOffset.FromUnixTimeMilliseconds(1604660628881).UtcDateTime;
 
-		//     var labels = new List<KeyValuePair<string, string>> {
-		//         new KeyValuePair<string, string>("label1", "\\=\" =="),
-		//     };
-		//     var metric = new Metric("namespace1", "metric1", "Description", AggregationType.LongSum);
-		//     metric.Data.Add(new Int64SumData
-		//     {
-		//         Labels = labels,
-		//         Sum = 100,
-		//         Timestamp = timestamp
-		//     });
+		[Fact]
+		public void TestDimensionValuesNormalized()
+		{
+			var dims = new List<KeyValuePair<string, string>> { new("dim1", "\\=\" ==") };
+			var metric = MetricsFactory.CreateLongDeltaCounter("metric1", 100, dims, TestDatetime);
 
-		//     string serialized = new DynatraceMetricSerializer(_logger).SerializeMetric(metric);
-		//     string expected = "namespace1.metric1,label1=\\\\\\=\"\\ \\=\\=,dt.metrics.source=opentelemetry count,delta=100 1604660628881" + Environment.NewLine;
-		//     Assert.Equal(expected, serialized);
-		// }
+			var serialized = new MetricSerializer(Logger).SerializeMetric(metric);
+			serialized.Should()
+				.Be("metric1,dim1=\\\\\\=\"\\ \\=\\= count,delta=100 " + TestTimestamp + Environment.NewLine);
+		}
 
-		// [Fact]
-		// public void SerializeWithoutLabels()
-		// {
-		//     var timestamp = DateTimeOffset.FromUnixTimeMilliseconds(1604660628881).UtcDateTime;
+		[Fact]
+		public void TestPrefix()
+		{
+			var metric = MetricsFactory.CreateLongDeltaCounter("metric", 100, timestamp: TestDatetime);
 
-		//     var metric = new Metric("namespace1", "metric1", "Description", AggregationType.LongSum);
-		//     metric.Data.Add(new Int64SumData
-		//     {
-		//         Labels = new List<KeyValuePair<string, string>>(),
-		//         Sum = 100,
-		//         Timestamp = timestamp
-		//     });
+			var serialized = new MetricSerializer(Logger, "prefix").SerializeMetric(metric);
+			serialized.Should()
+				.Be("prefix.metric count,delta=100 " + TestTimestamp + Environment.NewLine);
+		}
 
-		//     string serialized = new DynatraceMetricSerializer(_logger).SerializeMetric(metric);
-		//     string expected = "namespace1.metric1,dt.metrics.source=opentelemetry count,delta=100 1604660628881" + Environment.NewLine;
-		//     Assert.Equal(expected, serialized);
-		// }
+		[Fact]
+		public void TestPrefixWithTrailingDot()
+		{
+			var metric = MetricsFactory.CreateLongDeltaCounter("metric", 100, timestamp: TestDatetime);
+			var serializedWithTrailingPrefixDot = new MetricSerializer(Logger, "prefix.").SerializeMetric(metric);
+			serializedWithTrailingPrefixDot.Should()
+				.Be("prefix.metric count,delta=100 " + TestTimestamp + Environment.NewLine);
+		}
 
-		// [Fact]
-		// public void PrefixOption()
-		// {
-		//     var timestamp = DateTimeOffset.FromUnixTimeMilliseconds(1604660628881).UtcDateTime;
+		[Fact]
+		public void TestWithDefaultDimensions()
+		{
+			var metric = MetricsFactory.CreateLongDeltaCounter("metric", 100, TestDimensions, TestDatetime);
+			var defaultDimensions = new List<KeyValuePair<string, string>>
+			{
+				new("default1", "value1"), new("default2", "value2")
+			};
 
-		//     var labels = new List<KeyValuePair<string, string>>();
-		//     var metric = new Metric("namespace1", "metric1", "Description", AggregationType.LongSum);
-		//     metric.Data.Add(new Int64SumData
-		//     {
-		//         Labels = labels,
-		//         Sum = 100,
-		//         Timestamp = timestamp
-		//     });
+			var serialized = new MetricSerializer(Logger, defaultDimensions: defaultDimensions).SerializeMetric(metric);
+			serialized.Should()
+				.Be("metric,default1=value1,default2=value2,dim1=value1,dim2=value2 count,delta=100 " + TestTimestamp +
+					Environment.NewLine);
+		}
 
-		//     string serialized = new DynatraceMetricSerializer(_logger, prefix: "prefix1").SerializeMetric(metric);
-		//     string expected = "prefix1.namespace1.metric1,dt.metrics.source=opentelemetry count,delta=100 1604660628881" + Environment.NewLine;
-		//     Assert.Equal(expected, serialized);
-		// }
+		[Fact]
+		public void TestMetricsSource()
+		{
+			var metric = MetricsFactory.CreateLongDeltaCounter("metric", 100, null, TestDatetime);
 
-		// [Fact]
-		// public void PrefixOptionWithTrailingDot()
-		// {
-		//     var timestamp = DateTimeOffset.FromUnixTimeMilliseconds(1604660628881).UtcDateTime;
+			// the use case probably used most often
+			new MetricSerializer(Logger, metricsSource: "opentelemetry").SerializeMetric(metric)
+				.Should().Be("metric,dt.metrics.source=opentelemetry count,delta=100 " + TestTimestamp +
+							Environment.NewLine);
 
-		//     var labels = new List<KeyValuePair<string, string>>();
-		//     var metric = new Metric("namespace1", "metric1", "Description", AggregationType.LongSum);
-		//     metric.Data.Add(new Int64SumData
-		//     {
-		//         Labels = labels,
-		//         Sum = 100,
-		//         Timestamp = timestamp
-		//     });
+			// empty source will not be added
+			new MetricSerializer(Logger, metricsSource: "").SerializeMetric(metric)
+				.Should().Be("metric count,delta=100 " + TestTimestamp + Environment.NewLine);
 
-		//     string serialized = new DynatraceMetricSerializer(_logger, prefix: "prefix.").SerializeMetric(metric);
-		//     string expected = "prefix.namespace1.metric1,dt.metrics.source=opentelemetry count,delta=100 1604660628881" + Environment.NewLine;
-		//     Assert.Equal(expected, serialized);
-		// }
+			// invalid characters in source will be escaped:
+			new MetricSerializer(Logger, metricsSource: "esc\\ape=this\"").SerializeMetric(metric)
+				.Should().Be("metric,dt.metrics.source=esc\\\\ape\\=this\" count,delta=100 " + TestTimestamp +
+							Environment.NewLine);
+		}
 
-		// [Fact]
-		// public void DimensionsOption()
-		// {
-		//     var timestamp = DateTimeOffset.FromUnixTimeMilliseconds(1604660628881).UtcDateTime;
+		[Fact]
+		public void TestDimensionPrecedence()
+		{
+			var defaultDimensions = new List<KeyValuePair<string, string>>
+			{
+				new("dim1", "default1"), new("dim2", "default2"), new("dim3", "default3")
+			};
 
-		//     var labels = new List<KeyValuePair<string, string>> {
-		//         new KeyValuePair<string, string>("label1", "value1"),
-		//         new KeyValuePair<string, string>("label2", "value2")
-		//     };
-		//     var metric = new Metric("namespace1", "metric1", "Description", AggregationType.LongSum);
-		//     metric.Data.Add(new Int64SumData
-		//     {
-		//         Labels = labels,
-		//         Sum = 100,
-		//         Timestamp = timestamp
-		//     });
+			var metricDimensions =
+				new List<KeyValuePair<string, string>> { new("dim2", "metric2"), new("dim3", "metric3") };
 
-		//     string serialized = new DynatraceMetricSerializer(_logger,
-		//     defaultDimensions: new List<KeyValuePair<string, string>> {
-		//         new KeyValuePair<string, string>("default1", "value1") ,
-		//         new KeyValuePair<string, string>("default2", "value2") ,
-		//         new KeyValuePair<string, string>("default3", "value3") ,
-		//     }).SerializeMetric(metric);
-		//     string expected = "namespace1.metric1,default1=value1,default2=value2,default3=value3,label1=value1,label2=value2,dt.metrics.source=opentelemetry count,delta=100 1604660628881" + Environment.NewLine;
-		//     Assert.Equal(expected, serialized);
-		// }
+			var staticDimensions = new List<KeyValuePair<string, string>> { new("dim3", "static3") };
 
-		// [Fact]
-		// public void SerializeLongSumBatch()
-		// {
-		//     var labels = new List<KeyValuePair<string, string>>{
-		//         new KeyValuePair<string, string>("label1", "value1"),
-		//         new KeyValuePair<string, string>("label2", "value2")
-		//     };
-		//     var metric = new Metric("namespace1", "metric1", "Description", AggregationType.LongSum);
-		//     metric.Data.Add(new Int64SumData
-		//     {
-		//         Labels = labels,
-		//         Sum = 100,
-		//         Timestamp = DateTimeOffset.FromUnixTimeMilliseconds(1604660628881).UtcDateTime
-		//     });
-		//     metric.Data.Add(new Int64SumData
-		//     {
-		//         Labels = labels,
-		//         Sum = 130,
-		//         Timestamp = DateTimeOffset.FromUnixTimeMilliseconds(1604660628882).UtcDateTime
-		//     });
-		//     metric.Data.Add(new Int64SumData
-		//     {
-		//         Labels = labels,
-		//         Sum = 150,
-		//         Timestamp = DateTimeOffset.FromUnixTimeMilliseconds(1604660628883).UtcDateTime
-		//     });
+			var metric = MetricsFactory.CreateLongDeltaCounter("metric", 100, metricDimensions, TestDatetime);
 
-		//     string serialized = new DynatraceMetricSerializer(_logger).SerializeMetric(metric);
-		//     string expected =
-		//         "namespace1.metric1,label1=value1,label2=value2,dt.metrics.source=opentelemetry count,delta=100 1604660628881" + Environment.NewLine +
-		//         "namespace1.metric1,label1=value1,label2=value2,dt.metrics.source=opentelemetry count,delta=130 1604660628882" + Environment.NewLine +
-		//         "namespace1.metric1,label1=value1,label2=value2,dt.metrics.source=opentelemetry count,delta=150 1604660628883" + Environment.NewLine;
-		//     Assert.Equal(expected, serialized);
-		// }
+			// using the internal constructor that accepts the static dimensions for testing:
+			var serializer = new MetricSerializer(Logger, "prefix", defaultDimensions, staticDimensions);
 
-		// [Fact]
-		// public void DimensionPrecedence()
-		// {
-		//     var timestamp = DateTimeOffset.FromUnixTimeMilliseconds(1604660628881).UtcDateTime;
+			serializer.SerializeMetric(metric)
+				.Should().Be("prefix.metric,dim1=default1,dim2=metric2,dim3=static3 count,delta=100 " + TestTimestamp +
+							Environment.NewLine);
+		}
 
-		//     var defaultDimensions = new Dictionary<string, string> { { "dimension1", "default" }, { "dimension2", "default" }, { "dimension3", "default" } };
-		//     var labels = new List<KeyValuePair<string, string>> {
-		//         new KeyValuePair<string, string>("dimension2", "label"),
-		//         new KeyValuePair<string, string>("dimension3", "label")
-		//     };
-		//     var staticDimensions = new Dictionary<string, string> { { "dimension3", "static" } };
+		[Fact]
+		public void TestMergeDimensionsLeavesOneListAsIs()
+		{
+			var defaultDimensions = new List<KeyValuePair<string, string>>
+			{
+				new("dim1", "default1"), new("dim2", "default2"), new("dim3", "default3")
+			};
 
-		//     var metric = new Metric("namespace1", "metric1", "Description", AggregationType.LongSum);
-		//     metric.Data.Add(new Int64SumData
-		//     {
-		//         Labels = labels,
-		//         Sum = 100,
-		//         Timestamp = timestamp
-		//     });
+			MetricSerializer.MergeDimensions(defaultDimensions).Should().Equal(defaultDimensions);
+		}
 
-		//     var serialized = new DynatraceMetricSerializer(_logger, null, defaultDimensions, staticDimensions).SerializeMetric(metric);
 
-		//     string expected = "namespace1.metric1,dimension1=default,dimension2=label,dimension3=static,dt.metrics.source=opentelemetry count,delta=100 1604660628881" + Environment.NewLine;
-		//     Assert.Equal(expected, serialized);
-		// }
+		[Fact]
+		public void TestMergeDimensionsOverwritesInCorrectOrder()
+		{
+			var defaultDimensions = new List<KeyValuePair<string, string>>
+			{
+				new("dim1", "default1"), new("dim2", "default2"), new("dim3", "default3")
+			};
+
+			var metricDimensions =
+				new List<KeyValuePair<string, string>> { new("dim2", "metric2"), new("dim3", "metric3") };
+
+			var staticDimensions = new List<KeyValuePair<string, string>> { new("dim3", "static3") };
+
+			MetricSerializer.MergeDimensions(defaultDimensions, metricDimensions, staticDimensions).Should()
+				.Equal(new List<KeyValuePair<string, string>>
+				{
+					new("dim1", "default1"), new("dim2", "metric2"), new("dim3", "static3")
+				});
+		}
+
+		[Fact]
+		public void TestMergeDimensionDisjunctKeys()
+		{
+			var someDimensions =
+				new List<KeyValuePair<string, string>>
+				{
+					new("some1", "val1"), new("some2", "val2"), new("some3", "val3")
+				};
+			var otherDimensions = new List<KeyValuePair<string, string>>
+			{
+				new("other1", "val1"), new("other2", "val2"), new("other3", "val3")
+			};
+
+			MetricSerializer.MergeDimensions(someDimensions, otherDimensions)
+				.Should().Equal(
+					new List<KeyValuePair<string, string>>
+					{
+						new("some1", "val1"),
+						new("some2", "val2"),
+						new("some3", "val3"),
+						new("other1", "val1"),
+						new("other2", "val2"),
+						new("other3", "val3")
+					}
+				);
+		}
 	}
 }
