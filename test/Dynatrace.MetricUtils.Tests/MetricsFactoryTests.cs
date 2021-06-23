@@ -23,7 +23,7 @@ namespace Dynatrace.MetricUtils.Tests
 {
 	public class MetricsFactoryTests
 	{
-		private static readonly IEnumerable<KeyValuePair<string, string>> testDims =
+		private static readonly IEnumerable<KeyValuePair<string, string>> TestDims =
 			new List<KeyValuePair<string, string>> {new("dim1", "val1"), new("dim2", "val2")};
 
 		private static readonly DateTime TestTimestamp = new(2021, 1, 1, 6, 00, 00);
@@ -31,9 +31,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestLongTotalCounter()
 		{
-			var metric = MetricsFactory.CreateLongTotalCounter("mymetric", 100, testDims);
+			var metric = MetricsFactory.CreateLongTotalCounter("mymetric", 100, TestDims);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("count,100");
 			// within 50 ms of now and in the past.
 			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
@@ -42,9 +42,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestLongTotalCounterTimestamp()
 		{
-			var metric = MetricsFactory.CreateLongTotalCounter("mymetric", 100, testDims, TestTimestamp);
+			var metric = MetricsFactory.CreateLongTotalCounter("mymetric", 100, TestDims, TestTimestamp);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("count,100");
 			metric.Timestamp.Should().Be(TestTimestamp);
 		}
@@ -62,9 +62,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestLongDeltaCounter()
 		{
-			var metric = MetricsFactory.CreateLongDeltaCounter("mymetric", 100, testDims);
+			var metric = MetricsFactory.CreateLongDeltaCounter("mymetric", 100, TestDims);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("count,delta=100");
 			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
 		}
@@ -72,9 +72,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestLongDeltaCounterTimestamp()
 		{
-			var metric = MetricsFactory.CreateLongDeltaCounter("mymetric", 100, testDims, TestTimestamp);
+			var metric = MetricsFactory.CreateLongDeltaCounter("mymetric", 100, TestDims, TestTimestamp);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("count,delta=100");
 			metric.Timestamp.Should().Be(TestTimestamp);
 		}
@@ -93,9 +93,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestLongGauge()
 		{
-			var metric = MetricsFactory.CreateLongGauge("mymetric", 100, testDims);
+			var metric = MetricsFactory.CreateLongGauge("mymetric", 100, TestDims);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("gauge,100");
 			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
 		}
@@ -103,9 +103,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestLongGaugeTimestamp()
 		{
-			var metric = MetricsFactory.CreateLongGauge("mymetric", 100, testDims, TestTimestamp);
+			var metric = MetricsFactory.CreateLongGauge("mymetric", 100, TestDims, TestTimestamp);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("gauge,100");
 			metric.Timestamp.Should().Be(TestTimestamp);
 		}
@@ -123,9 +123,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestLongSummary()
 		{
-			var metric = MetricsFactory.CreateLongSummary("mymetric", 2, 5, 12, 4, testDims);
+			var metric = MetricsFactory.CreateLongSummary("mymetric", 2, 5, 12, 4, TestDims);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("gauge,min=2,max=5,sum=12,count=4");
 			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
 		}
@@ -133,9 +133,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestLongSummaryTimestamp()
 		{
-			var metric = MetricsFactory.CreateLongSummary("mymetric", 2, 5, 12, 4, testDims, TestTimestamp);
+			var metric = MetricsFactory.CreateLongSummary("mymetric", 2, 5, 12, 4, TestDims, TestTimestamp);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("gauge,min=2,max=5,sum=12,count=4");
 			metric.Timestamp.Should().Be(TestTimestamp);
 		}
@@ -163,9 +163,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleTotalCounter()
 		{
-			var metric = MetricsFactory.CreateDoubleTotalCounter("mymetric", 100.123, testDims);
+			var metric = MetricsFactory.CreateDoubleTotalCounter("mymetric", 100.123, TestDims);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("count,100.123");
 			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
 		}
@@ -173,9 +173,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleTotalCounterTimestamp()
 		{
-			var metric = MetricsFactory.CreateDoubleTotalCounter("mymetric", 100.123, testDims, TestTimestamp);
+			var metric = MetricsFactory.CreateDoubleTotalCounter("mymetric", 100.123, TestDims, TestTimestamp);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("count,100.123");
 			metric.Timestamp.Should().Be(TestTimestamp);
 		}
@@ -206,9 +206,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleDeltaCounter()
 		{
-			var metric = MetricsFactory.CreateDoubleDeltaCounter("mymetric", 100.123, testDims);
+			var metric = MetricsFactory.CreateDoubleDeltaCounter("mymetric", 100.123, TestDims);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("count,delta=100.123");
 			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
 		}
@@ -216,9 +216,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleDeltaCounterTimestamp()
 		{
-			var metric = MetricsFactory.CreateDoubleDeltaCounter("mymetric", 100.123, testDims, TestTimestamp);
+			var metric = MetricsFactory.CreateDoubleDeltaCounter("mymetric", 100.123, TestDims, TestTimestamp);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("count,delta=100.123");
 			metric.Timestamp.Should().Be(TestTimestamp);
 		}
@@ -249,9 +249,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleGauge()
 		{
-			var metric = MetricsFactory.CreateDoubleGauge("mymetric", 123.456, testDims);
+			var metric = MetricsFactory.CreateDoubleGauge("mymetric", 123.456, TestDims);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("gauge,123.456");
 			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
 		}
@@ -259,9 +259,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleGaugeTimestamp()
 		{
-			var metric = MetricsFactory.CreateDoubleGauge("mymetric", 123.456, testDims, TestTimestamp);
+			var metric = MetricsFactory.CreateDoubleGauge("mymetric", 123.456, TestDims, TestTimestamp);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("gauge,123.456");
 			metric.Timestamp.Should().Be(TestTimestamp);
 		}
@@ -292,9 +292,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleSummary()
 		{
-			var metric = MetricsFactory.CreateDoubleSummary("mymetric", 2.5, 5.7, 12.3, 4, testDims);
+			var metric = MetricsFactory.CreateDoubleSummary("mymetric", 2.5, 5.7, 12.3, 4, TestDims);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("gauge,min=2.5,max=5.7,sum=12.3,count=4");
 			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
 		}
@@ -302,9 +302,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleSummaryTimestamp()
 		{
-			var metric = MetricsFactory.CreateDoubleSummary("mymetric", 2.5, 5.7, 12.3, 4, testDims, TestTimestamp);
+			var metric = MetricsFactory.CreateDoubleSummary("mymetric", 2.5, 5.7, 12.3, 4, TestDims, TestTimestamp);
 			metric.MetricName.Should().Be("mymetric");
-			metric.Dimensions.Should().Equal(testDims);
+			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("gauge,min=2.5,max=5.7,sum=12.3,count=4");
 			metric.Timestamp.Should().Be(TestTimestamp);
 		}
