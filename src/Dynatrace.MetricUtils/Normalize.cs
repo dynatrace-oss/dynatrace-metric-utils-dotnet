@@ -202,7 +202,7 @@ namespace Dynatrace.MetricUtils
 			return escaped;
 		}
 
-		internal static IEnumerable<KeyValuePair<string, string>> DimensionList(IEnumerable<KeyValuePair<string, string>> dimensions)
+		internal static List<KeyValuePair<string, string>> DimensionList(IEnumerable<KeyValuePair<string, string>> dimensions)
 		{
 			if (dimensions == null)
 			{

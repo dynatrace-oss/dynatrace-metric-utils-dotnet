@@ -26,38 +26,41 @@ namespace Dynatrace.MetricUtils
 	{
 		private readonly ILogger _logger;
 		private readonly string _prefix;
-		private readonly IEnumerable<KeyValuePair<string, string>> _defaultDimensions;
-		private readonly IEnumerable<KeyValuePair<string, string>> _staticDimensions;
+		private readonly List<KeyValuePair<string, string>> _defaultDimensions;
+		private readonly List<KeyValuePair<string, string>> _staticDimensions;
 		private static readonly int MaxDimensions = 50;
 
 		// public constructor.
-		public MetricSerializer(ILogger logger, string prefix = null, IEnumerable<KeyValuePair<string, string>> defaultDimensions = null, bool enrichWithOneAgentMetadata = true)
-		: this(logger, prefix, defaultDimensions, PrepareOneAgentDimensions(logger, enrichWithOneAgentMetadata)) { }
+		public MetricSerializer(ILogger logger, string prefix = null, IEnumerable<KeyValuePair<string, string>> defaultDimensions = null, bool enrichWithDynatraceMetadata = true, string metricsSource = null)
+		: this(logger, prefix, defaultDimensions, PrepareStaticDimensions(logger, enrichWithDynatraceMetadata, metricsSource)) { }
 
-		// this is required to read the OneAgent dimensions and still use constructor chaining
-		private static IEnumerable<KeyValuePair<string, string>> PrepareOneAgentDimensions(ILogger logger, bool enrichWithDynatraceMetadata = true)
+		// this is required to read the Dynatrace metadata dimensions and still use constructor chaining
+		private static List<KeyValuePair<string, string>> PrepareStaticDimensions(ILogger logger, bool enrichWithDynatraceMetadata, string metricsSource)
 		{
-			var oneAgentDimensions = new List<KeyValuePair<string, string>> { };
+			var staticDimensions = new List<KeyValuePair<string, string>>();
 
 			if (enrichWithDynatraceMetadata)
 			{
 				var enricher = new OneAgentMetadataEnricher(logger);
 				var dimensions = new List<KeyValuePair<string, string>>();
-				enricher.EnrichWithDynatraceMetadata(oneAgentDimensions);
+				enricher.EnrichWithDynatraceMetadata(staticDimensions);
 			}
-			return oneAgentDimensions;
+
+			if (!string.IsNullOrEmpty(metricsSource))
+			{
+				staticDimensions.Add(new KeyValuePair<string, string>("dt.metrics.source", metricsSource));
+			}
+
+			return staticDimensions;
 		}
 
 		// internal constructor offers an interface for testing and is used by the public constructor
-		internal MetricSerializer(ILogger logger, string prefix, IEnumerable<KeyValuePair<string, string>> defaultDimensions, IEnumerable<KeyValuePair<string, string>> oneAgentDimensions)
+		internal MetricSerializer(ILogger logger, string prefix, IEnumerable<KeyValuePair<string, string>> defaultDimensions, List<KeyValuePair<string, string>> staticDimensions)
 		{
 			this._logger = logger;
 			this._prefix = prefix;
-			this._defaultDimensions = Normalize.DimensionList(defaultDimensions) ?? Enumerable.Empty<KeyValuePair<string, string>>();
-
-			var staticDimensions = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("dt.metrics.source", "opentelemetry") };
-			staticDimensions.AddRange(oneAgentDimensions);
-			this._staticDimensions = Normalize.DimensionList(staticDimensions);
+			this._defaultDimensions = Normalize.DimensionList(defaultDimensions) ?? new List<KeyValuePair<string, string>>();
+			this._staticDimensions = Normalize.DimensionList(staticDimensions) ?? new List<KeyValuePair<string, string>>();
 		}
 
 		public string SerializeMetric(Metric metric)
