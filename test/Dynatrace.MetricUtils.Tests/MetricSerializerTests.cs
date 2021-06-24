@@ -233,7 +233,8 @@ namespace Dynatrace.MetricUtils.Tests
 				new("default1", "value1"), new("default2", "value2")
 			};
 
-			var serialized = new MetricsSerializer(Logger, defaultDimensions: defaultDimensions).SerializeMetric(metric);
+			var serialized =
+				new MetricsSerializer(Logger, defaultDimensions: defaultDimensions).SerializeMetric(metric);
 			serialized.Should()
 				.Be("metric,default1=value1,default2=value2,dim1=value1,dim2=value2 count,delta=100 " + TestTimestamp +
 				    Environment.NewLine);

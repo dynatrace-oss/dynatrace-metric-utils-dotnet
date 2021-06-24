@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Dynatrace.MetricUtils
 {
@@ -32,9 +33,9 @@ namespace Dynatrace.MetricUtils
 		private readonly List<KeyValuePair<string, string>> _staticDimensions;
 
 		// public constructor.
-		public MetricsSerializer(ILogger logger, string prefix = null,
-			IEnumerable<KeyValuePair<string, string>> defaultDimensions = null, bool enrichWithDynatraceMetadata = true,
-			string metricsSource = null)
+		public MetricsSerializer(ILogger logger = null, string prefix = null,
+			IEnumerable<KeyValuePair<string, string>> defaultDimensions = null,
+			string metricsSource = null, bool enrichWithDynatraceMetadata = true)
 			: this(logger, prefix, defaultDimensions,
 				PrepareStaticDimensions(logger, enrichWithDynatraceMetadata, metricsSource))
 		{
@@ -45,7 +46,7 @@ namespace Dynatrace.MetricUtils
 			IEnumerable<KeyValuePair<string, string>> defaultDimensions,
 			List<KeyValuePair<string, string>> staticDimensions)
 		{
-			this._logger = logger;
+			this._logger = logger ?? new NullLogger<MetricsSerializer>();
 			this._prefix = prefix;
 			this._defaultDimensions =
 				Normalize.DimensionList(defaultDimensions) ?? new List<KeyValuePair<string, string>>();
