@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -26,7 +27,11 @@ namespace Dynatrace.MetricUtils
 	public class MetricsSerializer
 	{
 		private const int MetricLineMaxLength = 2000;
+		private const int TimestampWarningThrottleFactor = 1000;
 		private static readonly int MaxDimensions = 50;
+
+		// atomic integer used to count the number of times the timestamp warning should have been logged.
+		private static int timestampWarningCounter;
 		private readonly List<KeyValuePair<string, string>> _defaultDimensions;
 		private readonly ILogger _logger;
 		private readonly string _prefix;
@@ -113,6 +118,22 @@ namespace Dynatrace.MetricUtils
 
 		private void WriteTimestamp(StringBuilder sb, DateTime timestamp)
 		{
+			if (timestamp.Year < 2000 || timestamp.Year > 3000)
+			{
+				if (Interlocked.Increment(ref timestampWarningCounter) == 1)
+				{
+					this._logger.LogWarning(
+						$"Order of magnitude of the timestamp seems off ({timestamp.ToString()}). "
+						+ "The timestamp represents a time before the year 2000 or after the year 3000. "
+						+ "Skipping setting timestamp, the current server time will be added upon ingestion. "
+						+ $"Only one out of every {TimestampWarningThrottleFactor} of these messages will be printed.");
+				}
+
+				Interlocked.CompareExchange(ref timestampWarningCounter, 0, TimestampWarningThrottleFactor);
+				return;
+			}
+
+
 			sb.Append($" {new DateTimeOffset(timestamp.ToLocalTime()).ToUnixTimeMilliseconds()}");
 		}
 

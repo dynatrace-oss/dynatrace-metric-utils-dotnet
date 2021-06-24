@@ -371,5 +371,20 @@ namespace Dynatrace.MetricUtils.Tests
 			FluentActions.Invoking(() => serializer.SerializeMetric(metric)).Should().Throw<MetricException>()
 				.WithMessage("Metric line exceeds line length of 2000 characters (Metric name: 'metric').");
 		}
+
+		[Fact]
+		public void TestMetricTimestampInvalid()
+		{
+			var serializer = new MetricsSerializer(Logger);
+			// 01. 01. 1999
+			var before2000 = MetricsFactory.CreateLongGauge("before-2000", 3, timestamp: new DateTime(1999, 01, 01));
+			// 01. 01. 3500
+			var after3000 = MetricsFactory.CreateLongGauge("after-3000", 3, timestamp: new DateTime(3500, 01, 01));
+			var defaultDateTime = MetricsFactory.CreateLongGauge("default", 3, timestamp: new DateTime(1970, 01, 01));
+
+			serializer.SerializeMetric(before2000).Should().Be("before-2000 gauge,3");
+			serializer.SerializeMetric(after3000).Should().Be("after-3000 gauge,3");
+			serializer.SerializeMetric(defaultDateTime).Should().Be("default gauge,3");
+		}
 	}
 }
