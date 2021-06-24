@@ -40,7 +40,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void SerializeLongCounter()
 		{
-			var serializer = new MetricSerializer(Logger);
+			var serializer = new MetricsSerializer(Logger);
 
 			var serializedWithAllParams =
 				serializer.SerializeMetric(
@@ -66,7 +66,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void SerializeLongGauge()
 		{
-			var serializer = new MetricSerializer(Logger);
+			var serializer = new MetricsSerializer(Logger);
 
 			var serializedWithAllParams =
 				serializer.SerializeMetric(
@@ -92,7 +92,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void SerializeLongSummary()
 		{
-			var serializer = new MetricSerializer(Logger);
+			var serializer = new MetricsSerializer(Logger);
 			var serializedWithAllParams =
 				serializer.SerializeMetric(
 					MetricsFactory.CreateLongSummary("metric1", 1, 3, 7, 4, TestDimensions, TestDatetime));
@@ -118,7 +118,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void SerializeDoubleCounter()
 		{
-			var serializer = new MetricSerializer(Logger);
+			var serializer = new MetricsSerializer(Logger);
 
 			var serializedWithAllParams =
 				serializer.SerializeMetric(
@@ -144,7 +144,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void SerializeDoubleGauge()
 		{
-			var serializer = new MetricSerializer(Logger);
+			var serializer = new MetricsSerializer(Logger);
 
 			var serializedWithAllParams =
 				serializer.SerializeMetric(
@@ -170,7 +170,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void SerializeDoubleSummary()
 		{
-			var serializer = new MetricSerializer(Logger);
+			var serializer = new MetricsSerializer(Logger);
 			var serializedWithAllParams =
 				serializer.SerializeMetric(
 					MetricsFactory.CreateDoubleSummary("metric1", 1.2, 3.4, 7.8, 4, TestDimensions, TestDatetime));
@@ -200,7 +200,7 @@ namespace Dynatrace.MetricUtils.Tests
 			var dims = new List<KeyValuePair<string, string>> {new("dim1", "\\=\" ==")};
 			var metric = MetricsFactory.CreateLongCounter("metric1", 100, dims, TestDatetime);
 
-			var serialized = new MetricSerializer(Logger).SerializeMetric(metric);
+			var serialized = new MetricsSerializer(Logger).SerializeMetric(metric);
 			serialized.Should()
 				.Be("metric1,dim1=\\\\\\=\"\\ \\=\\= count,delta=100 " + TestTimestamp + Environment.NewLine);
 		}
@@ -210,7 +210,7 @@ namespace Dynatrace.MetricUtils.Tests
 		{
 			var metric = MetricsFactory.CreateLongCounter("metric", 100, timestamp: TestDatetime);
 
-			var serialized = new MetricSerializer(Logger, "prefix").SerializeMetric(metric);
+			var serialized = new MetricsSerializer(Logger, "prefix").SerializeMetric(metric);
 			serialized.Should()
 				.Be("prefix.metric count,delta=100 " + TestTimestamp + Environment.NewLine);
 		}
@@ -219,7 +219,7 @@ namespace Dynatrace.MetricUtils.Tests
 		public void TestPrefixWithTrailingDot()
 		{
 			var metric = MetricsFactory.CreateLongCounter("metric", 100, timestamp: TestDatetime);
-			var serializedWithTrailingPrefixDot = new MetricSerializer(Logger, "prefix.").SerializeMetric(metric);
+			var serializedWithTrailingPrefixDot = new MetricsSerializer(Logger, "prefix.").SerializeMetric(metric);
 			serializedWithTrailingPrefixDot.Should()
 				.Be("prefix.metric count,delta=100 " + TestTimestamp + Environment.NewLine);
 		}
@@ -233,7 +233,7 @@ namespace Dynatrace.MetricUtils.Tests
 				new("default1", "value1"), new("default2", "value2")
 			};
 
-			var serialized = new MetricSerializer(Logger, defaultDimensions: defaultDimensions).SerializeMetric(metric);
+			var serialized = new MetricsSerializer(Logger, defaultDimensions: defaultDimensions).SerializeMetric(metric);
 			serialized.Should()
 				.Be("metric,default1=value1,default2=value2,dim1=value1,dim2=value2 count,delta=100 " + TestTimestamp +
 				    Environment.NewLine);
@@ -245,16 +245,16 @@ namespace Dynatrace.MetricUtils.Tests
 			var metric = MetricsFactory.CreateLongCounter("metric", 100, null, TestDatetime);
 
 			// the use case probably used most often
-			new MetricSerializer(Logger, metricsSource: "opentelemetry").SerializeMetric(metric)
+			new MetricsSerializer(Logger, metricsSource: "opentelemetry").SerializeMetric(metric)
 				.Should().Be("metric,dt.metrics.source=opentelemetry count,delta=100 " + TestTimestamp +
 				             Environment.NewLine);
 
 			// empty source will not be added
-			new MetricSerializer(Logger, metricsSource: "").SerializeMetric(metric)
+			new MetricsSerializer(Logger, metricsSource: "").SerializeMetric(metric)
 				.Should().Be("metric count,delta=100 " + TestTimestamp + Environment.NewLine);
 
 			// invalid characters in source will be escaped:
-			new MetricSerializer(Logger, metricsSource: "esc\\ape=this\"").SerializeMetric(metric)
+			new MetricsSerializer(Logger, metricsSource: "esc\\ape=this\"").SerializeMetric(metric)
 				.Should().Be("metric,dt.metrics.source=esc\\\\ape\\=this\" count,delta=100 " + TestTimestamp +
 				             Environment.NewLine);
 		}
@@ -275,7 +275,7 @@ namespace Dynatrace.MetricUtils.Tests
 			var metric = MetricsFactory.CreateLongCounter("metric", 100, metricDimensions, TestDatetime);
 
 			// using the internal constructor that accepts the static dimensions for testing:
-			var serializer = new MetricSerializer(Logger, "prefix", defaultDimensions, staticDimensions);
+			var serializer = new MetricsSerializer(Logger, "prefix", defaultDimensions, staticDimensions);
 
 			serializer.SerializeMetric(metric)
 				.Should().Be("prefix.metric,dim1=default1,dim2=metric2,dim3=static3 count,delta=100 " + TestTimestamp +
@@ -290,7 +290,7 @@ namespace Dynatrace.MetricUtils.Tests
 				new("dim1", "default1"), new("dim2", "default2"), new("dim3", "default3")
 			};
 
-			MetricSerializer.MergeDimensions(defaultDimensions).Should().Equal(defaultDimensions);
+			MetricsSerializer.MergeDimensions(defaultDimensions).Should().Equal(defaultDimensions);
 		}
 
 
@@ -307,7 +307,7 @@ namespace Dynatrace.MetricUtils.Tests
 
 			var staticDimensions = new List<KeyValuePair<string, string>> {new("dim3", "static3")};
 
-			MetricSerializer.MergeDimensions(defaultDimensions, metricDimensions, staticDimensions).Should()
+			MetricsSerializer.MergeDimensions(defaultDimensions, metricDimensions, staticDimensions).Should()
 				.Equal(new List<KeyValuePair<string, string>>
 				{
 					new("dim1", "default1"), new("dim2", "metric2"), new("dim3", "static3")
@@ -327,7 +327,7 @@ namespace Dynatrace.MetricUtils.Tests
 				new("other1", "val1"), new("other2", "val2"), new("other3", "val3")
 			};
 
-			MetricSerializer.MergeDimensions(someDimensions, otherDimensions)
+			MetricsSerializer.MergeDimensions(someDimensions, otherDimensions)
 				.Should().Equal(
 					new List<KeyValuePair<string, string>>
 					{
@@ -344,16 +344,16 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestMetricKeyInvalid()
 		{
-			var serializer = new MetricSerializer(Logger);
+			var serializer = new MetricsSerializer(Logger);
 			var metric = MetricsFactory.CreateDoubleGauge("!@#$", 3.4, timestamp: TestDatetime);
-			new MetricSerializer(Logger).SerializeMetric(metric).Should()
+			new MetricsSerializer(Logger).SerializeMetric(metric).Should()
 				.Be("_ gauge,3.4 " + TestTimestamp + Environment.NewLine);
 		}
 
 		[Fact]
 		public void TestMetricKeyEmpty()
 		{
-			var serializer = new MetricSerializer(Logger);
+			var serializer = new MetricsSerializer(Logger);
 			FluentActions.Invoking(() => serializer.SerializeMetric(MetricsFactory.CreateLongGauge("", 3))).Should()
 				.Throw<MetricException>().WithMessage("Metric key can't be undefined.");
 			FluentActions.Invoking(() => serializer.SerializeMetric(MetricsFactory.CreateLongGauge(null, 3))).Should()
@@ -371,7 +371,7 @@ namespace Dynatrace.MetricUtils.Tests
 				dimensions.Add(new KeyValuePair<string, string>(new string('a', 50) + i, new string('b', 50) + i));
 			}
 
-			var serializer = new MetricSerializer(Logger);
+			var serializer = new MetricsSerializer(Logger);
 			var metric = MetricsFactory.CreateLongGauge("metric", 4, dimensions);
 
 			FluentActions.Invoking(() => serializer.SerializeMetric(metric)).Should().Throw<MetricException>()

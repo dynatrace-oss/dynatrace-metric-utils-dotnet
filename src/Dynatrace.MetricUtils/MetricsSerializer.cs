@@ -22,7 +22,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Dynatrace.MetricUtils
 {
-	public class MetricSerializer
+	public class MetricsSerializer
 	{
 		private const int MetricLineMaxLength = 2000;
 		private static readonly int MaxDimensions = 50;
@@ -32,7 +32,7 @@ namespace Dynatrace.MetricUtils
 		private readonly List<KeyValuePair<string, string>> _staticDimensions;
 
 		// public constructor.
-		public MetricSerializer(ILogger logger, string prefix = null,
+		public MetricsSerializer(ILogger logger, string prefix = null,
 			IEnumerable<KeyValuePair<string, string>> defaultDimensions = null, bool enrichWithDynatraceMetadata = true,
 			string metricsSource = null)
 			: this(logger, prefix, defaultDimensions,
@@ -41,7 +41,7 @@ namespace Dynatrace.MetricUtils
 		}
 
 		// internal constructor offers an interface for testing and is used by the public constructor
-		internal MetricSerializer(ILogger logger, string prefix,
+		internal MetricsSerializer(ILogger logger, string prefix,
 			IEnumerable<KeyValuePair<string, string>> defaultDimensions,
 			List<KeyValuePair<string, string>> staticDimensions)
 		{
