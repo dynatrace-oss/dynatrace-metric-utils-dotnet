@@ -62,6 +62,14 @@ namespace Dynatrace.MetricUtils.Example
 			{
 				Console.WriteLine(serializer.SerializeMetric(metric));
 			}
+
+			// Will produce the following output:
+			// prefix.long-counter,default1=value1,default2=value2,dim1=val1 count,delta=23 1624544148084
+			// prefix.long-gauge,default1=value1,default2=value2,dim1=val1 gauge,34 1609502400000
+			// prefix.long-summary,default1=value1,default2=value2,dim1=val1 gauge,min=3,max=5,sum=18,count=4 1624544148088
+			// prefix.double-summary,default1=value1,default2=value2 count,delta=3.1415 1624544148089
+			// prefix.double-gauge,default1=value1,default2=value2,dim1=val1 gauge,4.567 1624544148089
+			// prefix.double-summary,default1=value1,default2=value2,dim1=val1 gauge,min=3.1,max=6.543,sum=20.123,count=4 1624544148089
 		}
 	}
 }
