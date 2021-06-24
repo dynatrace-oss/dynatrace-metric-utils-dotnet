@@ -14,6 +14,9 @@
 // limitations under the License.
 // </copyright>
 
+using System;
+using System.Globalization;
+
 namespace Dynatrace.MetricUtils
 {
 	public interface IMetricValue
@@ -45,17 +48,17 @@ namespace Dynatrace.MetricUtils
 		}
 
 		/// <remarks>
-	/// This function will return the Infinity symbol (∞) if Infinity is passed.
-	/// This is not valid for ingestion, but should never happen since the constructors
-	/// for values should throw on NaN and Infinity anyways.
+		/// This function will return the Infinity symbol (∞) if Infinity is passed.
+		/// This is not valid for ingestion, but should never happen since the constructors
+		/// for values should throw on NaN and Infinity anyways.
 		/// </remarks>
 		internal static string FormatDouble(double d)
 		{
-			if (d == -0)
-			{
+			// d is exactly 0 or -0.
+			if (Math.Abs(d).Equals(0.0)) {
 				return "0";
 			}
-			string serialized = d.ToString();
+			string serialized = d.ToString(CultureInfo.InvariantCulture);
 			if (serialized.Contains("E") && !serialized.Contains("."))
 			{
 				serialized = serialized.Insert(serialized.IndexOf("E"), ".0");
@@ -65,23 +68,16 @@ namespace Dynatrace.MetricUtils
 
 		internal sealed class LongCounterValue : IMetricValue
 		{
-			private readonly bool _isDelta;
 			private readonly long _value;
 
-			public LongCounterValue(long value, bool isDelta)
+			public LongCounterValue(long value)
 			{
 				this._value = value;
-				this._isDelta = isDelta;
 			}
 
 			public string Serialize()
 			{
-				if (this._isDelta)
-				{
-					return $"count,delta={this._value}";
-				}
-
-				return $"count,{this._value}";
+				return $"count,delta={this._value}";
 			}
 		}
 
@@ -135,7 +131,7 @@ namespace Dynatrace.MetricUtils
 		{
 			private readonly double _value;
 
-			public DoubleCounterValue(double value, bool isDelta)
+			public DoubleCounterValue(double value)
 			{
 				ThrowOnNanOrInfDouble(value);
 				this._value = value;
@@ -143,7 +139,6 @@ namespace Dynatrace.MetricUtils
 
 			public string Serialize()
 			{
-
 				return $"count,delta={FormatDouble(this._value)}";
 			}
 		}

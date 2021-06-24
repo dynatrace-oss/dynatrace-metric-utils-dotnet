@@ -22,7 +22,7 @@ namespace Dynatrace.MetricUtils
 {
 	public static class MetricsFactory
 	{
-		public static Metric CreateLongTotalCounter(string metricName, long value,
+		public static Metric CreateLongCounter(string metricName, long value,
 			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime timestamp = default)
 		{
 			if (dimensions == null)
@@ -35,23 +35,7 @@ namespace Dynatrace.MetricUtils
 				timestamp = DateTime.Now;
 			}
 
-			return new Metric(metricName, dimensions, new MetricValue.LongCounterValue(value, false), timestamp);
-		}
-
-		public static Metric CreateLongDeltaCounter(string metricName, long value,
-			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime timestamp = default)
-		{
-			if (dimensions == null)
-			{
-				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
-			}
-
-			if (default == timestamp)
-			{
-				timestamp = DateTime.Now;
-			}
-
-			return new Metric(metricName, dimensions, new MetricValue.LongCounterValue(value, true), timestamp);
+			return new Metric(metricName, dimensions, new MetricValue.LongCounterValue(value), timestamp);
 		}
 
 		public static Metric CreateLongGauge(string metricName, long value,
@@ -87,7 +71,7 @@ namespace Dynatrace.MetricUtils
 				timestamp);
 		}
 
-		public static Metric CreateDoubleTotalCounter(string metricName, double value,
+		public static Metric CreateDoubleCounter(string metricName, double value,
 			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime timestamp = default)
 		{
 			if (dimensions == null)
@@ -100,23 +84,7 @@ namespace Dynatrace.MetricUtils
 				timestamp = DateTime.Now;
 			}
 
-			return new Metric(metricName, dimensions, new MetricValue.DoubleCounterValue(value, false), timestamp);
-		}
-
-		public static Metric CreateDoubleDeltaCounter(string metricName, double value,
-			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime timestamp = default)
-		{
-			if (dimensions == null)
-			{
-				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
-			}
-
-			if (default == timestamp)
-			{
-				timestamp = DateTime.Now;
-			}
-
-			return new Metric(metricName, dimensions, new MetricValue.DoubleCounterValue(value, true), timestamp);
+			return new Metric(metricName, dimensions, new MetricValue.DoubleCounterValue(value), timestamp);
 		}
 
 		public static Metric CreateDoubleGauge(string metricName, double value,

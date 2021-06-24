@@ -35,55 +35,29 @@ namespace Dynatrace.MetricUtils.Tests
 			$"{new DateTimeOffset(TestDatetime.ToLocalTime()).ToUnixTimeMilliseconds()}";
 
 		private static readonly IEnumerable<KeyValuePair<string, string>> TestDimensions =
-			new List<KeyValuePair<string, string>> {new("dim1", "value1"), new("dim2", "value2")};
+			new List<KeyValuePair<string, string>> { new("dim1", "value1"), new("dim2", "value2") };
 
 		[Fact]
-		public void SerializeLongDeltaCounter()
+		public void SerializeLongCounter()
 		{
 			var serializer = new MetricSerializer(Logger);
 
 			var serializedWithAllParams =
 				serializer.SerializeMetric(
-					MetricsFactory.CreateLongDeltaCounter("metric1", 100, TestDimensions, TestDatetime));
+					MetricsFactory.CreateLongCounter("metric1", 100, TestDimensions, TestDatetime));
 			serializedWithAllParams.Should()
 				.Be("metric1,dim1=value1,dim2=value2 count,delta=100 " + TestTimestamp + Environment.NewLine);
 
 			var serializedWithCurrentTimestamp =
-				serializer.SerializeMetric(MetricsFactory.CreateLongDeltaCounter("metric2", 200, TestDimensions));
+				serializer.SerializeMetric(MetricsFactory.CreateLongCounter("metric2", 200, TestDimensions));
 			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 count,delta=200 ";
 			serializedWithCurrentTimestamp.Should()
 				.StartWith(currTimestampPrefix)
 				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
 
 			var serializedWithMinimalParams =
-				serializer.SerializeMetric(MetricsFactory.CreateLongDeltaCounter("metric3", 300));
+				serializer.SerializeMetric(MetricsFactory.CreateLongCounter("metric3", 300));
 			var minimalParamsPrefix = "metric3 count,delta=300 ";
-			serializedWithMinimalParams.Should()
-				.StartWith(minimalParamsPrefix)
-				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
-		}
-
-		[Fact]
-		public void SerializeLongTotalCounter()
-		{
-			var serializer = new MetricSerializer(Logger);
-
-			var serializedWithAllParams =
-				serializer.SerializeMetric(
-					MetricsFactory.CreateLongTotalCounter("metric1", 100, TestDimensions, TestDatetime));
-			serializedWithAllParams.Should()
-				.Be("metric1,dim1=value1,dim2=value2 count,100 " + TestTimestamp + Environment.NewLine);
-
-			var serializedWithCurrentTimestamp =
-				serializer.SerializeMetric(MetricsFactory.CreateLongTotalCounter("metric2", 200, TestDimensions));
-			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 count,200 ";
-			serializedWithCurrentTimestamp.Should()
-				.StartWith(currTimestampPrefix)
-				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
-
-			var serializedWithMinimalParams =
-				serializer.SerializeMetric(MetricsFactory.CreateLongTotalCounter("metric3", 300));
-			var minimalParamsPrefix = "metric3 count,300 ";
 			serializedWithMinimalParams.Should()
 				.StartWith(minimalParamsPrefix)
 				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
@@ -124,7 +98,7 @@ namespace Dynatrace.MetricUtils.Tests
 					MetricsFactory.CreateLongSummary("metric1", 1, 3, 7, 4, TestDimensions, TestDatetime));
 			serializedWithAllParams.Should()
 				.Be("metric1,dim1=value1,dim2=value2 gauge,min=1,max=3,sum=7,count=4 " + TestTimestamp +
-				    Environment.NewLine);
+					Environment.NewLine);
 
 			var serializedWithCurrentTimestamp =
 				serializer.SerializeMetric(MetricsFactory.CreateLongSummary("metric2", 1, 3, 7, 4, TestDimensions));
@@ -142,52 +116,26 @@ namespace Dynatrace.MetricUtils.Tests
 		}
 
 		[Fact]
-		public void SerializeDoubleDeltaCounter()
+		public void SerializeDoubleCounter()
 		{
 			var serializer = new MetricSerializer(Logger);
 
 			var serializedWithAllParams =
 				serializer.SerializeMetric(
-					MetricsFactory.CreateDoubleDeltaCounter("metric1", 123.456, TestDimensions, TestDatetime));
+					MetricsFactory.CreateDoubleCounter("metric1", 123.456, TestDimensions, TestDatetime));
 			serializedWithAllParams.Should()
 				.Be("metric1,dim1=value1,dim2=value2 count,delta=123.456 " + TestTimestamp + Environment.NewLine);
 
 			var serializedWithCurrentTimestamp =
-				serializer.SerializeMetric(MetricsFactory.CreateDoubleDeltaCounter("metric2", 223.456, TestDimensions));
+				serializer.SerializeMetric(MetricsFactory.CreateDoubleCounter("metric2", 223.456, TestDimensions));
 			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 count,delta=223.456 ";
 			serializedWithCurrentTimestamp.Should()
 				.StartWith(currTimestampPrefix)
 				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
 
 			var serializedWithMinimalParams =
-				serializer.SerializeMetric(MetricsFactory.CreateDoubleDeltaCounter("metric3", 323.456));
+				serializer.SerializeMetric(MetricsFactory.CreateDoubleCounter("metric3", 323.456));
 			var minimalParamsPrefix = "metric3 count,delta=323.456 ";
-			serializedWithMinimalParams.Should()
-				.StartWith(minimalParamsPrefix)
-				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
-		}
-
-		[Fact]
-		public void SerializeDoubleTotalCounter()
-		{
-			var serializer = new MetricSerializer(Logger);
-
-			var serializedWithAllParams =
-				serializer.SerializeMetric(
-					MetricsFactory.CreateDoubleTotalCounter("metric1", 123.456, TestDimensions, TestDatetime));
-			serializedWithAllParams.Should()
-				.Be("metric1,dim1=value1,dim2=value2 count,123.456 " + TestTimestamp + Environment.NewLine);
-
-			var serializedWithCurrentTimestamp =
-				serializer.SerializeMetric(MetricsFactory.CreateDoubleTotalCounter("metric2", 223.456, TestDimensions));
-			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 count,223.456 ";
-			serializedWithCurrentTimestamp.Should()
-				.StartWith(currTimestampPrefix)
-				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
-
-			var serializedWithMinimalParams =
-				serializer.SerializeMetric(MetricsFactory.CreateDoubleTotalCounter("metric3", 323.456));
-			var minimalParamsPrefix = "metric3 count,323.456 ";
 			serializedWithMinimalParams.Should()
 				.StartWith(minimalParamsPrefix)
 				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length + Environment.NewLine.Length);
@@ -228,7 +176,7 @@ namespace Dynatrace.MetricUtils.Tests
 					MetricsFactory.CreateDoubleSummary("metric1", 1.2, 3.4, 7.8, 4, TestDimensions, TestDatetime));
 			serializedWithAllParams.Should()
 				.Be("metric1,dim1=value1,dim2=value2 gauge,min=1.2,max=3.4,sum=7.8,count=4 " + TestTimestamp +
-				    Environment.NewLine);
+					Environment.NewLine);
 
 			var serializedWithCurrentTimestamp =
 				serializer.SerializeMetric(
@@ -249,8 +197,8 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDimensionValuesNormalized()
 		{
-			var dims = new List<KeyValuePair<string, string>> {new("dim1", "\\=\" ==")};
-			var metric = MetricsFactory.CreateLongDeltaCounter("metric1", 100, dims, TestDatetime);
+			var dims = new List<KeyValuePair<string, string>> { new("dim1", "\\=\" ==") };
+			var metric = MetricsFactory.CreateLongCounter("metric1", 100, dims, TestDatetime);
 
 			var serialized = new MetricSerializer(Logger).SerializeMetric(metric);
 			serialized.Should()
@@ -260,7 +208,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestPrefix()
 		{
-			var metric = MetricsFactory.CreateLongDeltaCounter("metric", 100, timestamp: TestDatetime);
+			var metric = MetricsFactory.CreateLongCounter("metric", 100, timestamp: TestDatetime);
 
 			var serialized = new MetricSerializer(Logger, "prefix").SerializeMetric(metric);
 			serialized.Should()
@@ -270,7 +218,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestPrefixWithTrailingDot()
 		{
-			var metric = MetricsFactory.CreateLongDeltaCounter("metric", 100, timestamp: TestDatetime);
+			var metric = MetricsFactory.CreateLongCounter("metric", 100, timestamp: TestDatetime);
 			var serializedWithTrailingPrefixDot = new MetricSerializer(Logger, "prefix.").SerializeMetric(metric);
 			serializedWithTrailingPrefixDot.Should()
 				.Be("prefix.metric count,delta=100 " + TestTimestamp + Environment.NewLine);
@@ -279,7 +227,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestWithDefaultDimensions()
 		{
-			var metric = MetricsFactory.CreateLongDeltaCounter("metric", 100, TestDimensions, TestDatetime);
+			var metric = MetricsFactory.CreateLongCounter("metric", 100, TestDimensions, TestDatetime);
 			var defaultDimensions = new List<KeyValuePair<string, string>>
 			{
 				new("default1", "value1"), new("default2", "value2")
@@ -288,18 +236,18 @@ namespace Dynatrace.MetricUtils.Tests
 			var serialized = new MetricSerializer(Logger, defaultDimensions: defaultDimensions).SerializeMetric(metric);
 			serialized.Should()
 				.Be("metric,default1=value1,default2=value2,dim1=value1,dim2=value2 count,delta=100 " + TestTimestamp +
-				    Environment.NewLine);
+					Environment.NewLine);
 		}
 
 		[Fact]
 		public void TestMetricsSource()
 		{
-			var metric = MetricsFactory.CreateLongDeltaCounter("metric", 100, null, TestDatetime);
+			var metric = MetricsFactory.CreateLongCounter("metric", 100, null, TestDatetime);
 
 			// the use case probably used most often
 			new MetricSerializer(Logger, metricsSource: "opentelemetry").SerializeMetric(metric)
 				.Should().Be("metric,dt.metrics.source=opentelemetry count,delta=100 " + TestTimestamp +
-				             Environment.NewLine);
+							Environment.NewLine);
 
 			// empty source will not be added
 			new MetricSerializer(Logger, metricsSource: "").SerializeMetric(metric)
@@ -308,7 +256,7 @@ namespace Dynatrace.MetricUtils.Tests
 			// invalid characters in source will be escaped:
 			new MetricSerializer(Logger, metricsSource: "esc\\ape=this\"").SerializeMetric(metric)
 				.Should().Be("metric,dt.metrics.source=esc\\\\ape\\=this\" count,delta=100 " + TestTimestamp +
-				             Environment.NewLine);
+							Environment.NewLine);
 		}
 
 		[Fact]
@@ -320,18 +268,18 @@ namespace Dynatrace.MetricUtils.Tests
 			};
 
 			var metricDimensions =
-				new List<KeyValuePair<string, string>> {new("dim2", "metric2"), new("dim3", "metric3")};
+				new List<KeyValuePair<string, string>> { new("dim2", "metric2"), new("dim3", "metric3") };
 
-			var staticDimensions = new List<KeyValuePair<string, string>> {new("dim3", "static3")};
+			var staticDimensions = new List<KeyValuePair<string, string>> { new("dim3", "static3") };
 
-			var metric = MetricsFactory.CreateLongDeltaCounter("metric", 100, metricDimensions, TestDatetime);
+			var metric = MetricsFactory.CreateLongCounter("metric", 100, metricDimensions, TestDatetime);
 
 			// using the internal constructor that accepts the static dimensions for testing:
 			var serializer = new MetricSerializer(Logger, "prefix", defaultDimensions, staticDimensions);
 
 			serializer.SerializeMetric(metric)
 				.Should().Be("prefix.metric,dim1=default1,dim2=metric2,dim3=static3 count,delta=100 " + TestTimestamp +
-				             Environment.NewLine);
+							Environment.NewLine);
 		}
 
 		[Fact]
@@ -355,9 +303,9 @@ namespace Dynatrace.MetricUtils.Tests
 			};
 
 			var metricDimensions =
-				new List<KeyValuePair<string, string>> {new("dim2", "metric2"), new("dim3", "metric3")};
+				new List<KeyValuePair<string, string>> { new("dim2", "metric2"), new("dim3", "metric3") };
 
-			var staticDimensions = new List<KeyValuePair<string, string>> {new("dim3", "static3")};
+			var staticDimensions = new List<KeyValuePair<string, string>> { new("dim3", "static3") };
 
 			MetricSerializer.MergeDimensions(defaultDimensions, metricDimensions, staticDimensions).Should()
 				.Equal(new List<KeyValuePair<string, string>>
