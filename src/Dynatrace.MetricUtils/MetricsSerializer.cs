@@ -109,7 +109,6 @@ namespace Dynatrace.MetricUtils
 			sb.Append($" {metric.Value.Serialize()}");
 
 			this.WriteTimestamp(sb, metric.Timestamp);
-			sb.AppendLine();
 		}
 
 		private void WriteTimestamp(StringBuilder sb, DateTime timestamp)
