@@ -14,11 +14,11 @@
 // limitations under the License.
 // </copyright>
 
-using Xunit;
-using FluentAssertions;
-using static Dynatrace.MetricUtils.MetricValue;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using FluentAssertions;
+using Xunit;
+using static Dynatrace.MetricUtils.MetricValue;
 
 namespace Dynatrace.MetricUtils.Tests
 {
@@ -50,8 +50,10 @@ namespace Dynatrace.MetricUtils.Tests
 			new LongSummaryValue(1, 1, 1, 1).Serialize().Should().Be("gauge,min=1,max=1,sum=1,count=1");
 			new LongSummaryValue(1, 6, 10, 0).Serialize().Should().Be("gauge,min=1,max=6,sum=10,count=0");
 
-			FluentActions.Invoking(() => new LongSummaryValue(1, 6, 10, -3)).Should().Throw<MetricException>().WithMessage("Count cannot be less than 0.");
-			FluentActions.Invoking(() => new LongSummaryValue(6, 1, 10, 5)).Should().Throw<MetricException>().WithMessage("Min cannot be larger than max.");
+			FluentActions.Invoking(() => new LongSummaryValue(1, 6, 10, -3)).Should().Throw<MetricException>()
+				.WithMessage("Count cannot be less than 0.");
+			FluentActions.Invoking(() => new LongSummaryValue(6, 1, 10, 5)).Should().Throw<MetricException>()
+				.WithMessage("Min cannot be larger than max.");
 		}
 
 		[Fact]
@@ -105,9 +107,12 @@ namespace Dynatrace.MetricUtils.Tests
 			new DoubleCounterValue(1.0 / 3).Serialize().Should().Be("count,delta=0.3333333333333333");
 			new DoubleCounterValue(200.00000000000000).Serialize().Should().Be("count,delta=200");
 
-			FluentActions.Invoking(() => new DoubleCounterValue(double.NegativeInfinity)).Should().Throw<MetricException>().WithMessage("Value is infinite.");
-			FluentActions.Invoking(() => new DoubleCounterValue(double.PositiveInfinity)).Should().Throw<MetricException>().WithMessage("Value is infinite.");
-			FluentActions.Invoking(() => new DoubleCounterValue(double.NaN)).Should().Throw<MetricException>().WithMessage("Value is NaN.");
+			FluentActions.Invoking(() => new DoubleCounterValue(double.NegativeInfinity)).Should()
+				.Throw<MetricException>().WithMessage("Value is infinite.");
+			FluentActions.Invoking(() => new DoubleCounterValue(double.PositiveInfinity)).Should()
+				.Throw<MetricException>().WithMessage("Value is infinite.");
+			FluentActions.Invoking(() => new DoubleCounterValue(double.NaN)).Should().Throw<MetricException>()
+				.WithMessage("Value is NaN.");
 		}
 
 		[Fact]
@@ -120,28 +125,35 @@ namespace Dynatrace.MetricUtils.Tests
 			new DoubleGaugeValue(1.0 / 3).Serialize().Should().Be("gauge,0.3333333333333333");
 			new DoubleGaugeValue(200.00000000000000).Serialize().Should().Be("gauge,200");
 
-			FluentActions.Invoking(() => new DoubleGaugeValue(double.NegativeInfinity)).Should().Throw<MetricException>().WithMessage("Value is infinite.");
-			FluentActions.Invoking(() => new DoubleGaugeValue(double.PositiveInfinity)).Should().Throw<MetricException>().WithMessage("Value is infinite.");
-			FluentActions.Invoking(() => new DoubleGaugeValue(double.NaN)).Should().Throw<MetricException>().WithMessage("Value is NaN.");
+			FluentActions.Invoking(() => new DoubleGaugeValue(double.NegativeInfinity)).Should()
+				.Throw<MetricException>().WithMessage("Value is infinite.");
+			FluentActions.Invoking(() => new DoubleGaugeValue(double.PositiveInfinity)).Should()
+				.Throw<MetricException>().WithMessage("Value is infinite.");
+			FluentActions.Invoking(() => new DoubleGaugeValue(double.NaN)).Should().Throw<MetricException>()
+				.WithMessage("Value is NaN.");
 		}
 
 		[Fact]
 		public void TestDoubleSummaryValue()
 		{
 			new DoubleSummaryValue(1.2, 3.4, 8.9, 4).Serialize().Should().Be("gauge,min=1.2,max=3.4,sum=8.9,count=4");
-			new DoubleSummaryValue(double.MinValue, double.MaxValue, double.MaxValue, 5).Serialize().Should().Be("gauge,min=-1.7976931348623157E+308,max=1.7976931348623157E+308,sum=1.7976931348623157E+308,count=5");
-			new DoubleSummaryValue(1.23e-18, 1.23e18, 5.6e18, 7).Serialize().Should().Be("gauge,min=1.23E-18,max=1.23E+18,sum=5.6E+18,count=7");
+			new DoubleSummaryValue(double.MinValue, double.MaxValue, double.MaxValue, 5).Serialize().Should().Be(
+				"gauge,min=-1.7976931348623157E+308,max=1.7976931348623157E+308,sum=1.7976931348623157E+308,count=5");
+			new DoubleSummaryValue(1.23e-18, 1.23e18, 5.6e18, 7).Serialize().Should()
+				.Be("gauge,min=1.23E-18,max=1.23E+18,sum=5.6E+18,count=7");
 			new DoubleSummaryValue(1.2, 1.2, 1.2, 4).Serialize().Should().Be("gauge,min=1.2,max=1.2,sum=1.2,count=4");
 
-			FluentActions.Invoking(() => new DoubleSummaryValue(1.2, 2.3, 5.6, -3)).Should().Throw<MetricException>().WithMessage("Count cannot be less than 0.");
-			FluentActions.Invoking(() => new DoubleSummaryValue(6.5, 1.2, 10.7, 5)).Should().Throw<MetricException>().WithMessage("Min cannot be larger than max.");
+			FluentActions.Invoking(() => new DoubleSummaryValue(1.2, 2.3, 5.6, -3)).Should().Throw<MetricException>()
+				.WithMessage("Count cannot be less than 0.");
+			FluentActions.Invoking(() => new DoubleSummaryValue(6.5, 1.2, 10.7, 5)).Should().Throw<MetricException>()
+				.WithMessage("Min cannot be larger than max.");
 		}
 
 		[Fact]
 		public void TestDoubleSummaryValueInvalidsLoop()
 		{
-			var values = new List<double> { 1.2, double.NegativeInfinity, double.PositiveInfinity, double.NaN };
-			Func<double, bool> isValidDouble = (d) => double.IsFinite(d) && !double.IsNaN(d);
+			var values = new List<double> {1.2, double.NegativeInfinity, double.PositiveInfinity, double.NaN};
+			Func<double, bool> isValidDouble = d => double.IsFinite(d) && !double.IsNaN(d);
 			foreach (var i in values)
 			{
 				foreach (var j in values)
@@ -150,11 +162,13 @@ namespace Dynatrace.MetricUtils.Tests
 					{
 						if (isValidDouble(i) && isValidDouble(j) && isValidDouble(k))
 						{
-							new DoubleSummaryValue(i, j, k, 1).Serialize().Should().Be("gauge,min=1.2,max=1.2,sum=1.2,count=1");
+							new DoubleSummaryValue(i, j, k, 1).Serialize().Should()
+								.Be("gauge,min=1.2,max=1.2,sum=1.2,count=1");
 						}
 						else
 						{
-							FluentActions.Invoking(() => new DoubleSummaryValue(i, j, k, 1)).Should().Throw<MetricException>();
+							FluentActions.Invoking(() => new DoubleSummaryValue(i, j, k, 1)).Should()
+								.Throw<MetricException>();
 						}
 					}
 				}

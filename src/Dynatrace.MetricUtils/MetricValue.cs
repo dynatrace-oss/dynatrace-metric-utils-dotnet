@@ -48,21 +48,24 @@ namespace Dynatrace.MetricUtils
 		}
 
 		/// <remarks>
-		/// This function will return the Infinity symbol (∞) if Infinity is passed.
-		/// This is not valid for ingestion, but should never happen since the constructors
-		/// for values should throw on NaN and Infinity anyways.
+		///     This function will return the Infinity symbol (∞) if Infinity is passed.
+		///     This is not valid for ingestion, but should never happen since the constructors
+		///     for values should throw on NaN and Infinity anyways.
 		/// </remarks>
 		internal static string FormatDouble(double d)
 		{
 			// d is exactly 0 or -0.
-			if (Math.Abs(d).Equals(0.0)) {
+			if (Math.Abs(d).Equals(0.0))
+			{
 				return "0";
 			}
-			string serialized = d.ToString(CultureInfo.InvariantCulture);
+
+			var serialized = d.ToString(CultureInfo.InvariantCulture);
 			if (serialized.Contains("E") && !serialized.Contains("."))
 			{
-				serialized = serialized.Insert(serialized.IndexOf("E"), ".0");
+				serialized = serialized.Insert(serialized.IndexOf("E", StringComparison.InvariantCulture), ".0");
 			}
+
 			return serialized;
 		}
 
@@ -188,7 +191,8 @@ namespace Dynatrace.MetricUtils
 
 			public string Serialize()
 			{
-				return $"gauge,min={FormatDouble(this._min)},max={FormatDouble(this._max)},sum={FormatDouble(this._sum)},count={FormatDouble(this._count)}";
+				return
+					$"gauge,min={FormatDouble(this._min)},max={FormatDouble(this._max)},sum={FormatDouble(this._sum)},count={FormatDouble(this._count)}";
 			}
 		}
 	}
