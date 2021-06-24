@@ -24,6 +24,7 @@ namespace Dynatrace.MetricUtils
 {
 	public class MetricSerializer
 	{
+		private const int MetricLineMaxLength = 2000;
 		private static readonly int MaxDimensions = 50;
 		private readonly List<KeyValuePair<string, string>> _defaultDimensions;
 		private readonly ILogger _logger;
@@ -76,7 +77,14 @@ namespace Dynatrace.MetricUtils
 		{
 			var sb = new StringBuilder();
 			this.SerializeMetric(sb, metric);
-			return sb.ToString();
+			var serialized = sb.ToString();
+			if (serialized.Length > MetricLineMaxLength)
+			{
+				throw new MetricException(
+					$"Metric line exceeds line length of {MetricLineMaxLength} characters (Metric name: '{metric.MetricName}').");
+			}
+
+			return serialized;
 		}
 
 		private void SerializeMetric(StringBuilder sb, Metric metric)
@@ -85,9 +93,7 @@ namespace Dynatrace.MetricUtils
 			// skip lines with invalid metric keys.
 			if (string.IsNullOrEmpty(metricKey))
 			{
-				this._logger.LogWarning("metric key was empty after normalization, skipping metric (original name {})",
-					metric.MetricName);
-				return;
+				throw new MetricException("Metric key can't be undefined.");
 			}
 
 			sb.Append(metricKey);

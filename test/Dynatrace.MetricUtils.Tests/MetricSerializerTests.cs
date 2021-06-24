@@ -35,7 +35,7 @@ namespace Dynatrace.MetricUtils.Tests
 			$"{new DateTimeOffset(TestDatetime.ToLocalTime()).ToUnixTimeMilliseconds()}";
 
 		private static readonly IEnumerable<KeyValuePair<string, string>> TestDimensions =
-			new List<KeyValuePair<string, string>> { new("dim1", "value1"), new("dim2", "value2") };
+			new List<KeyValuePair<string, string>> {new("dim1", "value1"), new("dim2", "value2")};
 
 		[Fact]
 		public void SerializeLongCounter()
@@ -98,7 +98,7 @@ namespace Dynatrace.MetricUtils.Tests
 					MetricsFactory.CreateLongSummary("metric1", 1, 3, 7, 4, TestDimensions, TestDatetime));
 			serializedWithAllParams.Should()
 				.Be("metric1,dim1=value1,dim2=value2 gauge,min=1,max=3,sum=7,count=4 " + TestTimestamp +
-					Environment.NewLine);
+				    Environment.NewLine);
 
 			var serializedWithCurrentTimestamp =
 				serializer.SerializeMetric(MetricsFactory.CreateLongSummary("metric2", 1, 3, 7, 4, TestDimensions));
@@ -176,7 +176,7 @@ namespace Dynatrace.MetricUtils.Tests
 					MetricsFactory.CreateDoubleSummary("metric1", 1.2, 3.4, 7.8, 4, TestDimensions, TestDatetime));
 			serializedWithAllParams.Should()
 				.Be("metric1,dim1=value1,dim2=value2 gauge,min=1.2,max=3.4,sum=7.8,count=4 " + TestTimestamp +
-					Environment.NewLine);
+				    Environment.NewLine);
 
 			var serializedWithCurrentTimestamp =
 				serializer.SerializeMetric(
@@ -197,7 +197,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDimensionValuesNormalized()
 		{
-			var dims = new List<KeyValuePair<string, string>> { new("dim1", "\\=\" ==") };
+			var dims = new List<KeyValuePair<string, string>> {new("dim1", "\\=\" ==")};
 			var metric = MetricsFactory.CreateLongCounter("metric1", 100, dims, TestDatetime);
 
 			var serialized = new MetricSerializer(Logger).SerializeMetric(metric);
@@ -236,7 +236,7 @@ namespace Dynatrace.MetricUtils.Tests
 			var serialized = new MetricSerializer(Logger, defaultDimensions: defaultDimensions).SerializeMetric(metric);
 			serialized.Should()
 				.Be("metric,default1=value1,default2=value2,dim1=value1,dim2=value2 count,delta=100 " + TestTimestamp +
-					Environment.NewLine);
+				    Environment.NewLine);
 		}
 
 		[Fact]
@@ -247,7 +247,7 @@ namespace Dynatrace.MetricUtils.Tests
 			// the use case probably used most often
 			new MetricSerializer(Logger, metricsSource: "opentelemetry").SerializeMetric(metric)
 				.Should().Be("metric,dt.metrics.source=opentelemetry count,delta=100 " + TestTimestamp +
-							Environment.NewLine);
+				             Environment.NewLine);
 
 			// empty source will not be added
 			new MetricSerializer(Logger, metricsSource: "").SerializeMetric(metric)
@@ -256,7 +256,7 @@ namespace Dynatrace.MetricUtils.Tests
 			// invalid characters in source will be escaped:
 			new MetricSerializer(Logger, metricsSource: "esc\\ape=this\"").SerializeMetric(metric)
 				.Should().Be("metric,dt.metrics.source=esc\\\\ape\\=this\" count,delta=100 " + TestTimestamp +
-							Environment.NewLine);
+				             Environment.NewLine);
 		}
 
 		[Fact]
@@ -268,9 +268,9 @@ namespace Dynatrace.MetricUtils.Tests
 			};
 
 			var metricDimensions =
-				new List<KeyValuePair<string, string>> { new("dim2", "metric2"), new("dim3", "metric3") };
+				new List<KeyValuePair<string, string>> {new("dim2", "metric2"), new("dim3", "metric3")};
 
-			var staticDimensions = new List<KeyValuePair<string, string>> { new("dim3", "static3") };
+			var staticDimensions = new List<KeyValuePair<string, string>> {new("dim3", "static3")};
 
 			var metric = MetricsFactory.CreateLongCounter("metric", 100, metricDimensions, TestDatetime);
 
@@ -279,7 +279,7 @@ namespace Dynatrace.MetricUtils.Tests
 
 			serializer.SerializeMetric(metric)
 				.Should().Be("prefix.metric,dim1=default1,dim2=metric2,dim3=static3 count,delta=100 " + TestTimestamp +
-							Environment.NewLine);
+				             Environment.NewLine);
 		}
 
 		[Fact]
@@ -303,9 +303,9 @@ namespace Dynatrace.MetricUtils.Tests
 			};
 
 			var metricDimensions =
-				new List<KeyValuePair<string, string>> { new("dim2", "metric2"), new("dim3", "metric3") };
+				new List<KeyValuePair<string, string>> {new("dim2", "metric2"), new("dim3", "metric3")};
 
-			var staticDimensions = new List<KeyValuePair<string, string>> { new("dim3", "static3") };
+			var staticDimensions = new List<KeyValuePair<string, string>> {new("dim3", "static3")};
 
 			MetricSerializer.MergeDimensions(defaultDimensions, metricDimensions, staticDimensions).Should()
 				.Equal(new List<KeyValuePair<string, string>>
@@ -339,6 +339,43 @@ namespace Dynatrace.MetricUtils.Tests
 						new("other3", "val3")
 					}
 				);
+		}
+
+		[Fact]
+		public void TestMetricKeyInvalid()
+		{
+			var serializer = new MetricSerializer(Logger);
+			var metric = MetricsFactory.CreateDoubleGauge("!@#$", 3.4, timestamp: TestDatetime);
+			new MetricSerializer(Logger).SerializeMetric(metric).Should()
+				.Be("_ gauge,3.4 " + TestTimestamp + Environment.NewLine);
+		}
+
+		[Fact]
+		public void TestMetricKeyEmpty()
+		{
+			var serializer = new MetricSerializer(Logger);
+			FluentActions.Invoking(() => serializer.SerializeMetric(MetricsFactory.CreateLongGauge("", 3))).Should()
+				.Throw<MetricException>().WithMessage("Metric key can't be undefined.");
+			FluentActions.Invoking(() => serializer.SerializeMetric(MetricsFactory.CreateLongGauge(null, 3))).Should()
+				.Throw<MetricException>().WithMessage("Metric key can't be undefined.");
+		}
+
+		[Fact]
+		public void TestMetricLineTooLong()
+		{
+			var dimensions = new List<KeyValuePair<string, string>>();
+			// 20 dimensions of ~ 100 characters should result in lines with more than 2000 characters
+			for (var i = 0; i < 20; i++)
+			{
+				// creates a dimension that takes up a little more than 100 characters
+				dimensions.Add(new KeyValuePair<string, string>(new string('a', 50) + i, new string('b', 50) + i));
+			}
+
+			var serializer = new MetricSerializer(Logger);
+			var metric = MetricsFactory.CreateLongGauge("metric", 4, dimensions);
+
+			FluentActions.Invoking(() => serializer.SerializeMetric(metric)).Should().Throw<MetricException>()
+				.WithMessage("Metric line exceeds line length of 2000 characters (Metric name: 'metric').");
 		}
 	}
 }
