@@ -17,6 +17,8 @@
 using Xunit;
 using FluentAssertions;
 using static Dynatrace.MetricUtils.MetricValue;
+using System.Collections.Generic;
+using System;
 
 namespace Dynatrace.MetricUtils.Tests
 {
@@ -62,31 +64,104 @@ namespace Dynatrace.MetricUtils.Tests
 		}
 
 		[Fact]
+		public void TestFormatDouble()
+		{
+			FormatDouble(0).Should().Be("0");
+			FormatDouble(-0).Should().Be("0");
+			FormatDouble(0.0).Should().Be("0");
+			FormatDouble(-0.0).Should().Be("0");
+			FormatDouble(.0000000000000).Should().Be("0");
+			FormatDouble(-0.0000000000000).Should().Be("0");
+			FormatDouble(123.456).Should().Be("123.456");
+			FormatDouble(-123.456).Should().Be("-123.456");
+			FormatDouble(1.0 / 3).Should().Be("0.3333333333333333");
+			FormatDouble(double.MinValue).Should().Be("-1.7976931348623157E+308");
+			FormatDouble(double.MaxValue).Should().Be("1.7976931348623157E+308");
+			FormatDouble(1e100).Should().Be("1.0E+100");
+			FormatDouble(1e-100).Should().Be("1.0E-100");
+			FormatDouble(-1e100).Should().Be("-1.0E+100");
+			FormatDouble(-1e-100).Should().Be("-1.0E-100");
+			FormatDouble(1.234e100).Should().Be("1.234E+100");
+			FormatDouble(1.234e-100).Should().Be("1.234E-100");
+			FormatDouble(-1.234e100).Should().Be("-1.234E+100");
+			FormatDouble(-1.234e-100).Should().Be("-1.234E-100");
+			FormatDouble(1_000_000_000_000_000_000).Should().Be("1.0E+18");
+			FormatDouble(-1_000_000_000_000_000_000).Should().Be("-1.0E+18");
+			FormatDouble(0.000_000_000_000_000_001).Should().Be("1.0E-18");
+			FormatDouble(-0.000_000_000_000_000_001).Should().Be("-1.0E-18");
+			FormatDouble(1_234_000_000_000_000_000).Should().Be("1.234E+18");
+			FormatDouble(-1_234_000_000_000_000_000).Should().Be("-1.234E+18");
+			FormatDouble(0.000_000_000_000_000_001_234).Should().Be("1.234E-18");
+			FormatDouble(-0.000_000_000_000_000_001_234).Should().Be("-1.234E-18");
+			FormatDouble(1.1234567890123456789).Should().Be("1.1234567890123457");
+			FormatDouble(-1.1234567890123456789).Should().Be("-1.1234567890123457");
+			FormatDouble(200.00000000000).Should().Be("200");
+			FormatDouble(-200.000000000000).Should().Be("-200");
+
+			// these should never happen, as the MetricValue constructors should throw.
+			FormatDouble(double.NegativeInfinity).Should().Be("-∞");
+			FormatDouble(double.PositiveInfinity).Should().Be("∞");
+			FormatDouble(double.NaN).Should().Be("NaN");
+		}
+
+		[Fact]
 		public void TestDoubleCounterValueDelta()
 		{
-			// todo move these to FormatDouble
 			new DoubleCounterValue(0, true).Serialize().Should().Be("count,delta=0");
-			new DoubleCounterValue(0.0, true).Serialize().Should().Be("count,delta=0");
 			new DoubleCounterValue(-0.0, true).Serialize().Should().Be("count,delta=0");
 			new DoubleCounterValue(123.456, true).Serialize().Should().Be("count,delta=123.456");
 			new DoubleCounterValue(-123.456, true).Serialize().Should().Be("count,delta=-123.456");
-			new DoubleCounterValue(1.0/3, true).Serialize().Should().Be("count,delta=0.3333333333333333");
-			new DoubleCounterValue(double.MinValue, true).Serialize().Should().Be("count,delta=-1.7976931348623157E+308");
-			new DoubleCounterValue(double.MaxValue, true).Serialize().Should().Be("count,delta=1.7976931348623157E+308");
-			new DoubleCounterValue(1.0e100, true).Serialize().Should().Be("count,delta=1E+100");
-			new DoubleCounterValue(1.0e-100, true).Serialize().Should().Be("count,delta=1E-100");
-			new DoubleCounterValue(1_000_000_000_000_000_000, true).Serialize().Should().Be("count,delta=1E+18");
-			new DoubleCounterValue(-1_000_000_000_000_000_000, true).Serialize().Should().Be("count,delta=-1E+18");
-			new DoubleCounterValue(0.000_000_000_000_000_001, true).Serialize().Should().Be("count,delta=1E-18");
-			new DoubleCounterValue(-0.000_000_000_000_000_001, true).Serialize().Should().Be("count,delta=-1E-18");
-			new DoubleCounterValue(1.1234567890123456789, true).Serialize().Should().Be("count,delta=1.1234567890123457");
-			new DoubleCounterValue(-1.1234567890123456789, true).Serialize().Should().Be("count,delta=-1.1234567890123457");
+			new DoubleCounterValue(1.0 / 3, true).Serialize().Should().Be("count,delta=0.3333333333333333");
 			new DoubleCounterValue(200.00000000000000, true).Serialize().Should().Be("count,delta=200");
 
 			FluentActions.Invoking(() => new DoubleCounterValue(double.NegativeInfinity, true)).Should().Throw<MetricException>().WithMessage("Value is infinite.");
 			FluentActions.Invoking(() => new DoubleCounterValue(double.PositiveInfinity, true)).Should().Throw<MetricException>().WithMessage("Value is infinite.");
 			FluentActions.Invoking(() => new DoubleCounterValue(double.NaN, true)).Should().Throw<MetricException>().WithMessage("Value is NaN.");
 		}
+
+		[Fact]
+		public void TestDoubleGaugeValue()
+		{
+			new DoubleGaugeValue(0).Serialize().Should().Be("gauge,0");
+			new DoubleGaugeValue(-0.0).Serialize().Should().Be("gauge,0");
+			new DoubleGaugeValue(123.456).Serialize().Should().Be("gauge,123.456");
+			new DoubleGaugeValue(-123.456).Serialize().Should().Be("gauge,-123.456");
+			new DoubleGaugeValue(1.0 / 3).Serialize().Should().Be("gauge,0.3333333333333333");
+			new DoubleGaugeValue(200.00000000000000).Serialize().Should().Be("gauge,200");
+
+			FluentActions.Invoking(() => new DoubleCounterValue(double.NegativeInfinity, true)).Should().Throw<MetricException>().WithMessage("Value is infinite.");
+			FluentActions.Invoking(() => new DoubleCounterValue(double.PositiveInfinity, true)).Should().Throw<MetricException>().WithMessage("Value is infinite.");
+			FluentActions.Invoking(() => new DoubleCounterValue(double.NaN, true)).Should().Throw<MetricException>().WithMessage("Value is NaN.");
+		}
+
+		[Fact]
+		public void TestDoubleSummaryValue()
+		{
+			new DoubleSummaryValue(1.2, 3.4, 8.9, 4).Serialize().Should().Be("gauge,min=1.2,max=3.4,sum=8.9,count=4");
+			new DoubleSummaryValue(double.MinValue, double.MaxValue, double.MaxValue, 5).Serialize().Should().Be("gauge,min=-1.7976931348623157E+308,max=1.7976931348623157E+308,sum=1.7976931348623157E+308,count=5");
+			new DoubleSummaryValue(1.23e-18, 1.23e18, 5.6e18, 7).Serialize().Should().Be("gauge,min=1.23E-18,max=1.23E+18,sum=5.6E+18,count=7");
+			new DoubleSummaryValue(1.2, 1.2, 1.2, 4).Serialize().Should().Be("gauge,min=1.2,max=1.2,sum=1.2,count=4");
+
+			var values = new List<double> { 1.2, double.NegativeInfinity, double.PositiveInfinity, double.NaN };
+			Func<double, bool> isValidDouble = (double d) =>  double.IsFinite(d) && !double.IsNaN(d);
+			foreach (var i in values)
+			{
+				foreach (var j in values)
+				{
+					foreach (var k in values)
+					{
+						if (isValidDouble(i) && isValidDouble(j) && isValidDouble(k)){
+							new DoubleSummaryValue(i, j, k, 1).Serialize().Should().Be("gauge,min=1.2,max=1.2,sum=1.2,count=1");
+						} else {
+							FluentActions.Invoking(() => new DoubleSummaryValue(i, j, k, 1)).Should().Throw<MetricException>();
+						}
+					}
+				}
+			}
+
+			FluentActions.Invoking(() => new DoubleSummaryValue(1.2, 2.3, 5.6, -3)).Should().Throw<MetricException>().WithMessage("Count cannot be less than 0.");
+			FluentActions.Invoking(() => new DoubleSummaryValue(6.5, 1.2, 10.7, 5)).Should().Throw<MetricException>().WithMessage("Min cannot be larger than max.");
+		}
+
 	}
 }
-// TODO: test 1/3 and how many decimal places.

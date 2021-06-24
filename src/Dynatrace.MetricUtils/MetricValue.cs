@@ -44,13 +44,23 @@ namespace Dynatrace.MetricUtils
 			}
 		}
 
-		internal static string FormatDouble(double d){
-			// todo
-			if (d == -0) {
+		/// <remarks>
+	/// This function will return the Infinity symbol (∞) if Infinity is passed.
+	/// This is not valid for ingestion, but should never happen since the constructors
+	/// for values should throw on NaN and Infinity anyways.
+		/// </remarks>
+		internal static string FormatDouble(double d)
+		{
+			if (d == -0)
+			{
 				return "0";
 			}
-			// todo mantissa with .0
-			return d.ToString();
+			string serialized = d.ToString();
+			if (serialized.Contains("E") && !serialized.Contains("."))
+			{
+				serialized = serialized.Insert(serialized.IndexOf("E"), ".0");
+			}
+			return serialized;
 		}
 
 		internal sealed class LongCounterValue : IMetricValue
@@ -123,24 +133,18 @@ namespace Dynatrace.MetricUtils
 
 		internal sealed class DoubleCounterValue : IMetricValue
 		{
-			private readonly bool _isDelta;
 			private readonly double _value;
 
 			public DoubleCounterValue(double value, bool isDelta)
 			{
 				ThrowOnNanOrInfDouble(value);
 				this._value = value;
-				this._isDelta = isDelta;
 			}
 
 			public string Serialize()
 			{
-				if (this._isDelta)
-				{
-					return $"count,delta={this._value}";
-				}
 
-				return $"count,{this._value}";
+				return $"count,delta={FormatDouble(this._value)}";
 			}
 		}
 
@@ -156,7 +160,7 @@ namespace Dynatrace.MetricUtils
 
 			public string Serialize()
 			{
-				return $"gauge,{this._value}";
+				return $"gauge,{FormatDouble(this._value)}";
 			}
 		}
 
@@ -189,7 +193,7 @@ namespace Dynatrace.MetricUtils
 
 			public string Serialize()
 			{
-				return $"gauge,min={this._min},max={this._max},sum={this._sum},count={this._count}";
+				return $"gauge,min={FormatDouble(this._min)},max={FormatDouble(this._max)},sum={FormatDouble(this._sum)},count={FormatDouble(this._count)}";
 			}
 		}
 	}
