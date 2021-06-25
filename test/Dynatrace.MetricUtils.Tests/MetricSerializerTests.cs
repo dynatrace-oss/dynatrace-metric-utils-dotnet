@@ -380,11 +380,29 @@ namespace Dynatrace.MetricUtils.Tests
 			var before2000 = MetricsFactory.CreateLongGauge("before-2000", 3, timestamp: new DateTime(1999, 01, 01));
 			// 01. 01. 3500
 			var after3000 = MetricsFactory.CreateLongGauge("after-3000", 3, timestamp: new DateTime(3500, 01, 01));
-			var defaultDateTime = MetricsFactory.CreateLongGauge("default", 3, timestamp: new DateTime(1970, 01, 01));
+			var minDate = MetricsFactory.CreateLongGauge("min", 3, timestamp: DateTime.MinValue);
+			var maxDate = MetricsFactory.CreateLongGauge("max", 3, timestamp: DateTime.MinValue);
 
 			serializer.SerializeMetric(before2000).Should().Be("before-2000 gauge,3");
 			serializer.SerializeMetric(after3000).Should().Be("after-3000 gauge,3");
-			serializer.SerializeMetric(defaultDateTime).Should().Be("default gauge,3");
+			serializer.SerializeMetric(minDate).Should().Be("min gauge,3");
+			serializer.SerializeMetric(maxDate).Should().Be("max gauge,3");
+		}
+
+		[Fact]
+		public void TestDefaultTimestamp()
+		{
+			var serializer = new MetricsSerializer(Logger);
+			var implicitDefault = MetricsFactory.CreateLongGauge("implicit", 3);
+			var explicitDefault = MetricsFactory.CreateLongGauge("explicit", 3, timestamp: default);
+			var setNull = MetricsFactory.CreateLongGauge("set-null", 3, timestamp: null);
+
+			serializer.SerializeMetric(implicitDefault).Should().StartWith("implicit gauge,3 ").And
+				.HaveLength("implicit gauge,3 ".Length + TestTimestamp.Length);
+			serializer.SerializeMetric(explicitDefault).Should().StartWith("explicit gauge,3 ").And
+				.HaveLength("explicit gauge,3 ".Length + TestTimestamp.Length);
+			serializer.SerializeMetric(setNull).Should().StartWith("set-null gauge,3 ").And
+				.HaveLength("set-null gauge,3 ".Length + TestTimestamp.Length);
 		}
 	}
 }

@@ -23,101 +23,87 @@ namespace Dynatrace.MetricUtils
 	public static class MetricsFactory
 	{
 		public static Metric CreateLongCounter(string metricName, long value,
-			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime timestamp = default)
+			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime? timestamp = null)
 		{
 			if (dimensions == null)
 			{
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
 
-			if (default == timestamp)
-			{
-				timestamp = DateTime.Now;
-			}
+			var time = timestamp.HasValue ? timestamp.Value : DateTime.Now;
 
-			return new Metric(metricName, dimensions, new MetricValue.LongCounterValue(value), timestamp);
+			return new Metric(metricName, dimensions, new MetricValue.LongCounterValue(value),
+				timestamp.HasValue ? timestamp.Value : DateTime.Now);
 		}
 
 		public static Metric CreateLongGauge(string metricName, long value,
-			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime timestamp = default)
+			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime? timestamp = null)
 		{
 			if (dimensions == null)
 			{
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
 
-			if (default == timestamp)
-			{
-				timestamp = DateTime.Now;
-			}
+			var time = timestamp.HasValue ? timestamp.Value : DateTime.Now;
 
-			return new Metric(metricName, dimensions, new MetricValue.LongGaugeValue(value), timestamp);
+			return new Metric(metricName, dimensions, new MetricValue.LongGaugeValue(value),
+				timestamp.HasValue ? timestamp.Value : DateTime.Now);
 		}
 
 		public static Metric CreateLongSummary(string metricName, long min, long max, long sum, long count,
-			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime timestamp = default)
+			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime? timestamp = null)
 		{
 			if (dimensions == null)
 			{
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
 
-			if (default == timestamp)
-			{
-				timestamp = DateTime.Now;
-			}
+			var time = timestamp.HasValue ? timestamp.Value : DateTime.Now;
 
 			return new Metric(metricName, dimensions, new MetricValue.LongSummaryValue(min, max, sum, count),
-				timestamp);
+				timestamp.HasValue ? timestamp.Value : DateTime.Now);
 		}
 
 		public static Metric CreateDoubleCounter(string metricName, double value,
-			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime timestamp = default)
+			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime? timestamp = null)
 		{
 			if (dimensions == null)
 			{
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
 
-			if (default == timestamp)
-			{
-				timestamp = DateTime.Now;
-			}
+			var time = timestamp.HasValue ? timestamp.Value : DateTime.Now;
 
-			return new Metric(metricName, dimensions, new MetricValue.DoubleCounterValue(value), timestamp);
+			return new Metric(metricName, dimensions, new MetricValue.DoubleCounterValue(value),
+				timestamp.HasValue ? timestamp.Value : DateTime.Now);
 		}
 
 		public static Metric CreateDoubleGauge(string metricName, double value,
-			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime timestamp = default)
+			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime? timestamp = null)
 		{
 			if (dimensions == null)
 			{
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
 
-			if (default == timestamp)
-			{
-				timestamp = DateTime.Now;
-			}
+			var time = timestamp.HasValue ? timestamp.Value : DateTime.Now;
 
-			return new Metric(metricName, dimensions, new MetricValue.DoubleGaugeValue(value), timestamp);
+			return new Metric(metricName, dimensions, new MetricValue.DoubleGaugeValue(value),
+				timestamp.HasValue ? timestamp.Value : DateTime.Now);
 		}
 
 		public static Metric CreateDoubleSummary(string metricName, double min, double max, double sum, long count,
-			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime timestamp = default)
+			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime? timestamp = null)
 		{
 			if (dimensions == null)
 			{
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
 
-			if (default == timestamp)
-			{
-				timestamp = DateTime.Now;
-			}
+			var time = timestamp.HasValue ? timestamp.Value : DateTime.Now;
 
 			return new Metric(metricName, dimensions, new MetricValue.DoubleSummaryValue(min, max, sum, count),
-				timestamp);
+				timestamp.HasValue ? timestamp.Value : DateTime.Now);
 		}
 	}
 }
