@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -31,7 +32,7 @@ namespace Dynatrace.MetricUtils
 		private static readonly int MaxDimensions = 50;
 
 		// atomic integer used to count the number of times the timestamp warning should have been logged.
-		private static int timestampWarningCounter;
+		private static int _timestampWarningCounter;
 		private readonly List<KeyValuePair<string, string>> _defaultDimensions;
 		private readonly ILogger _logger;
 		private readonly string _prefix;
@@ -51,7 +52,7 @@ namespace Dynatrace.MetricUtils
 			IEnumerable<KeyValuePair<string, string>> defaultDimensions,
 			List<KeyValuePair<string, string>> staticDimensions)
 		{
-			this._logger = logger ?? new NullLogger<MetricsSerializer>();
+			this._logger = logger == null ? NullLogger.Instance : logger;
 			this._prefix = prefix;
 			this._defaultDimensions =
 				Normalize.DimensionList(defaultDimensions) ?? new List<KeyValuePair<string, string>>();
@@ -120,16 +121,17 @@ namespace Dynatrace.MetricUtils
 		{
 			if (timestamp.Year < 2000 || timestamp.Year > 3000)
 			{
-				if (Interlocked.Increment(ref timestampWarningCounter) == 1)
+				if (Interlocked.Increment(ref _timestampWarningCounter) == 1)
 				{
+					var time = timestamp.ToString(CultureInfo.InvariantCulture);
 					this._logger.LogWarning(
-						$"Order of magnitude of the timestamp seems off ({timestamp.ToString()}). "
+						$"Order of magnitude of the timestamp seems off ({time}). "
 						+ "The timestamp represents a time before the year 2000 or after the year 3000. "
 						+ "Skipping setting timestamp, the current server time will be added upon ingestion. "
 						+ $"Only one out of every {TimestampWarningThrottleFactor} of these messages will be printed.");
 				}
 
-				Interlocked.CompareExchange(ref timestampWarningCounter, 0, TimestampWarningThrottleFactor);
+				Interlocked.CompareExchange(ref _timestampWarningCounter, 0, TimestampWarningThrottleFactor);
 				return;
 			}
 

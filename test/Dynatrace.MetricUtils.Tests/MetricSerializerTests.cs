@@ -338,7 +338,6 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestMetricKeyInvalid()
 		{
-			var serializer = new MetricsSerializer(Logger);
 			var metric = MetricsFactory.CreateDoubleGauge("!@#$", 3.4, timestamp: TestDatetime);
 			new MetricsSerializer(Logger).SerializeMetric(metric).Should()
 				.Be("_ gauge,3.4 " + TestTimestamp);
@@ -403,6 +402,12 @@ namespace Dynatrace.MetricUtils.Tests
 				.HaveLength("explicit gauge,3 ".Length + TestTimestamp.Length);
 			serializer.SerializeMetric(setNull).Should().StartWith("set-null gauge,3 ").And
 				.HaveLength("set-null gauge,3 ".Length + TestTimestamp.Length);
+		}
+
+		[Fact]
+		public void TestAllDefaultValues()
+		{
+			FluentActions.Invoking(() => new MetricsSerializer()).Should().NotThrow();
 		}
 	}
 }

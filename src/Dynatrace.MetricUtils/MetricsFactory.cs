@@ -30,8 +30,6 @@ namespace Dynatrace.MetricUtils
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
 
-			var time = timestamp.HasValue ? timestamp.Value : DateTime.Now;
-
 			return new Metric(metricName, dimensions, new MetricValue.LongCounterValue(value),
 				timestamp.HasValue ? timestamp.Value : DateTime.Now);
 		}
@@ -43,8 +41,6 @@ namespace Dynatrace.MetricUtils
 			{
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
-
-			var time = timestamp.HasValue ? timestamp.Value : DateTime.Now;
 
 			return new Metric(metricName, dimensions, new MetricValue.LongGaugeValue(value),
 				timestamp.HasValue ? timestamp.Value : DateTime.Now);
@@ -58,8 +54,6 @@ namespace Dynatrace.MetricUtils
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
 
-			var time = timestamp.HasValue ? timestamp.Value : DateTime.Now;
-
 			return new Metric(metricName, dimensions, new MetricValue.LongSummaryValue(min, max, sum, count),
 				timestamp.HasValue ? timestamp.Value : DateTime.Now);
 		}
@@ -71,8 +65,6 @@ namespace Dynatrace.MetricUtils
 			{
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
-
-			var time = timestamp.HasValue ? timestamp.Value : DateTime.Now;
 
 			return new Metric(metricName, dimensions, new MetricValue.DoubleCounterValue(value),
 				timestamp.HasValue ? timestamp.Value : DateTime.Now);
@@ -86,8 +78,6 @@ namespace Dynatrace.MetricUtils
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
 
-			var time = timestamp.HasValue ? timestamp.Value : DateTime.Now;
-
 			return new Metric(metricName, dimensions, new MetricValue.DoubleGaugeValue(value),
 				timestamp.HasValue ? timestamp.Value : DateTime.Now);
 		}
@@ -99,8 +89,6 @@ namespace Dynatrace.MetricUtils
 			{
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
-
-			var time = timestamp.HasValue ? timestamp.Value : DateTime.Now;
 
 			return new Metric(metricName, dimensions, new MetricValue.DoubleSummaryValue(min, max, sum, count),
 				timestamp.HasValue ? timestamp.Value : DateTime.Now);
