@@ -68,7 +68,7 @@ namespace Dynatrace.MetricUtils
 
 			if (enrichWithDynatraceMetadata)
 			{
-				var enricher = new OneAgentMetadataEnricher(logger);
+				var enricher = new OneAgentMetadataEnricher(logger == null ? NullLogger.Instance : logger);
 				enricher.EnrichWithDynatraceMetadata(staticDimensions);
 			}
 

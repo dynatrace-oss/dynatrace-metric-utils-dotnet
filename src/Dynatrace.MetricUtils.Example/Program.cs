@@ -74,6 +74,28 @@ namespace Dynatrace.MetricUtils.Example
 			// DynatraceMetricApiConstants contains constants that can be accessed like this:
 			Console.WriteLine(DynatraceMetricApiConstants.DefaultOneAgentEndpoint);
 			Console.WriteLine(DynatraceMetricApiConstants.PayloadLinesLimit);
+
+			// Upon creation of invalid metrics, a MetricException is thrown:
+			try
+			{
+				// min > max is an invalid state and will throw.
+				MetricsFactory.CreateLongSummary("metric", 100, 10, 10, 3);
+			}
+			catch (MetricException me)
+			{
+				Console.WriteLine(me.Message);
+			}
+
+			// Invalid metric keys will only be detected upon serialization, which can also throw:
+			try
+			{
+				// an empty metric name is not permitted
+				new MetricsSerializer().SerializeMetric(MetricsFactory.CreateLongGauge("", 2));
+			}
+			catch (MetricException me)
+			{
+				Console.WriteLine(me.Message);
+			}
 		}
 	}
 }
