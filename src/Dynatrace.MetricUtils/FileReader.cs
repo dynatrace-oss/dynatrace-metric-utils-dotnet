@@ -21,6 +21,7 @@ namespace Dynatrace.MetricUtils
 	/// <summary>
 	///     Provides specific file reading operations, which are passed through to the
 	///     respective methods on <c>System.IO.File</c>
+	///     This layer of abstraction is used for testing (mocking file IO).
 	/// </summary>
 	internal interface IFileReader
 	{

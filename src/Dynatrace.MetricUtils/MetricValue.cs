@@ -47,11 +47,6 @@ namespace Dynatrace.MetricUtils
 			}
 		}
 
-		/// <remarks>
-		///     This function will return the Infinity symbol (∞) if Infinity is passed.
-		///     This is not valid for ingestion, but should never happen since the constructors
-		///     for values should throw on NaN and Infinity anyways.
-		/// </remarks>
 		internal static string FormatDouble(double d)
 		{
 			// d is exactly 0 or -0.

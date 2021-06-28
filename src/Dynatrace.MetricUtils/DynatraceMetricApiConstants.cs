@@ -23,8 +23,10 @@ namespace Dynatrace.MetricUtils
 		private const int MaxDims = 50;
 
 		/// <summary>
-		/// The default local OneAgent endpoint to which metrics can be exported.
-		/// See https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/local-api/ for more information.
+		///     The default local OneAgent endpoint to which metrics can be exported.
+		///     See
+		///     https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/local-api/
+		///     for more information.
 		/// </summary>
 		public static string DefaultOneAgentEndpoint => OneAgentEndpoint;
 

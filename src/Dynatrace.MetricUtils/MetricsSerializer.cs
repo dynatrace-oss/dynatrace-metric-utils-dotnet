@@ -29,7 +29,6 @@ namespace Dynatrace.MetricUtils
 	{
 		private const int MetricLineMaxLength = 2000;
 		private const int TimestampWarningThrottleFactor = 1000;
-		private static readonly int MaxDimensions = 50;
 
 		// atomic integer used to count the number of times the timestamp warning should have been logged.
 		private static int _timestampWarningCounter;
@@ -97,7 +96,7 @@ namespace Dynatrace.MetricUtils
 		private void SerializeMetric(StringBuilder sb, Metric metric)
 		{
 			var metricKey = this.CreateMetricKey(metric);
-			// skip lines with invalid metric keys.
+			// throw on lines with invalid metric keys.
 			if (string.IsNullOrEmpty(metricKey))
 			{
 				throw new MetricException("Metric key can't be undefined.");
@@ -189,7 +188,7 @@ namespace Dynatrace.MetricUtils
 		private void WriteDimensions(StringBuilder sb, List<KeyValuePair<string, string>> dimensions)
 		{
 			// should be negative if there are fewer dimensions than the maximum
-			var diffToMaxDimensions = MaxDimensions - dimensions.Count;
+			var diffToMaxDimensions = DynatraceMetricApiConstants.MaximumDimensions - dimensions.Count;
 			var toSkip = diffToMaxDimensions < 0 ? Math.Abs(diffToMaxDimensions) : 0;
 
 			// if there are more dimensions, skip the first n dimensions so that 50 dimensions remain
