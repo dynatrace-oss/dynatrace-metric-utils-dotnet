@@ -34,7 +34,10 @@ namespace Dynatrace.MetricUtils.Tests
 		{
 			var enricher = new OneAgentMetadataEnricher(Logger);
 			var metadata = enricher.ProcessMetadata(new[] {"a=123", "b=456"});
-			metadata.Should().Equal(new List<KeyValuePair<string, string>> {new("a", "123"), new("b", "456")});
+			metadata.Should().Equal(new List<KeyValuePair<string, string>>
+			{
+				new KeyValuePair<string, string>("a", "123"), new KeyValuePair<string, string>("b", "456")
+			});
 		}
 
 		[Fact]
@@ -57,14 +60,17 @@ namespace Dynatrace.MetricUtils.Tests
 
 			var targetList = new List<KeyValuePair<string, string>>
 			{
-				KeyValuePair.Create("initialDimensionKey", "initialDimensionValue")
+				new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue")
 			};
 			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
 
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 			// contains only the element that was in the list before.
 			targetList.Should()
-				.Equal(new List<KeyValuePair<string, string>> {new("initialDimensionKey", "initialDimensionValue")});
+				.Equal(new List<KeyValuePair<string, string>>
+				{
+					new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue")
+				});
 			Mock.Get(fileReader)
 				.Verify(mock => mock.ReadAllText("dt_metadata_e617c525669e072eebe3d0f08212e8f2.properties"),
 					Times.Once());
@@ -75,14 +81,17 @@ namespace Dynatrace.MetricUtils.Tests
 		{
 			var fileReader = Mock.Of<IFileReader>();
 			Mock.Get(fileReader).Setup(f => f.ReadAllText(It.IsAny<string>())).Throws<UnauthorizedAccessException>();
-			var kv = KeyValuePair.Create("initialDimensionKey", "initialDimensionValue");
+			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
-				.Equal(new List<KeyValuePair<string, string>> {new("initialDimensionKey", "initialDimensionValue")});
+				.Equal(new List<KeyValuePair<string, string>>
+				{
+					new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue")
+				});
 			Mock.Get(fileReader).Verify(f => f.ReadAllText("dt_metadata_e617c525669e072eebe3d0f08212e8f2.properties"),
 				Times.Once());
 		}
@@ -93,14 +102,17 @@ namespace Dynatrace.MetricUtils.Tests
 			var fileReader = Mock.Of<IFileReader>();
 			// there is a whole host of exceptions that can be thrown by ReadAllText: https://docs.microsoft.com/en-us/dotnet/api/system.io.file.readalltext?view=net-5.0
 			Mock.Get(fileReader).Setup(f => f.ReadAllText(It.IsAny<string>())).Throws<Exception>();
-			var kv = KeyValuePair.Create("initialDimensionKey", "initialDimensionValue");
+			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
-				.Equal(new List<KeyValuePair<string, string>> {new("initialDimensionKey", "initialDimensionValue")});
+				.Equal(new List<KeyValuePair<string, string>>
+				{
+					new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue")
+				});
 			Mock.Get(fileReader).Verify(f => f.ReadAllText("dt_metadata_e617c525669e072eebe3d0f08212e8f2.properties"),
 				Times.Once());
 		}
@@ -110,14 +122,17 @@ namespace Dynatrace.MetricUtils.Tests
 		{
 			var fileReader = Mock.Of<IFileReader>();
 			Mock.Get(fileReader).Setup(f => f.ReadAllText(It.IsAny<string>())).Returns("");
-			var kv = KeyValuePair.Create("initialDimensionKey", "initialDimensionValue");
+			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
-				.Equal(new List<KeyValuePair<string, string>> {new("initialDimensionKey", "initialDimensionValue")});
+				.Equal(new List<KeyValuePair<string, string>>
+				{
+					new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue")
+				});
 			Mock.Get(fileReader).Verify(f => f.ReadAllText("dt_metadata_e617c525669e072eebe3d0f08212e8f2.properties"),
 				Times.Once());
 			// if the OneAgent metadata file is empty, there should be no attempt at reading the contents.
@@ -134,14 +149,17 @@ namespace Dynatrace.MetricUtils.Tests
             and some more text";
 
 			Mock.Get(fileReader).Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(indirectionFileContent);
-			var kv = KeyValuePair.Create("initialDimensionKey", "initialDimensionValue");
+			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
-				.Equal(new List<KeyValuePair<string, string>> {new("initialDimensionKey", "initialDimensionValue")});
+				.Equal(new List<KeyValuePair<string, string>>
+				{
+					new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue")
+				});
 			Mock.Get(fileReader).Verify(f => f.ReadAllText("dt_metadata_e617c525669e072eebe3d0f08212e8f2.properties"),
 				Times.Once());
 			// if the OneAgent metadata file is empty, there should be no attempt at reading the contents.
@@ -155,14 +173,17 @@ namespace Dynatrace.MetricUtils.Tests
 			Mock.Get(fileReader).Setup(f => f.ReadAllText(It.IsAny<string>()))
 				.Returns("indirection_file_name.properties");
 			Mock.Get(fileReader).Setup(f => f.ReadAllLines(It.IsAny<string>())).Throws<FileNotFoundException>();
-			var kv = KeyValuePair.Create("initialDimensionKey", "initialDimensionValue");
+			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
-				.Equal(new List<KeyValuePair<string, string>> {new("initialDimensionKey", "initialDimensionValue")});
+				.Equal(new List<KeyValuePair<string, string>>
+				{
+					new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue")
+				});
 			Mock.Get(fileReader).Verify(f => f.ReadAllText("dt_metadata_e617c525669e072eebe3d0f08212e8f2.properties"),
 				Times.Once());
 			Mock.Get(fileReader).Verify(f => f.ReadAllLines("indirection_file_name.properties"), Times.Once());
@@ -175,14 +196,17 @@ namespace Dynatrace.MetricUtils.Tests
 			Mock.Get(fileReader).Setup(f => f.ReadAllText(It.IsAny<string>()))
 				.Returns("indirection_file_name.properties");
 			Mock.Get(fileReader).Setup(f => f.ReadAllLines(It.IsAny<string>())).Throws<AccessViolationException>();
-			var kv = KeyValuePair.Create("initialDimensionKey", "initialDimensionValue");
+			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
-				.Equal(new List<KeyValuePair<string, string>> {new("initialDimensionKey", "initialDimensionValue")});
+				.Equal(new List<KeyValuePair<string, string>>
+				{
+					new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue")
+				});
 			Mock.Get(fileReader).Verify(f => f.ReadAllText("dt_metadata_e617c525669e072eebe3d0f08212e8f2.properties"),
 				Times.Once());
 			Mock.Get(fileReader).Verify(f => f.ReadAllLines("indirection_file_name.properties"), Times.Once());
@@ -195,14 +219,17 @@ namespace Dynatrace.MetricUtils.Tests
 			Mock.Get(fileReader).Setup(f => f.ReadAllText(It.IsAny<string>()))
 				.Returns("indirection_file_name.properties");
 			Mock.Get(fileReader).Setup(f => f.ReadAllLines(It.IsAny<string>())).Throws<Exception>();
-			var kv = KeyValuePair.Create("initialDimensionKey", "initialDimensionValue");
+			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
-				.Equal(new List<KeyValuePair<string, string>> {new("initialDimensionKey", "initialDimensionValue")});
+				.Equal(new List<KeyValuePair<string, string>>
+				{
+					new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue")
+				});
 			Mock.Get(fileReader).Verify(f => f.ReadAllText("dt_metadata_e617c525669e072eebe3d0f08212e8f2.properties"),
 				Times.Once());
 			Mock.Get(fileReader).Verify(f => f.ReadAllLines("indirection_file_name.properties"), Times.Once());
@@ -215,14 +242,17 @@ namespace Dynatrace.MetricUtils.Tests
 			Mock.Get(fileReader).Setup(f => f.ReadAllText(It.IsAny<string>()))
 				.Returns("indirection_file_name.properties");
 			Mock.Get(fileReader).Setup(f => f.ReadAllLines(It.IsAny<string>())).Returns(Array.Empty<string>());
-			var kv = KeyValuePair.Create("initialDimensionKey", "initialDimensionValue");
+			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
-				.Equal(new List<KeyValuePair<string, string>> {new("initialDimensionKey", "initialDimensionValue")});
+				.Equal(new List<KeyValuePair<string, string>>
+				{
+					new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue")
+				});
 			Mock.Get(fileReader).Verify(f => f.ReadAllText("dt_metadata_e617c525669e072eebe3d0f08212e8f2.properties"),
 				Times.Once());
 			Mock.Get(fileReader).Verify(f => f.ReadAllLines("indirection_file_name.properties"), Times.Once());
@@ -236,7 +266,7 @@ namespace Dynatrace.MetricUtils.Tests
 				.Returns("indirection_file_name.properties");
 			Mock.Get(fileReader).Setup(f => f.ReadAllLines(It.IsAny<string>()))
 				.Returns(new[] {"key1=value1", "key2=value2"});
-			var kv = KeyValuePair.Create("initialDimensionKey", "initialDimensionValue");
+			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
@@ -245,9 +275,9 @@ namespace Dynatrace.MetricUtils.Tests
 			targetList.Should().Equal(
 				new List<KeyValuePair<string, string>>
 				{
-					new("initialDimensionKey", "initialDimensionValue"),
-					new("key1", "value1"),
-					new("key2", "value2")
+					new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue"),
+					new KeyValuePair<string, string>("key1", "value1"),
+					new KeyValuePair<string, string>("key2", "value2")
 				}
 			);
 			Mock.Get(fileReader).Verify(f => f.ReadAllText("dt_metadata_e617c525669e072eebe3d0f08212e8f2.properties"),
@@ -263,7 +293,7 @@ namespace Dynatrace.MetricUtils.Tests
 				.Returns("indirection_file_name.properties");
 			Mock.Get(fileReader).Setup(f => f.ReadAllLines(It.IsAny<string>()))
 				.Returns(new[] {"key1=value1", "key2=", "=value2", "==="});
-			var kv = KeyValuePair.Create("initialDimensionKey", "initialDimensionValue");
+			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
@@ -272,7 +302,8 @@ namespace Dynatrace.MetricUtils.Tests
 			targetList.Should().Equal(
 				new List<KeyValuePair<string, string>>
 				{
-					new("initialDimensionKey", "initialDimensionValue"), new("key1", "value1")
+					new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue"),
+					new KeyValuePair<string, string>("key1", "value1")
 				}
 			);
 			Mock.Get(fileReader).Verify(f => f.ReadAllText("dt_metadata_e617c525669e072eebe3d0f08212e8f2.properties"),

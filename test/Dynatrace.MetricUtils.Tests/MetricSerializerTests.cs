@@ -35,7 +35,11 @@ namespace Dynatrace.MetricUtils.Tests
 			$"{new DateTimeOffset(TestDatetime.ToLocalTime()).ToUnixTimeMilliseconds()}";
 
 		private static readonly IEnumerable<KeyValuePair<string, string>> TestDimensions =
-			new List<KeyValuePair<string, string>> {new("dim1", "value1"), new("dim2", "value2")};
+			new List<KeyValuePair<string, string>>
+			{
+				new KeyValuePair<string, string>("dim1", "value1"),
+				new KeyValuePair<string, string>("dim2", "value2")
+			};
 
 		[Fact]
 		public void SerializeLongCounter()
@@ -195,7 +199,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDimensionValuesNormalized()
 		{
-			var dims = new List<KeyValuePair<string, string>> {new("dim1", "\\=\" ==")};
+			var dims = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("dim1", "\\=\" ==")};
 			var metric = MetricsFactory.CreateLongCounter("metric1", 100, dims, TestDatetime);
 
 			var serialized = new MetricsSerializer(Logger).SerializeMetric(metric);
@@ -228,7 +232,8 @@ namespace Dynatrace.MetricUtils.Tests
 			var metric = MetricsFactory.CreateLongCounter("metric", 100, TestDimensions, TestDatetime);
 			var defaultDimensions = new List<KeyValuePair<string, string>>
 			{
-				new("default1", "value1"), new("default2", "value2")
+				new KeyValuePair<string, string>("default1", "value1"),
+				new KeyValuePair<string, string>("default2", "value2")
 			};
 
 			var serialized =
@@ -260,13 +265,20 @@ namespace Dynatrace.MetricUtils.Tests
 		{
 			var defaultDimensions = new List<KeyValuePair<string, string>>
 			{
-				new("dim1", "default1"), new("dim2", "default2"), new("dim3", "default3")
+				new KeyValuePair<string, string>("dim1", "default1"),
+				new KeyValuePair<string, string>("dim2", "default2"),
+				new KeyValuePair<string, string>("dim3", "default3")
 			};
 
 			var metricDimensions =
-				new List<KeyValuePair<string, string>> {new("dim2", "metric2"), new("dim3", "metric3")};
+				new List<KeyValuePair<string, string>>
+				{
+					new KeyValuePair<string, string>("dim2", "metric2"),
+					new KeyValuePair<string, string>("dim3", "metric3")
+				};
 
-			var staticDimensions = new List<KeyValuePair<string, string>> {new("dim3", "static3")};
+			var staticDimensions =
+				new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("dim3", "static3")};
 
 			var metric = MetricsFactory.CreateLongCounter("metric", 100, metricDimensions, TestDatetime);
 
@@ -282,7 +294,9 @@ namespace Dynatrace.MetricUtils.Tests
 		{
 			var defaultDimensions = new List<KeyValuePair<string, string>>
 			{
-				new("dim1", "default1"), new("dim2", "default2"), new("dim3", "default3")
+				new KeyValuePair<string, string>("dim1", "default1"),
+				new KeyValuePair<string, string>("dim2", "default2"),
+				new KeyValuePair<string, string>("dim3", "default3")
 			};
 
 			MetricsSerializer.MergeDimensions(defaultDimensions).Should().Equal(defaultDimensions);
@@ -293,18 +307,27 @@ namespace Dynatrace.MetricUtils.Tests
 		{
 			var defaultDimensions = new List<KeyValuePair<string, string>>
 			{
-				new("dim1", "default1"), new("dim2", "default2"), new("dim3", "default3")
+				new KeyValuePair<string, string>("dim1", "default1"),
+				new KeyValuePair<string, string>("dim2", "default2"),
+				new KeyValuePair<string, string>("dim3", "default3")
 			};
 
 			var metricDimensions =
-				new List<KeyValuePair<string, string>> {new("dim2", "metric2"), new("dim3", "metric3")};
+				new List<KeyValuePair<string, string>>
+				{
+					new KeyValuePair<string, string>("dim2", "metric2"),
+					new KeyValuePair<string, string>("dim3", "metric3")
+				};
 
-			var staticDimensions = new List<KeyValuePair<string, string>> {new("dim3", "static3")};
+			var staticDimensions =
+				new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("dim3", "static3")};
 
 			MetricsSerializer.MergeDimensions(defaultDimensions, metricDimensions, staticDimensions).Should()
 				.Equal(new List<KeyValuePair<string, string>>
 				{
-					new("dim1", "default1"), new("dim2", "metric2"), new("dim3", "static3")
+					new KeyValuePair<string, string>("dim1", "default1"),
+					new KeyValuePair<string, string>("dim2", "metric2"),
+					new KeyValuePair<string, string>("dim3", "static3")
 				});
 		}
 
@@ -314,23 +337,27 @@ namespace Dynatrace.MetricUtils.Tests
 			var someDimensions =
 				new List<KeyValuePair<string, string>>
 				{
-					new("some1", "val1"), new("some2", "val2"), new("some3", "val3")
+					new KeyValuePair<string, string>("some1", "val1"),
+					new KeyValuePair<string, string>("some2", "val2"),
+					new KeyValuePair<string, string>("some3", "val3")
 				};
 			var otherDimensions = new List<KeyValuePair<string, string>>
 			{
-				new("other1", "val1"), new("other2", "val2"), new("other3", "val3")
+				new KeyValuePair<string, string>("other1", "val1"),
+				new KeyValuePair<string, string>("other2", "val2"),
+				new KeyValuePair<string, string>("other3", "val3")
 			};
 
 			MetricsSerializer.MergeDimensions(someDimensions, otherDimensions)
 				.Should().Equal(
 					new List<KeyValuePair<string, string>>
 					{
-						new("some1", "val1"),
-						new("some2", "val2"),
-						new("some3", "val3"),
-						new("other1", "val1"),
-						new("other2", "val2"),
-						new("other3", "val3")
+						new KeyValuePair<string, string>("some1", "val1"),
+						new KeyValuePair<string, string>("some2", "val2"),
+						new KeyValuePair<string, string>("some3", "val3"),
+						new KeyValuePair<string, string>("other1", "val1"),
+						new KeyValuePair<string, string>("other2", "val2"),
+						new KeyValuePair<string, string>("other3", "val3")
 					}
 				);
 		}

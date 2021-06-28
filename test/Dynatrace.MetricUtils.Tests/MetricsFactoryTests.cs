@@ -24,9 +24,12 @@ namespace Dynatrace.MetricUtils.Tests
 	public class MetricsFactoryTests
 	{
 		private static readonly IEnumerable<KeyValuePair<string, string>> TestDims =
-			new List<KeyValuePair<string, string>> {new("dim1", "val1"), new("dim2", "val2")};
+			new List<KeyValuePair<string, string>>
+			{
+				new KeyValuePair<string, string>("dim1", "val1"), new KeyValuePair<string, string>("dim2", "val2")
+			};
 
-		private static readonly DateTime TestTimestamp = new(2021, 1, 1, 6, 00, 00);
+		private static readonly DateTime TestTimestamp = new DateTime(2021, 1, 1, 6, 00, 00);
 
 		[Fact]
 		public void TestLongCounter()
@@ -259,7 +262,7 @@ namespace Dynatrace.MetricUtils.Tests
 		public void TestDoubleSummaryNanAndInf()
 		{
 			var values = new List<double> {1.1, double.PositiveInfinity, double.NegativeInfinity, double.NaN};
-			Func<double, bool> notNanOrInf = d => double.IsFinite(d) && !double.IsNaN(d);
+			Func<double, bool> notNanOrInf = d => !double.IsInfinity(d) && !double.IsNaN(d);
 			foreach (var i in values)
 			{
 				foreach (var j in values)

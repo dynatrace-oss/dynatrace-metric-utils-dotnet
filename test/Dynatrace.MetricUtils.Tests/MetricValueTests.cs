@@ -153,7 +153,7 @@ namespace Dynatrace.MetricUtils.Tests
 		public void TestDoubleSummaryValueInvalidsLoop()
 		{
 			var values = new List<double> {1.2, double.NegativeInfinity, double.PositiveInfinity, double.NaN};
-			Func<double, bool> isValidDouble = d => double.IsFinite(d) && !double.IsNaN(d);
+			Func<double, bool> isValidDouble = d => !double.IsInfinity(d) && !double.IsNaN(d);
 			foreach (var i in values)
 			{
 				foreach (var j in values)
