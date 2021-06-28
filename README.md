@@ -38,8 +38,10 @@ This will create a metric with the current timestamp.
 Additionally, it is possible to pass a list of dimensions to the metric upon creation:
 
 ```csharp
-
-var dimensions = new List<KeyValuePair<string, string>> {new("dim1", "val1"), new("dim2", "val2")};
+var dimensions = new List<KeyValuePair<string, string>> {
+	new KeyValuePair<string, string>("dim1", "val1"),
+	new KeyValuePair<string, string>("dim2", "val2")
+};
 
 var metric = MetricsFactory.CreateLongCounter("long-counter", 23, dimensions);
 ```
@@ -73,14 +75,17 @@ var loggerFactory = LoggerFactory.Create(builder =>
 var logger = loggerFactory.CreateLogger<MetricsSerializer>()
 
 // Create a list of default dimensions which are added to all metrics serialized by this serializer.
-var defaultDimensions = new List<KeyValuePair<string, string>> {new("default1", "value1"), new("default2", "value2")};
+var defaultDimensions = new List<KeyValuePair<string, string>> {
+	new KeyValuePair<string, string>("default1", "value1"),
+	new KeyValuePair<string, string>("default2", "value2")
+};
 
 // Set up the MetricsSerializer. All parameters are optional:
 var serializer = new MetricsSerializer(
-  logger,    // This logger will be used to log errors in normalization.
-  "prefix",   // A prefix added to all exported metric names.
-  defaultDimensions, // Default dimensions that will be added to all exported metrics.
-  "metrics-source",  // Set the metrics source. Will be exported as dimension with "dt.metrics.source" as its key.
+  logger,             // This logger will be used to log errors in normalization.
+  "prefix",           // A prefix added to all exported metric names.
+  defaultDimensions,  // Default dimensions that will be added to all exported metrics.
+  "metrics-source",   // Set the metrics source. Will be exported as dimension with "dt.metrics.source" as its key.
   true    // Turn Dynatrace metadata enrichment on or off (true by default).
 );
 

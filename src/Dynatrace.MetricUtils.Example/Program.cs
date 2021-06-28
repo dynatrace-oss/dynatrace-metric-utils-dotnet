@@ -34,14 +34,19 @@ namespace Dynatrace.MetricUtils.Example
 
 			// Set up default dimensions, which will be added to every serialized metric.
 			var defaultDimensions =
-				new List<KeyValuePair<string, string>> {new("default1", "value1"), new("default2", "value2")};
+				new List<KeyValuePair<string, string>>
+				{
+					new KeyValuePair<string, string>("default1", "value1"),
+					new KeyValuePair<string, string>("default2", "value2")
+				};
 			// Set up a Metrics Serializer. All parameters are optional.
 			// If no logger is provided, log information is discarded.
 			// the serializer is intended to be used for many metrics.
 			var serializer = new MetricsSerializer(logger, "prefix", defaultDimensions);
 
 			// then, create metrics themselves using the MetricsFactory
-			var metricDimensions = new List<KeyValuePair<string, string>> {new("dim1", "val1")};
+			var metricDimensions =
+				new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("dim1", "val1")};
 			var metrics = new List<Metric>
 			{
 				// If no DateTime is specified as the last parameter, the current timestamp will be used
