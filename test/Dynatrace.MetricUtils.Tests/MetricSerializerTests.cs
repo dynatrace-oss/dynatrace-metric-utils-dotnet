@@ -200,7 +200,7 @@ namespace Dynatrace.MetricUtils.Tests
 
 			var serialized = new MetricsSerializer(Logger).SerializeMetric(metric);
 			serialized.Should()
-				.Be("metric1,dim1=\\\\\\=\"\\ \\=\\= count,delta=100 " + TestTimestamp);
+				.Be("metric1,dim1=\\\\\\=\\\"\\ \\=\\= count,delta=100 " + TestTimestamp);
 		}
 
 		[Fact]
@@ -252,7 +252,7 @@ namespace Dynatrace.MetricUtils.Tests
 
 			// invalid characters in source will be escaped:
 			new MetricsSerializer(Logger, metricsSource: "esc\\ape=this\"").SerializeMetric(metric)
-				.Should().Be("metric,dt.metrics.source=esc\\\\ape\\=this\" count,delta=100 " + TestTimestamp);
+				.Should().Be("metric,dt.metrics.source=esc\\\\ape\\=this\\\" count,delta=100 " + TestTimestamp);
 		}
 
 		[Fact]

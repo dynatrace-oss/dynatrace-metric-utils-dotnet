@@ -196,9 +196,10 @@ namespace Dynatrace.MetricUtils.Tests
 		[InlineData("escape comma", "a,b", "a\\,b")]
 		[InlineData("escape equals", "a=b", "a\\=b")]
 		[InlineData("escape backslash", "a\\b", "a\\\\b")]
+		[InlineData("escape double quotes", "a\"b\"\"c", "a\\\"b\\\"\\\"c")]
 		[InlineData("escape multiple special chars", " ,=\\", "\\ \\,\\=\\\\")]
 		[InlineData("escape consecutive special chars", "  ,,==\\\\", "\\ \\ \\,\\,\\=\\=\\\\\\\\")]
-		[InlineData("escape key-value pair", "key=\"value\"", "key\\=\"value\"")]
+		[InlineData("escape key-value pair", "key=\"value\"", "key\\=\\\"value\\\"")]
 		public void DimensionValueEscapedCorrectly(string name, string input, string expected)
 		{
 			Assert.Equal(expected, Normalize.EscapeDimensionValue(input));

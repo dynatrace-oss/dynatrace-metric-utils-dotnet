@@ -47,7 +47,7 @@ namespace Dynatrace.MetricUtils
 
 		// Dimension values (dv)
 		// Characters that need to be escaped in dimension values
-		private static readonly Regex ReDvCharactersToEscape = new Regex("([= ,\\\\])", RegexOptions.Compiled);
+		private static readonly Regex ReDvCharactersToEscape = new Regex("([= ,\\\\\"])", RegexOptions.Compiled);
 		private static readonly Regex ReDvControlCharacters = new Regex("[\\p{C}]+", RegexOptions.Compiled);
 
 		// This regex checks if there is an odd number of trailing backslashes in the string. It can be
