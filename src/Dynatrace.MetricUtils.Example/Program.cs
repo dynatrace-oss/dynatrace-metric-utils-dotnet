@@ -72,8 +72,9 @@ namespace Dynatrace.MetricUtils.Example
 			// prefix.double-summary,default1=value1,default2=value2,dim1=val1 gauge,min=3.1,max=6.543,sum=20.123,count=4 1624544148089
 
 			// DynatraceMetricApiConstants contains constants that can be accessed like this:
-			Console.WriteLine(DynatraceMetricApiConstants.DefaultOneAgentEndpoint);
-			Console.WriteLine(DynatraceMetricApiConstants.PayloadLinesLimit);
+			Console.WriteLine($"Default local OneAgent endpoint:\t{DynatraceMetricApiConstants.DefaultOneAgentEndpoint}");
+			Console.WriteLine($"Maximum lines per ingest request:\t{DynatraceMetricApiConstants.PayloadLinesLimit}");
+			Console.WriteLine($"Maximum dimensions per metric key:\t{DynatraceMetricApiConstants.MaximumDimensions}");
 
 			// Upon creation of invalid metrics, a MetricException is thrown:
 			try

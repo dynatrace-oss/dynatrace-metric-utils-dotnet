@@ -20,9 +20,18 @@ namespace Dynatrace.MetricUtils
 	{
 		private const string OneAgentEndpoint = "http://localhost:14499/metrics/ingest";
 		private const int LinesLimit = 1000;
+		private const int MaxDims = 50;
 
+		/// <summary>
+		/// The default local OneAgent endpoint to which metrics can be exported.
+		/// See https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/local-api/ for more information.
+		/// </summary>
 		public static string DefaultOneAgentEndpoint => OneAgentEndpoint;
 
+		/// <summary>The maximum number of lines per metrics ingest request.</summary>
 		public static int PayloadLinesLimit => LinesLimit;
+
+		/// <summary>The maximum number of dimensions that can be attached to one metric key.</summary>
+		public static int MaximumDimensions => MaxDims;
 	}
 }

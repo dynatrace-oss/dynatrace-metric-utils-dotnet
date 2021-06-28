@@ -97,7 +97,6 @@ The constants can be accessed via the static getter methods:
 
 ```csharp
 Console.WriteLine(DynatraceMetricApiConstants.DefaultOneAgentEndpoint);
-Console.WriteLine(DynatraceMetricApiConstants.PayloadLinesLimit);
 ```
 
 This repository contains [an example project](src/Dynatrace.MetricUtils.Example) demonstrating the use of the `MetricsFactory` and the `MetricsSerializer`.
@@ -107,6 +106,7 @@ Currently available constants are:
 
 - the default [local OneAgent metric API](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/local-api/) endpoint (`DynatraceMetricApiConstants.DefaultOneAgentEndpoint`)
 - the limit for how many metric lines can be ingested in one request (`DynatraceMetricApiConstants.PayloadLinesLimit`)
+- the limit for how many dimensions can be added to each metric key (`DynatraceMetricApiConstants.MaximumDimensions`)
 
 ### Dynatrace Metadata enrichment
 
