@@ -49,17 +49,25 @@ namespace Dynatrace.MetricUtils
 
 		internal static string FormatDouble(double d)
 		{
-			// d is exactly 0 or -0.
+			// d is exactly 0 or -0. Used to make sure -0 is exported as "0".
 			if (Math.Abs(d).Equals(0.0))
 			{
 				return "0";
 			}
 
-			var serialized = d.ToString(CultureInfo.InvariantCulture);
-			if (serialized.Contains("E") && !serialized.Contains("."))
-			{
-				serialized = serialized.Insert(serialized.IndexOf("E", StringComparison.InvariantCulture), ".0");
+			// use exponential notation with 15 decimal places and at least one trailing decimal place before the exponent.
+			// for numbers greater than -10^-15 and smaller than 10^-15.
+			if (Math.Abs(d) < 1e-15) {
+				return d.ToString("0.0##############E-0", CultureInfo.InvariantCulture);
 			}
+
+			// for numbers greater than 10^15 or smaller than -10^15
+			if (Math.Abs(d) > 1e+15) {
+				return d.ToString("0.0##############E+0", CultureInfo.InvariantCulture);
+			}
+
+			// set a fixed number of decimal places, as different c# versions seem to have different defaults.
+			var serialized = d.ToString("0.###############", CultureInfo.InvariantCulture);
 
 			return serialized;
 		}
