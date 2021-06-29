@@ -40,7 +40,7 @@ jobs:
     - name: Test on .NET Core 3.1.x
       run: dotnet test --no-restore --verbosity normal --framework netcoreapp3.1
 
-    - name: Test on .NET 5.0.x
+    - name: Test on .NET Core 5.0.x
       run: dotnet test --no-restore --verbosity normal --framework net5.0
 
     - name: Package
