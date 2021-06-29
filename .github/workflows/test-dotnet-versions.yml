@@ -34,8 +34,14 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
 
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
+    - name: Test .NET Framework 2.1.x
+      run: dotnet test --no-restore --verbosity normal --framework netcoreapp2.1
+
+    - name: Test .NET Framework 3.1.x
+      run: dotnet test --no-restore --verbosity normal --framework netcoreapp3.1
+
+    - name: Test .NET Framework 5.0.x
+      run: dotnet test --no-restore --verbosity normal --framework net5.0
 
     - name: Package
       run: dotnet pack src/Dynatrace.MetricUtils --configuration Release --no-build
