@@ -34,13 +34,13 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
 
-    - name: Test .NET Framework 2.1.x
+    - name: Test on .NET Core 2.1.x
       run: dotnet test --no-restore --verbosity normal --framework netcoreapp2.1
 
-    - name: Test .NET Framework 3.1.x
+    - name: Test on .NET Core 3.1.x
       run: dotnet test --no-restore --verbosity normal --framework netcoreapp3.1
 
-    - name: Test .NET Framework 5.0.x
+    - name: Test on .NET 5.0.x
       run: dotnet test --no-restore --verbosity normal --framework net5.0
 
     - name: Package
