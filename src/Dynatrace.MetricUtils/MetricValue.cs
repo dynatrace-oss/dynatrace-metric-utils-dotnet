@@ -57,12 +57,14 @@ namespace Dynatrace.MetricUtils
 
 			// use exponential notation with 15 decimal places and at least one trailing decimal place before the exponent.
 			// for numbers greater than -10^-15 and smaller than 10^-15.
-			if (Math.Abs(d) < 1e-15) {
+			if (Math.Abs(d) < 1e-15)
+			{
 				return d.ToString("0.0##############E-0", CultureInfo.InvariantCulture);
 			}
 
 			// for numbers greater than 10^15 or smaller than -10^15
-			if (Math.Abs(d) > 1e+15) {
+			if (Math.Abs(d) > 1e+15)
+			{
 				return d.ToString("0.0##############E+0", CultureInfo.InvariantCulture);
 			}
 
