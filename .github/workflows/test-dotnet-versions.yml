@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: [ '2.1.x', '3.1.x', '5.0.x' ]
+        dotnet-version: [ '2.1.x' ]
         # dotnet core 6.0 is in preview.
         # dotnet-version: [ '2.1.x', '3.1.x', '5.0.x', '6.0.x' ]
 
