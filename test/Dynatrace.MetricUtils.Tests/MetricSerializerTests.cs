@@ -54,17 +54,11 @@ namespace Dynatrace.MetricUtils.Tests
 
 			var serializedWithCurrentTimestamp =
 				serializer.SerializeMetric(MetricsFactory.CreateLongCounter("metric2", 200, TestDimensions));
-			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 count,delta=200 ";
-			serializedWithCurrentTimestamp.Should()
-				.StartWith(currTimestampPrefix)
-				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length);
+			serializedWithCurrentTimestamp.Should().Be("metric2,dim1=value1,dim2=value2 count,delta=200");
 
 			var serializedWithMinimalParams =
 				serializer.SerializeMetric(MetricsFactory.CreateLongCounter("metric3", 300));
-			var minimalParamsPrefix = "metric3 count,delta=300 ";
-			serializedWithMinimalParams.Should()
-				.StartWith(minimalParamsPrefix)
-				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length);
+			serializedWithMinimalParams.Should().Be("metric3 count,delta=300");
 		}
 
 		[Fact]
@@ -80,17 +74,11 @@ namespace Dynatrace.MetricUtils.Tests
 
 			var serializedWithCurrentTimestamp =
 				serializer.SerializeMetric(MetricsFactory.CreateLongGauge("metric2", 200, TestDimensions));
-			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 gauge,200 ";
-			serializedWithCurrentTimestamp.Should()
-				.StartWith(currTimestampPrefix)
-				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length);
+			serializedWithCurrentTimestamp.Should().Be("metric2,dim1=value1,dim2=value2 gauge,200");
 
 			var serializedWithMinimalParams =
 				serializer.SerializeMetric(MetricsFactory.CreateLongGauge("metric3", 300));
-			var minimalParamsPrefix = "metric3 gauge,300 ";
-			serializedWithMinimalParams.Should()
-				.StartWith(minimalParamsPrefix)
-				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length);
+			serializedWithMinimalParams.Should().Be("metric3 gauge,300");
 		}
 
 		[Fact]
@@ -105,17 +93,12 @@ namespace Dynatrace.MetricUtils.Tests
 
 			var serializedWithCurrentTimestamp =
 				serializer.SerializeMetric(MetricsFactory.CreateLongSummary("metric2", 1, 3, 7, 4, TestDimensions));
-			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 gauge,min=1,max=3,sum=7,count=4 ";
 			serializedWithCurrentTimestamp.Should()
-				.StartWith(currTimestampPrefix)
-				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length);
+				.Be("metric2,dim1=value1,dim2=value2 gauge,min=1,max=3,sum=7,count=4");
 
 			var serializedWithMinimalParams =
 				serializer.SerializeMetric(MetricsFactory.CreateLongSummary("metric3", 1, 3, 7, 4));
-			var minimalParamsPrefix = "metric3 gauge,min=1,max=3,sum=7,count=4 ";
-			serializedWithMinimalParams.Should()
-				.StartWith(minimalParamsPrefix)
-				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length);
+			serializedWithMinimalParams.Should().Be("metric3 gauge,min=1,max=3,sum=7,count=4");
 		}
 
 		[Fact]
@@ -131,17 +114,11 @@ namespace Dynatrace.MetricUtils.Tests
 
 			var serializedWithCurrentTimestamp =
 				serializer.SerializeMetric(MetricsFactory.CreateDoubleCounter("metric2", 223.456, TestDimensions));
-			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 count,delta=223.456 ";
-			serializedWithCurrentTimestamp.Should()
-				.StartWith(currTimestampPrefix)
-				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length);
+			serializedWithCurrentTimestamp.Should().Be("metric2,dim1=value1,dim2=value2 count,delta=223.456");
 
 			var serializedWithMinimalParams =
 				serializer.SerializeMetric(MetricsFactory.CreateDoubleCounter("metric3", 323.456));
-			var minimalParamsPrefix = "metric3 count,delta=323.456 ";
-			serializedWithMinimalParams.Should()
-				.StartWith(minimalParamsPrefix)
-				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length);
+			serializedWithMinimalParams.Should().Be("metric3 count,delta=323.456");
 		}
 
 		[Fact]
@@ -157,17 +134,11 @@ namespace Dynatrace.MetricUtils.Tests
 
 			var serializedWithCurrentTimestamp =
 				serializer.SerializeMetric(MetricsFactory.CreateDoubleGauge("metric2", 223.456, TestDimensions));
-			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 gauge,223.456 ";
-			serializedWithCurrentTimestamp.Should()
-				.StartWith(currTimestampPrefix)
-				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length);
+			serializedWithCurrentTimestamp.Should().Be("metric2,dim1=value1,dim2=value2 gauge,223.456");
 
 			var serializedWithMinimalParams =
 				serializer.SerializeMetric(MetricsFactory.CreateDoubleGauge("metric3", 323.456));
-			var minimalParamsPrefix = "metric3 gauge,323.456 ";
-			serializedWithMinimalParams.Should()
-				.StartWith(minimalParamsPrefix)
-				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length);
+			serializedWithMinimalParams.Should().Be("metric3 gauge,323.456");
 		}
 
 		[Fact]
@@ -183,17 +154,12 @@ namespace Dynatrace.MetricUtils.Tests
 			var serializedWithCurrentTimestamp =
 				serializer.SerializeMetric(
 					MetricsFactory.CreateDoubleSummary("metric2", 1.2, 3.4, 7.8, 4, TestDimensions));
-			var currTimestampPrefix = "metric2,dim1=value1,dim2=value2 gauge,min=1.2,max=3.4,sum=7.8,count=4 ";
 			serializedWithCurrentTimestamp.Should()
-				.StartWith(currTimestampPrefix)
-				.And.HaveLength(currTimestampPrefix.Length + TestTimestamp.Length);
+				.Be("metric2,dim1=value1,dim2=value2 gauge,min=1.2,max=3.4,sum=7.8,count=4");
 
 			var serializedWithMinimalParams =
 				serializer.SerializeMetric(MetricsFactory.CreateDoubleSummary("metric3", 1.2, 3.4, 7.8, 4));
-			var minimalParamsPrefix = "metric3 gauge,min=1.2,max=3.4,sum=7.8,count=4 ";
-			serializedWithMinimalParams.Should()
-				.StartWith(minimalParamsPrefix)
-				.And.HaveLength(minimalParamsPrefix.Length + TestTimestamp.Length);
+			serializedWithMinimalParams.Should().Be("metric3 gauge,min=1.2,max=3.4,sum=7.8,count=4");
 		}
 
 		[Fact]
@@ -423,12 +389,9 @@ namespace Dynatrace.MetricUtils.Tests
 			var explicitDefault = MetricsFactory.CreateLongGauge("explicit", 3, timestamp: default);
 			var setNull = MetricsFactory.CreateLongGauge("set-null", 3, timestamp: null);
 
-			serializer.SerializeMetric(implicitDefault).Should().StartWith("implicit gauge,3 ").And
-				.HaveLength("implicit gauge,3 ".Length + TestTimestamp.Length);
-			serializer.SerializeMetric(explicitDefault).Should().StartWith("explicit gauge,3 ").And
-				.HaveLength("explicit gauge,3 ".Length + TestTimestamp.Length);
-			serializer.SerializeMetric(setNull).Should().StartWith("set-null gauge,3 ").And
-				.HaveLength("set-null gauge,3 ".Length + TestTimestamp.Length);
+			serializer.SerializeMetric(implicitDefault).Should().Be("implicit gauge,3");
+			serializer.SerializeMetric(explicitDefault).Should().Be("explicit gauge,3");
+			serializer.SerializeMetric(setNull).Should().Be("set-null gauge,3");
 		}
 
 		[Fact]

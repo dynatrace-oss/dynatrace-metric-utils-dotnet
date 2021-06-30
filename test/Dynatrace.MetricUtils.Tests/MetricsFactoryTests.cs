@@ -38,7 +38,7 @@ namespace Dynatrace.MetricUtils.Tests
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("count,delta=100");
-			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
+			metric.Timestamp.Should().BeNull();
 		}
 
 		[Fact]
@@ -58,7 +58,7 @@ namespace Dynatrace.MetricUtils.Tests
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().BeEmpty();
 			metric.Value.Serialize().Should().Be("count,delta=100");
-			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
+			metric.Timestamp.Should().BeNull();
 		}
 
 
@@ -69,7 +69,7 @@ namespace Dynatrace.MetricUtils.Tests
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("gauge,100");
-			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
+			metric.Timestamp.Should().BeNull();
 		}
 
 		[Fact]
@@ -89,7 +89,7 @@ namespace Dynatrace.MetricUtils.Tests
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().BeEmpty();
 			metric.Value.Serialize().Should().Be("gauge,100");
-			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
+			metric.Timestamp.Should().BeNull();
 		}
 
 		[Fact]
@@ -99,7 +99,7 @@ namespace Dynatrace.MetricUtils.Tests
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("gauge,min=2,max=5,sum=12,count=4");
-			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
+			metric.Timestamp.Should().BeNull();
 		}
 
 		[Fact]
@@ -119,7 +119,7 @@ namespace Dynatrace.MetricUtils.Tests
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().BeEmpty();
 			metric.Value.Serialize().Should().Be("gauge,min=2,max=5,sum=12,count=4");
-			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
+			metric.Timestamp.Should().BeNull();
 		}
 
 		[Fact]
@@ -139,7 +139,7 @@ namespace Dynatrace.MetricUtils.Tests
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("count,delta=100.123");
-			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
+			metric.Timestamp.Should().BeNull();
 		}
 
 		[Fact]
@@ -159,7 +159,7 @@ namespace Dynatrace.MetricUtils.Tests
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().BeEmpty();
 			metric.Value.Serialize().Should().Be("count,delta=100.123");
-			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
+			metric.Timestamp.Should().BeNull();
 		}
 
 		[Fact]
@@ -182,7 +182,7 @@ namespace Dynatrace.MetricUtils.Tests
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("gauge,123.456");
-			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
+			metric.Timestamp.Should().BeNull();
 		}
 
 		[Fact]
@@ -202,7 +202,7 @@ namespace Dynatrace.MetricUtils.Tests
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().BeEmpty();
 			metric.Value.Serialize().Should().Be("gauge,123.456");
-			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
+			metric.Timestamp.Should().BeNull();
 		}
 
 		[Fact]
@@ -225,7 +225,7 @@ namespace Dynatrace.MetricUtils.Tests
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("gauge,min=2.5,max=5.7,sum=12.3,count=4");
-			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
+			metric.Timestamp.Should().BeNull();
 		}
 
 		[Fact]
@@ -245,7 +245,7 @@ namespace Dynatrace.MetricUtils.Tests
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().BeEmpty();
 			metric.Value.Serialize().Should().Be("gauge,min=2.5,max=5.7,sum=12.3,count=4");
-			metric.Timestamp.Should().BeCloseTo(DateTime.Now, 50).And.BeBefore(DateTime.Now);
+			metric.Timestamp.Should().BeNull();
 		}
 
 		[Fact]
