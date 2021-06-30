@@ -341,9 +341,9 @@ namespace Dynatrace.MetricUtils.Tests
 		{
 			var serializer = new MetricsSerializer(Logger);
 			FluentActions.Invoking(() => serializer.SerializeMetric(MetricsFactory.CreateLongGauge("", 3))).Should()
-				.Throw<MetricException>().WithMessage("Metric key can't be undefined.");
+				.Throw<MetricException>().WithMessage("Metric name can't be null or empty.");
 			FluentActions.Invoking(() => serializer.SerializeMetric(MetricsFactory.CreateLongGauge(null, 3))).Should()
-				.Throw<MetricException>().WithMessage("Metric key can't be undefined.");
+				.Throw<MetricException>().WithMessage("Metric name can't be null or empty.");
 		}
 
 		[Fact]

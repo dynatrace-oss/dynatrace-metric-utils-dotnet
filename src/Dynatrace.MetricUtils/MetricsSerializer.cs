@@ -99,7 +99,7 @@ namespace Dynatrace.MetricUtils
 			// throw on lines with invalid metric keys.
 			if (string.IsNullOrEmpty(metricKey))
 			{
-				throw new MetricException("Metric key can't be undefined.");
+				throw new MetricException("Metric name can't be null or empty.");
 			}
 
 			sb.Append(metricKey);

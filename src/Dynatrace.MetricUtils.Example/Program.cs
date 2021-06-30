@@ -78,22 +78,21 @@ namespace Dynatrace.MetricUtils.Example
 			Console.WriteLine($"Maximum lines per ingest request:\t{DynatraceMetricApiConstants.PayloadLinesLimit}");
 			Console.WriteLine($"Maximum dimensions per metric key:\t{DynatraceMetricApiConstants.MaximumDimensions}");
 
-			// Upon creation of invalid metrics, a MetricException is thrown:
 			try
 			{
-				// min > max is an invalid state and will throw.
-				MetricsFactory.CreateLongSummary("metric", 100, 10, 10, 3);
+				// an empty metric name is not permitted
+				MetricsFactory.CreateLongGauge("", 2);
 			}
 			catch (MetricException me)
 			{
 				Console.WriteLine(me.Message);
 			}
 
-			// Invalid metric keys will only be detected upon serialization, which can also throw:
+			// Upon creation of invalid metrics, a MetricException is thrown:
 			try
 			{
-				// an empty metric name is not permitted
-				new MetricsSerializer().SerializeMetric(MetricsFactory.CreateLongGauge("", 2));
+				// min > max is an invalid state and will throw.
+				MetricsFactory.CreateLongSummary("metric", 100, 10, 10, 3);
 			}
 			catch (MetricException me)
 			{

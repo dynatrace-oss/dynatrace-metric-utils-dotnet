@@ -24,6 +24,10 @@ namespace Dynatrace.MetricUtils
 		internal Metric(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, IMetricValue value,
 			DateTime? timestamp)
 		{
+			if (string.IsNullOrEmpty(metricName))
+			{
+				throw new MetricException("Metric name can't be null or empty.");
+			}
 			this.MetricName = metricName;
 			this.Dimensions = dimensions;
 			this.Value = value;
