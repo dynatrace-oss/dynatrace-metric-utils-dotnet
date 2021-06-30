@@ -17,6 +17,7 @@ Using this library to create metric lines is a two-step process.
 First, create lines using the `MetricsFactory`.
 Then, serialize them using a `MetricsSerializer`.
 Furthermore, this library contains static constants for use in projects consuming this library.
+This repository also contains [an example project](src/Dynatrace.MetricUtils.Example) demonstrating the use of the `MetricsFactory` and the `MetricsSerializer`.
 
 ### Metric Creation
 
@@ -33,14 +34,12 @@ In the simplest form, metric creation looks like this:
 var metric = MetricsFactory.CreateLongCounter("long-counter", 23);
 ```
 
-This will create a metric with the current timestamp.
-
 Additionally, it is possible to pass a list of dimensions to the metric upon creation:
 
 ```csharp
 var dimensions = new List<KeyValuePair<string, string>> {
-	new KeyValuePair<string, string>("dim1", "val1"),
-	new KeyValuePair<string, string>("dim2", "val2")
+  new KeyValuePair<string, string>("dim1", "val1"),
+  new KeyValuePair<string, string>("dim2", "val2")
 };
 
 var metric = MetricsFactory.CreateLongCounter("long-counter", 23, dimensions);
@@ -49,18 +48,21 @@ var metric = MetricsFactory.CreateLongCounter("long-counter", 23, dimensions);
 The dimensions will be added to the serialized metric.
 See [the section on dimension precedence](#dimension-precedence) for more information.
 
-Finally, it is also possible to add a custom timestamp to the metric:
+Finally, it is also possible to add a timestamp to the metric:
 
 ```csharp
 // Passing null for the dimensions will not add any dimensions to the metric.
-var metric = MetricsFactory.CreateLongCounter("long-counter", 23, null, new DateTime(2021, 01, 01, 12, 00, 00))
+// Of course it is possible to pass dimensions and a timestamp at the same time.
+var metric = MetricsFactory.CreateLongCounter("long-counter", 23, null, DateTime.Now))
 
 // Alternatively, the dimensions parameter can be skipped and timestamp can be passed as a named parameter.
 var metric = MetricsFactory.CreateLongCounter("long-counter", 23, timestamp: new DateTime(2021, 01, 01, 12, 00, 00))
 ```
 
 Timestamps that are before the year 2000 or after the year 3000 will be discarded.
-In that case, metrics will be serialized without a timestamp, and the server timestamp is used upon ingestion.
+In that case, metrics will be serialized without a timestamp.
+
+If the metric timestamp is omitted or outside the range, the server timestamp is used upon ingestion.
 
 ### Metric serialization
 
@@ -68,16 +70,13 @@ The created metrics can then be serialized using a `MetricsSerializer`:
 
 ```csharp
 // The logger is optional, but not providing one will result in all log messages being discarded:
-var loggerFactory = LoggerFactory.Create(builder =>
-{
-  builder.SetMinimumLevel(LogLevel.Debug).AddConsole();
-});
-var logger = loggerFactory.CreateLogger<MetricsSerializer>()
+var loggerFactory = LoggerFactory.Create(builder => builder.SetMinimumLevel(LogLevel.Debug).AddConsole());
+var logger = loggerFactory.CreateLogger<MetricsSerializer>();
 
 // Create a list of default dimensions which are added to all metrics serialized by this serializer.
 var defaultDimensions = new List<KeyValuePair<string, string>> {
-	new KeyValuePair<string, string>("default1", "value1"),
-	new KeyValuePair<string, string>("default2", "value2")
+  new KeyValuePair<string, string>("default1", "value1"),
+  new KeyValuePair<string, string>("default2", "value2")
 };
 
 // Set up the MetricsSerializer. All parameters are optional:
@@ -86,32 +85,33 @@ var serializer = new MetricsSerializer(
   "prefix",           // A prefix added to all exported metric names.
   defaultDimensions,  // Default dimensions that will be added to all exported metrics.
   "metrics-source",   // Set the metrics source. Will be exported as dimension with "dt.metrics.source" as its key.
-  true    // Turn Dynatrace metadata enrichment on or off (true by default).
+  true                // Turn Dynatrace metadata enrichment on or off (true by default).
 );
+
+var metric = MetricsFactory.CreateLongCounter("long-counter", 23, timestamp: new DateTime(2021, 01, 01, 12, 00, 00));
 
 // Serialize the metric
 Console.WriteLine(serializer.SerializeMetric(metric));
 
 // Should result in a line like: 
-// prefix.long-counter,default1=value1,default2=value2,dim1=val1 count,delta=23 1624622933154
+// prefix.long-counter,default1=value1,default2=value2,dt.metrics.source=metrics-source count,delta=23 1609502400000
 ```
 
 ### Common constants
 
-The constants can be accessed via the static getter methods:
+The constants can be accessed via the static getter methods on the `DynatraceMetricApiConstants` class:
 
 ```csharp
 Console.WriteLine(DynatraceMetricApiConstants.DefaultOneAgentEndpoint);
 ```
 
-This repository contains [an example project](src/Dynatrace.MetricUtils.Example) demonstrating the use of the `MetricsFactory` and the `MetricsSerializer`.
-It also shows how to access the common constants.
+The use of the common constants is also shown in [the example project](src/Dynatrace.MetricUtils.Example)
 
 Currently available constants are:
 
-- the default [local OneAgent metric API](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/local-api/) endpoint (`DynatraceMetricApiConstants.DefaultOneAgentEndpoint`)
-- the limit for how many metric lines can be ingested in one request (`DynatraceMetricApiConstants.PayloadLinesLimit`)
-- the limit for how many dimensions can be added to each metric key (`DynatraceMetricApiConstants.MaximumDimensions`)
+- the default [local OneAgent metric API endpoint](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/local-api/) (`DefaultOneAgentEndpoint`)
+- the limit for how many metric lines can be ingested in one request (`PayloadLinesLimit`)
+- the limit for how many dimensions can be added to each metric key (`MaximumDimensions`)
 
 ### Dynatrace Metadata enrichment
 

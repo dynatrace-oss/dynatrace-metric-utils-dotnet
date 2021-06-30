@@ -25,11 +25,7 @@ namespace Dynatrace.MetricUtils.Example
 		private static void Main(string[] args)
 		{
 			// Create a logger for the MetricsSerializer. In this case, log to the console.
-			var loggerFactory = LoggerFactory.Create(builder =>
-			{
-				builder.SetMinimumLevel(LogLevel.Debug)
-					.AddConsole();
-			});
+			var loggerFactory = LoggerFactory.Create(builder => builder.SetMinimumLevel(LogLevel.Debug).AddConsole());
 			var logger = loggerFactory.CreateLogger<MetricsSerializer>();
 
 			// Set up default dimensions, which will be added to every serialized metric.
@@ -49,14 +45,14 @@ namespace Dynatrace.MetricUtils.Example
 				new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("dim1", "val1")};
 			var metrics = new List<Metric>
 			{
-				// If no DateTime is specified as the last parameter, the current timestamp will be used
-				MetricsFactory.CreateLongCounter("long-counter", 23, metricDimensions),
-				// But it is also possible to specify the DateTime explicitly:
+				// Specify the current time to add a timestamp to the metric line
+				MetricsFactory.CreateLongCounter("long-counter", 23, metricDimensions, DateTime.Now),
+				// But it is also possible to specify the DateTime as a specific time explicitly:
 				MetricsFactory.CreateLongGauge("long-gauge", 34, metricDimensions,
 					new DateTime(2021, 01, 01, 12, 00, 00)),
 				// summary values combine min, max, sum, and count.
 				MetricsFactory.CreateLongSummary("long-summary", 3, 5, 18, 4, metricDimensions),
-				// dimensions are also optional.
+				// dimensions are optional.
 				MetricsFactory.CreateDoubleCounter("double-summary", 3.1415),
 				MetricsFactory.CreateDoubleGauge("double-gauge", 4.567, metricDimensions),
 				MetricsFactory.CreateDoubleSummary("double-summary", 3.1, 6.543, 20.123, 4, metricDimensions)
@@ -69,12 +65,12 @@ namespace Dynatrace.MetricUtils.Example
 			}
 
 			// Will produce the following output:
-			// prefix.long-counter,default1=value1,default2=value2,dim1=val1 count,delta=23 1624544148084
+			// prefix.long-counter,default1=value1,default2=value2,dim1=val1 count,delta=23 1625062552272
 			// prefix.long-gauge,default1=value1,default2=value2,dim1=val1 gauge,34 1609502400000
-			// prefix.long-summary,default1=value1,default2=value2,dim1=val1 gauge,min=3,max=5,sum=18,count=4 1624544148088
-			// prefix.double-summary,default1=value1,default2=value2 count,delta=3.1415 1624544148089
-			// prefix.double-gauge,default1=value1,default2=value2,dim1=val1 gauge,4.567 1624544148089
-			// prefix.double-summary,default1=value1,default2=value2,dim1=val1 gauge,min=3.1,max=6.543,sum=20.123,count=4 1624544148089
+			// prefix.long-summary,default1=value1,default2=value2,dim1=val1 gauge,min=3,max=5,sum=18,count=4
+			// prefix.double-summary,default1=value1,default2=value2 count,delta=3.1415
+			// prefix.double-gauge,default1=value1,default2=value2,dim1=val1 gauge,4.567
+			// prefix.double-summary,default1=value1,default2=value2,dim1=val1 gauge,min=3.1,max=6.543,sum=20.123,count=4
 
 			// DynatraceMetricApiConstants contains constants that can be accessed like this:
 			Console.WriteLine(
