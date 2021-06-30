@@ -30,8 +30,7 @@ namespace Dynatrace.MetricUtils
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
 
-			return new Metric(metricName, dimensions, new MetricValue.LongCounterValue(value),
-				timestamp.HasValue ? timestamp.Value : DateTime.Now);
+			return new Metric(metricName, dimensions, new MetricValue.LongCounterValue(value), timestamp);
 		}
 
 		public static Metric CreateLongGauge(string metricName, long value,
@@ -42,8 +41,7 @@ namespace Dynatrace.MetricUtils
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
 
-			return new Metric(metricName, dimensions, new MetricValue.LongGaugeValue(value),
-				timestamp.HasValue ? timestamp.Value : DateTime.Now);
+			return new Metric(metricName, dimensions, new MetricValue.LongGaugeValue(value), timestamp);
 		}
 
 		public static Metric CreateLongSummary(string metricName, long min, long max, long sum, long count,
@@ -55,7 +53,7 @@ namespace Dynatrace.MetricUtils
 			}
 
 			return new Metric(metricName, dimensions, new MetricValue.LongSummaryValue(min, max, sum, count),
-				timestamp.HasValue ? timestamp.Value : DateTime.Now);
+				timestamp);
 		}
 
 		public static Metric CreateDoubleCounter(string metricName, double value,
@@ -66,8 +64,7 @@ namespace Dynatrace.MetricUtils
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
 
-			return new Metric(metricName, dimensions, new MetricValue.DoubleCounterValue(value),
-				timestamp.HasValue ? timestamp.Value : DateTime.Now);
+			return new Metric(metricName, dimensions, new MetricValue.DoubleCounterValue(value), timestamp);
 		}
 
 		public static Metric CreateDoubleGauge(string metricName, double value,
@@ -78,8 +75,7 @@ namespace Dynatrace.MetricUtils
 				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
 
-			return new Metric(metricName, dimensions, new MetricValue.DoubleGaugeValue(value),
-				timestamp.HasValue ? timestamp.Value : DateTime.Now);
+			return new Metric(metricName, dimensions, new MetricValue.DoubleGaugeValue(value), timestamp);
 		}
 
 		public static Metric CreateDoubleSummary(string metricName, double min, double max, double sum, long count,
@@ -91,7 +87,7 @@ namespace Dynatrace.MetricUtils
 			}
 
 			return new Metric(metricName, dimensions, new MetricValue.DoubleSummaryValue(min, max, sum, count),
-				timestamp.HasValue ? timestamp.Value : DateTime.Now);
+				timestamp);
 		}
 	}
 }

@@ -113,7 +113,10 @@ namespace Dynatrace.MetricUtils
 			this.WriteDimensions(sb, normalizedDimensions);
 			sb.Append($" {metric.Value.Serialize()}");
 
-			this.WriteTimestamp(sb, metric.Timestamp);
+			if (metric.Timestamp.HasValue)
+			{
+				this.WriteTimestamp(sb, metric.Timestamp.Value);
+			}
 		}
 
 		private void WriteTimestamp(StringBuilder sb, DateTime timestamp)

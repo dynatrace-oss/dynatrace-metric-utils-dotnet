@@ -22,7 +22,7 @@ namespace Dynatrace.MetricUtils
 	public class Metric
 	{
 		internal Metric(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, IMetricValue value,
-			DateTime timestamp)
+			DateTime? timestamp)
 		{
 			this.MetricName = metricName;
 			this.Dimensions = dimensions;
@@ -33,6 +33,6 @@ namespace Dynatrace.MetricUtils
 		public string MetricName { get; }
 		public IEnumerable<KeyValuePair<string, string>> Dimensions { get; }
 		public IMetricValue Value { get; }
-		public DateTime Timestamp { get; }
+		public DateTime? Timestamp { get; }
 	}
 }
