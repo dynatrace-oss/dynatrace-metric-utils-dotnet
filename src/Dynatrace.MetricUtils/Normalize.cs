@@ -20,6 +20,9 @@ using System.Text.RegularExpressions;
 
 namespace Dynatrace.MetricUtils
 {
+	/// <summary>
+	///     Static class containing helper functions to normalize and escape metric keys, dimension keys, and dimension values.
+	/// </summary>
 	public static class Normalize
 	{
 		private const int MaxLengthMetricKey = 250;
@@ -118,6 +121,10 @@ namespace Dynatrace.MetricUtils
 			return normalizedKeyBuilder.ToString();
 		}
 
+		/// <summary>
+		///     Normalize a dimension key
+		/// </summary>
+		/// <returns>The normalized dimension key.</returns>
 		internal static string DimensionKey(string key)
 		{
 			if (string.IsNullOrEmpty(key))
@@ -162,6 +169,10 @@ namespace Dynatrace.MetricUtils
 			return normalizedKeyBuilder.ToString();
 		}
 
+		/// <summary>
+		///     Normalize a dimension value
+		/// </summary>
+		/// <returns>The normalized dimension value.</returns>
 		internal static string DimensionValue(string value)
 		{
 			if (string.IsNullOrEmpty(value))
@@ -180,6 +191,11 @@ namespace Dynatrace.MetricUtils
 			return value;
 		}
 
+		/// <summary>
+		///     Escapes a dimension value. Escaped characters are (separated by a semicolon): = (equal sign); , (comma); \
+		///     (backslash); " (double quotes)
+		/// </summary>
+		/// <returns>The escaped dimension value.</returns>
 		internal static string EscapeDimensionValue(string value)
 		{
 			// escape characters matched by regex with backslash. $1 inserts the matched character.
@@ -202,6 +218,9 @@ namespace Dynatrace.MetricUtils
 			return escaped;
 		}
 
+		/// <summary>
+		///     Escapes all dimension keys and dimension values in the passed list of key-value pairs.
+		/// </summary>
 		internal static List<KeyValuePair<string, string>> DimensionList(
 			IEnumerable<KeyValuePair<string, string>> dimensions)
 		{

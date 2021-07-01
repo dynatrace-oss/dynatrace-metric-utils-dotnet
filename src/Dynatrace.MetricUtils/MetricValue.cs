@@ -19,8 +19,15 @@ using System.Globalization;
 
 namespace Dynatrace.MetricUtils
 {
+	/// <summary>
+	///     Interface for the Metric values.
+	/// </summary>
 	public interface IMetricValue
 	{
+		/// <summary>
+		///     Transforms the <see cref="MetricValue" /> to a <see cref="string" />.
+		/// </summary>
+		/// <returns>The string representation for the <see cref="MetricValue" /></returns>
 		string Serialize();
 	}
 
