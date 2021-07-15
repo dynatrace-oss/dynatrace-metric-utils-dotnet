@@ -25,14 +25,14 @@ using Xunit;
 
 namespace Dynatrace.MetricUtils.Tests
 {
-	public class OneAgentMetadataEnricherTests
+	public class DynatraceMetadataEnricherTests
 	{
-		private static readonly ILogger Logger = NullLogger<OneAgentMetadataEnricher>.Instance;
+		private static readonly ILogger Logger = NullLogger<DynatraceMetadataEnricher>.Instance;
 
 		[Fact]
 		public void ValidMultiline()
 		{
-			var enricher = new OneAgentMetadataEnricher(Logger);
+			var enricher = new DynatraceMetadataEnricher(Logger);
 			var metadata = enricher.ProcessMetadata(new[] {"a=123", "b=456"});
 			metadata.Should().Equal(new List<KeyValuePair<string, string>>
 			{
@@ -43,7 +43,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void WrongSyntax()
 		{
-			var enricher = new OneAgentMetadataEnricher(Logger);
+			var enricher = new DynatraceMetadataEnricher(Logger);
 			enricher.ProcessMetadata(new[] {"=0x5c14d9a68d569861"}).Should().BeEmpty();
 			enricher.ProcessMetadata(new[] {"otherKey="}).Should().BeEmpty();
 			enricher.ProcessMetadata(new[] {""}).Should().BeEmpty();
@@ -62,7 +62,7 @@ namespace Dynatrace.MetricUtils.Tests
 			{
 				new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue")
 			};
-			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
+			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 			// contains only the element that was in the list before.
@@ -84,7 +84,7 @@ namespace Dynatrace.MetricUtils.Tests
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
-			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
+			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
@@ -105,7 +105,7 @@ namespace Dynatrace.MetricUtils.Tests
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
-			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
+			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
@@ -125,7 +125,7 @@ namespace Dynatrace.MetricUtils.Tests
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
-			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
+			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
@@ -135,7 +135,7 @@ namespace Dynatrace.MetricUtils.Tests
 				});
 			Mock.Get(fileReader).Verify(f => f.ReadAllText("dt_metadata_e617c525669e072eebe3d0f08212e8f2.properties"),
 				Times.Once());
-			// if the OneAgent metadata file is empty, there should be no attempt at reading the contents.
+			// if the metadata file is empty, there should be no attempt at reading the contents.
 			Mock.Get(fileReader).Verify(f => f.ReadAllLines(""), Times.Never());
 		}
 
@@ -152,7 +152,7 @@ namespace Dynatrace.MetricUtils.Tests
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
-			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
+			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
@@ -162,7 +162,7 @@ namespace Dynatrace.MetricUtils.Tests
 				});
 			Mock.Get(fileReader).Verify(f => f.ReadAllText("dt_metadata_e617c525669e072eebe3d0f08212e8f2.properties"),
 				Times.Once());
-			// if the OneAgent metadata file is empty, there should be no attempt at reading the contents.
+			// if the metadata file is empty, there should be no attempt at reading the contents.
 			Mock.Get(fileReader).Verify(f => f.ReadAllLines(indirectionFileContent), Times.Once());
 		}
 
@@ -176,7 +176,7 @@ namespace Dynatrace.MetricUtils.Tests
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
-			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
+			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
@@ -199,7 +199,7 @@ namespace Dynatrace.MetricUtils.Tests
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
-			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
+			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
@@ -222,7 +222,7 @@ namespace Dynatrace.MetricUtils.Tests
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
-			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
+			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
@@ -245,7 +245,7 @@ namespace Dynatrace.MetricUtils.Tests
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
-			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
+			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should()
@@ -269,7 +269,7 @@ namespace Dynatrace.MetricUtils.Tests
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
-			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
+			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should().Equal(
@@ -296,7 +296,7 @@ namespace Dynatrace.MetricUtils.Tests
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
 			var targetList = new List<KeyValuePair<string, string>> {kv};
 
-			var unitUnderTest = new OneAgentMetadataEnricher(Logger, fileReader);
+			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
 
 			targetList.Should().Equal(
