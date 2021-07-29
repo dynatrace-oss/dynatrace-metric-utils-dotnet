@@ -122,7 +122,7 @@ More information on the underlying feature that is used by the library can be fo
 
 ### Dimension precedence
 
-Since there are multiple levels of dimensions (default, metric-specfic, serializer-specific) and duplicate keys are not allowed, there is a specified precedence in dimension keys.
+Since there are multiple levels of dimensions (default, metric-specific, serializer-specific) and duplicate keys are not allowed, there is a specified precedence in dimension keys.
 Default dimensions will be overwritten by metric-specific dimensions, and all dimensions will be overwritten by serializer-specific dimensions if they share the same key after normalization.
 Serializer-specific dimensions include the [metadata dimensions](#dynatrace-metadata-enrichment), as well as the metrics source, which is added as a dimension with `dt.metrics.source` as its key.
 Note that the serializer-specific dimensions will only contain [dimension keys reserved by Dynatrace](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/metric-ingestion-protocol/#syntax).
