@@ -24,14 +24,14 @@ This repository also contains [an example project](src/Dynatrace.MetricUtils.Exa
 To create metrics, call one of the static methods on the `MetricsFactory`.
 Available instruments are:
 
-- Counter: `CreateLongCounter` / `CreateDoubleCounter`
+- Counter: `CreateLongCounterDelta` / `CreateDoubleCounterDelta`
 - Gauge: `CreateLongGauge` / `CreateDoubleGauge`
 - Summary: `CreateLongSummary` / `CreateDoubleSummary`
 
 In the simplest form, metric creation looks like this:
 
 ```csharp
-var metric = MetricsFactory.CreateLongCounter("long-counter", 23);
+var metric = MetricsFactory.CreateLongCounterDelta("long-counter", 23);
 ```
 
 Additionally, it is possible to pass a list of dimensions to the metric upon creation:
@@ -42,7 +42,7 @@ var dimensions = new List<KeyValuePair<string, string>> {
   new KeyValuePair<string, string>("dim2", "val2")
 };
 
-var metric = MetricsFactory.CreateLongCounter("long-counter", 23, dimensions);
+var metric = MetricsFactory.CreateLongCounterDelta("long-counter", 23, dimensions);
 ```
 
 The dimensions will be added to the serialized metric.
@@ -53,10 +53,10 @@ Finally, it is also possible to add a timestamp to the metric:
 ```csharp
 // Passing null for the dimensions will not add any dimensions to the metric.
 // Of course it is possible to pass dimensions and a timestamp at the same time.
-var metric = MetricsFactory.CreateLongCounter("long-counter", 23, null, DateTime.Now))
+var metric = MetricsFactory.CreateLongCounterDelta("long-counter", 23, null, DateTime.Now))
 
 // Alternatively, the dimensions parameter can be skipped and timestamp can be passed as a named parameter.
-var metric = MetricsFactory.CreateLongCounter("long-counter", 23, timestamp: new DateTime(2021, 01, 01, 12, 00, 00))
+var metric = MetricsFactory.CreateLongCounterDelta("long-counter", 23, timestamp: new DateTime(2021, 01, 01, 12, 00, 00))
 ```
 
 Timestamps that are before the year 2000 or after the year 3000 will be discarded.
@@ -88,7 +88,7 @@ var serializer = new MetricsSerializer(
   true                // Turn Dynatrace metadata enrichment on or off (true by default).
 );
 
-var metric = MetricsFactory.CreateLongCounter("long-counter", 23, timestamp: new DateTime(2021, 01, 01, 12, 00, 00));
+var metric = MetricsFactory.CreateLongCounterDelta("long-counter", 23, timestamp: new DateTime(2021, 01, 01, 12, 00, 00));
 
 // Serialize the metric
 Console.WriteLine(serializer.SerializeMetric(metric));
