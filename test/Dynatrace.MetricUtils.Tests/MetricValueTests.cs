@@ -25,12 +25,21 @@ namespace Dynatrace.MetricUtils.Tests
 	public class MetricValueTests
 	{
 		[Fact]
-		public void TestLongCounterValue()
+		public void TestLongCounterValueDelta()
 		{
 			new LongCounterValue(100).Serialize().Should().Be("count,delta=100");
 			new LongCounterValue(-10).Serialize().Should().Be("count,delta=-10");
 			new LongCounterValue(long.MaxValue).Serialize().Should().Be("count,delta=9223372036854775807");
 			new LongCounterValue(long.MinValue).Serialize().Should().Be("count,delta=-9223372036854775808");
+		}
+
+		[Fact]
+		public void TestLongCounterValueTotal()
+		{
+			new LongCounterValue(100, false).Serialize().Should().Be("count,100");
+			new LongCounterValue(-10, false).Serialize().Should().Be("count,-10");
+			new LongCounterValue(long.MaxValue, false).Serialize().Should().Be("count,9223372036854775807");
+			new LongCounterValue(long.MinValue, false).Serialize().Should().Be("count,-9223372036854775808");
 		}
 
 		[Fact]
@@ -100,7 +109,7 @@ namespace Dynatrace.MetricUtils.Tests
 		}
 
 		[Fact]
-		public void TestDoubleCounterValue()
+		public void TestDoubleCounterValueDelta()
 		{
 			new DoubleCounterValue(0).Serialize().Should().Be("count,delta=0");
 			new DoubleCounterValue(-0.0).Serialize().Should().Be("count,delta=0");
@@ -116,6 +125,25 @@ namespace Dynatrace.MetricUtils.Tests
 			FluentActions.Invoking(() => new DoubleCounterValue(double.NaN)).Should().Throw<MetricException>()
 				.WithMessage("Value is NaN.");
 		}
+
+		[Fact]
+		public void TestDoubleCounterValueTotal()
+		{
+			new DoubleCounterValue(0, false).Serialize().Should().Be("count,0");
+			new DoubleCounterValue(-0.0, false).Serialize().Should().Be("count,0");
+			new DoubleCounterValue(123.456, false).Serialize().Should().Be("count,123.456");
+			new DoubleCounterValue(-123.456, false).Serialize().Should().Be("count,-123.456");
+			new DoubleCounterValue(1.0 / 3, false).Serialize().Should().Be("count,0.333333333333333");
+			new DoubleCounterValue(200.00000000000000, false).Serialize().Should().Be("count,200");
+
+			FluentActions.Invoking(() => new DoubleCounterValue(double.NegativeInfinity, false)).Should()
+				.Throw<MetricException>().WithMessage("Value is infinite.");
+			FluentActions.Invoking(() => new DoubleCounterValue(double.PositiveInfinity, false)).Should()
+				.Throw<MetricException>().WithMessage("Value is infinite.");
+			FluentActions.Invoking(() => new DoubleCounterValue(double.NaN, false)).Should().Throw<MetricException>()
+				.WithMessage("Value is NaN.");
+		}
+
 
 		[Fact]
 		public void TestDoubleGaugeValue()

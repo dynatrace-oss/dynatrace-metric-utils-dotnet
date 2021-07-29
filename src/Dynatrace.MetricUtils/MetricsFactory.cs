@@ -28,13 +28,14 @@ namespace Dynatrace.MetricUtils
 		/// <summary>
 		///     Creates a counter metric for an integer.
 		///     The value will be serialized as "count,delta=[value]".
+		///     Only a delta to the previously exported value should be specified here.
 		/// </summary>
 		/// <param name="metricName">The name of the metric.</param>
 		/// <param name="value">The value to be set on the metric.</param>
 		/// <param name="dimensions">A list of key-value pairs to set on this metric.</param>
 		/// <param name="timestamp">The timestamp at which the metric was recorded.</param>
 		/// <returns>A <see cref="Metric" /> object </returns>
-		public static Metric CreateLongCounter(string metricName, long value,
+		public static Metric CreateLongCounterDelta(string metricName, long value,
 			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime? timestamp = null)
 		{
 			if (dimensions == null)
@@ -92,13 +93,14 @@ namespace Dynatrace.MetricUtils
 		/// <summary>
 		///     Creates a counter metric for a decimal number.
 		///     The value will be serialized as "count,delta=[value]".
+		///     Only a delta to the previously exported value should be specified here.
 		/// </summary>
 		/// <param name="metricName">The name of the metric.</param>
 		/// <param name="value">The value to be set on the metric.</param>
 		/// <param name="dimensions">A list of key-value pairs to set on this metric.</param>
 		/// <param name="timestamp">The timestamp at which the metric was recorded.</param>
 		/// <returns>A <see cref="Metric" /> object </returns>
-		public static Metric CreateDoubleCounter(string metricName, double value,
+		public static Metric CreateDoubleCounterDelta(string metricName, double value,
 			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime? timestamp = null)
 		{
 			if (dimensions == null)

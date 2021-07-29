@@ -43,7 +43,7 @@ namespace Dynatrace.MetricUtils
 		}
 
 		/// <summary>
-		/// Read and add Dynatrace metadata to the passed Collection
+		///     Read and add Dynatrace metadata to the passed Collection
 		/// </summary>
 		/// <param name="labels">The collection to which the lables should be added.</param>
 		public void EnrichWithDynatraceMetadata(ICollection<KeyValuePair<string, string>> labels)

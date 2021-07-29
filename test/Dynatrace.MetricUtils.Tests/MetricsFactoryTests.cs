@@ -34,7 +34,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestLongCounter()
 		{
-			var metric = MetricsFactory.CreateLongCounter("mymetric", 100, TestDims);
+			var metric = MetricsFactory.CreateLongCounterDelta("mymetric", 100, TestDims);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("count,delta=100");
@@ -44,7 +44,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestLongCounterTimestamp()
 		{
-			var metric = MetricsFactory.CreateLongCounter("mymetric", 100, TestDims, TestTimestamp);
+			var metric = MetricsFactory.CreateLongCounterDelta("mymetric", 100, TestDims, TestTimestamp);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("count,delta=100");
@@ -54,7 +54,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestLongCounterMinimal()
 		{
-			var metric = MetricsFactory.CreateLongCounter("mymetric", 100);
+			var metric = MetricsFactory.CreateLongCounterDelta("mymetric", 100);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().BeEmpty();
 			metric.Value.Serialize().Should().Be("count,delta=100");
@@ -135,7 +135,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleCounter()
 		{
-			var metric = MetricsFactory.CreateDoubleCounter("mymetric", 100.123, TestDims);
+			var metric = MetricsFactory.CreateDoubleCounterDelta("mymetric", 100.123, TestDims);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("count,delta=100.123");
@@ -145,7 +145,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleCounterTimestamp()
 		{
-			var metric = MetricsFactory.CreateDoubleCounter("mymetric", 100.123, TestDims, TestTimestamp);
+			var metric = MetricsFactory.CreateDoubleCounterDelta("mymetric", 100.123, TestDims, TestTimestamp);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().Equal(TestDims);
 			metric.Value.Serialize().Should().Be("count,delta=100.123");
@@ -155,7 +155,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleCounterMinimal()
 		{
-			var metric = MetricsFactory.CreateDoubleCounter("mymetric", 100.123);
+			var metric = MetricsFactory.CreateDoubleCounterDelta("mymetric", 100.123);
 			metric.MetricName.Should().Be("mymetric");
 			metric.Dimensions.Should().BeEmpty();
 			metric.Value.Serialize().Should().Be("count,delta=100.123");
@@ -165,13 +165,13 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleCounterInvalidNumbers()
 		{
-			FluentActions.Invoking(() => MetricsFactory.CreateDoubleCounter("mymetric", double.NegativeInfinity))
+			FluentActions.Invoking(() => MetricsFactory.CreateDoubleCounterDelta("mymetric", double.NegativeInfinity))
 				.Should().Throw<MetricException>().WithMessage("Value is infinite.");
 
-			FluentActions.Invoking(() => MetricsFactory.CreateDoubleCounter("mymetric", -double.NegativeInfinity))
+			FluentActions.Invoking(() => MetricsFactory.CreateDoubleCounterDelta("mymetric", -double.NegativeInfinity))
 				.Should().Throw<MetricException>().WithMessage("Value is infinite.");
 
-			FluentActions.Invoking(() => MetricsFactory.CreateDoubleCounter("mymetric", double.NaN))
+			FluentActions.Invoking(() => MetricsFactory.CreateDoubleCounterDelta("mymetric", double.NaN))
 				.Should().Throw<MetricException>().WithMessage("Value is NaN.");
 		}
 

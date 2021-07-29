@@ -91,16 +91,23 @@ namespace Dynatrace.MetricUtils
 
 		internal sealed class LongCounterValue : IMetricValue
 		{
+			private readonly bool _isDelta;
 			private readonly long _value;
 
-			public LongCounterValue(long value)
+			public LongCounterValue(long value, bool isDelta = true)
 			{
 				this._value = value;
+				this._isDelta = isDelta;
 			}
 
 			public string Serialize()
 			{
-				return $"count,delta={this._value}";
+				if (this._isDelta)
+				{
+					return $"count,delta={this._value}";
+				}
+
+				return $"count,{this._value}";
 			}
 		}
 
@@ -152,17 +159,24 @@ namespace Dynatrace.MetricUtils
 
 		internal sealed class DoubleCounterValue : IMetricValue
 		{
+			private readonly bool _isDelta;
 			private readonly double _value;
 
-			public DoubleCounterValue(double value)
+			public DoubleCounterValue(double value, bool isDelta = true)
 			{
 				ThrowOnNanOrInfDouble(value);
 				this._value = value;
+				this._isDelta = isDelta;
 			}
 
 			public string Serialize()
 			{
-				return $"count,delta={FormatDouble(this._value)}";
+				if (this._isDelta)
+				{
+					return $"count,delta={FormatDouble(this._value)}";
+				}
+
+				return $"count,{FormatDouble(this._value)}";
 			}
 		}
 

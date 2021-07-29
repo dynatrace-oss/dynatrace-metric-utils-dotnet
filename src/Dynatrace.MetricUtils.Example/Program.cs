@@ -46,14 +46,14 @@ namespace Dynatrace.MetricUtils.Example
 			var metrics = new List<Metric>
 			{
 				// Specify the current time to add a timestamp to the metric line
-				MetricsFactory.CreateLongCounter("long-counter", 23, metricDimensions, DateTime.Now),
+				MetricsFactory.CreateLongCounterDelta("long-counter", 23, metricDimensions, DateTime.Now),
 				// But it is also possible to specify the DateTime as a specific time explicitly:
 				MetricsFactory.CreateLongGauge("long-gauge", 34, metricDimensions,
 					new DateTime(2021, 01, 01, 12, 00, 00)),
 				// summary values combine min, max, sum, and count.
 				MetricsFactory.CreateLongSummary("long-summary", 3, 5, 18, 4, metricDimensions),
 				// dimensions are optional.
-				MetricsFactory.CreateDoubleCounter("double-summary", 3.1415),
+				MetricsFactory.CreateDoubleCounterDelta("double-summary", 3.1415),
 				MetricsFactory.CreateDoubleGauge("double-gauge", 4.567, metricDimensions),
 				MetricsFactory.CreateDoubleSummary("double-summary", 3.1, 6.543, 20.123, 4, metricDimensions)
 			};
