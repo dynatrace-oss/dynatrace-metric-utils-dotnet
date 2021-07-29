@@ -118,7 +118,7 @@ Currently available constants are:
 If the `enrichWithDynatraceMetadata` toggle in the `MetricsSerializer` constructor is set to `true`, an attempt is made to read Dynatrace metadata.
 On a host with a running OneAgent, setting this option will collect metadata and add them as dimensions to all serialized metrics.
 Metadata typically consist of the Dynatrace host ID and process group ID.
-More information on the underlying feature can be found in the [Dynatrace documentation](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/enrich-metrics/).
+More information on the underlying feature that is used by the library can be found in the [Dynatrace documentation](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/enrich-metrics/).
 
 ### Dimension precedence
 
