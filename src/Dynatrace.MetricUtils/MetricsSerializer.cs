@@ -94,7 +94,7 @@ namespace Dynatrace.MetricUtils
 			List<KeyValuePair<string, string>> staticDimensions)
 		{
 			_logger = logger == null ? NullLogger.Instance : logger;
-			_prefix = prefix;
+			_prefix = null == prefix ? "" : prefix;
 			_defaultDimensions = Normalize.DimensionList(defaultDimensions) ?? new List<KeyValuePair<string, string>>();
 			_staticDimensions = Normalize.DimensionList(staticDimensions) ?? new List<KeyValuePair<string, string>>();
 		}
@@ -201,7 +201,7 @@ namespace Dynatrace.MetricUtils
 		private string CreateMetricKey(string metricName)
 		{
 			var keyBuilder =
-				new StringBuilder((string.IsNullOrEmpty(_prefix) ? 0 : _prefix.Length) + metricName.Length + 1);
+				new StringBuilder(_prefix.Length + metricName.Length + 1);
 			if (!string.IsNullOrEmpty(_prefix))
 			{
 				keyBuilder.Append($"{_prefix}.");
