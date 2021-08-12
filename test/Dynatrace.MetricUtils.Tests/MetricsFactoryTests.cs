@@ -261,7 +261,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleSummaryNanAndInf()
 		{
-			var values = new List<double> {1.1, double.PositiveInfinity, double.NegativeInfinity, double.NaN};
+			var values = new List<double> { 1.1, double.PositiveInfinity, double.NegativeInfinity, double.NaN };
 			Func<double, bool> notNanOrInf = d => !double.IsInfinity(d) && !double.IsNaN(d);
 			foreach (var i in values)
 			{

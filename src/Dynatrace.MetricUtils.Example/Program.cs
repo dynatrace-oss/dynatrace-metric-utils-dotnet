@@ -42,7 +42,7 @@ namespace Dynatrace.MetricUtils.Example
 
 			// then, create metrics themselves using the MetricsFactory
 			var metricDimensions =
-				new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("dim1", "val1")};
+				new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("dim1", "val1") };
 			var metrics = new List<Metric>
 			{
 				// Specify the current time to add a timestamp to the metric line
