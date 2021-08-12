@@ -200,7 +200,8 @@ namespace Dynatrace.MetricUtils
 		/// <returns>The complete, prefixed and normalized metric key.</returns>
 		private string CreateMetricKey(string metricName)
 		{
-			var keyBuilder = new StringBuilder();
+			var keyBuilder =
+				new StringBuilder((string.IsNullOrEmpty(_prefix) ? 0 : _prefix.Length) + metricName.Length + 1);
 			if (!string.IsNullOrEmpty(_prefix))
 			{
 				keyBuilder.Append($"{_prefix}.");
@@ -229,18 +230,20 @@ namespace Dynatrace.MetricUtils
 
 			foreach (var dimensionList in dimensionLists)
 			{
-				if (dimensionList != null)
+				if (dimensionList == null)
 				{
-					foreach (var dimension in dimensionList)
+					continue;
+				}
+
+				foreach (var dimension in dimensionList)
+				{
+					if (!dictionary.Contains(dimension.Key))
 					{
-						if (!dictionary.Contains(dimension.Key))
-						{
-							dictionary.Add(dimension.Key, dimension.Value);
-						}
-						else
-						{
-							dictionary[dimension.Key] = dimension.Value;
-						}
+						dictionary.Add(dimension.Key, dimension.Value);
+					}
+					else
+					{
+						dictionary[dimension.Key] = dimension.Value;
 					}
 				}
 			}

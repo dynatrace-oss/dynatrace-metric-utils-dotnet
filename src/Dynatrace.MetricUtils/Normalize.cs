@@ -226,7 +226,7 @@ namespace Dynatrace.MetricUtils
 		{
 			if (dimensions == null)
 			{
-				return null;
+				return new List<KeyValuePair<string, string>>();
 			}
 
 			var targetList = new List<KeyValuePair<string, string>>();
