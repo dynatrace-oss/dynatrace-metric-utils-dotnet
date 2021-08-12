@@ -29,17 +29,14 @@ namespace Dynatrace.MetricUtils
 		private readonly IFileReader _fileReader;
 		private readonly ILogger _logger;
 
-		public DynatraceMetadataEnricher(ILogger logger) : this(logger, new DefaultFileReader())
-		{
-			this._logger = logger;
-		}
+		public DynatraceMetadataEnricher(ILogger logger) : this(logger, new DefaultFileReader()) { }
 
 		// Allows mocking of File.ReadAllText and File.ReadAllLines methods. When using the public constructor,
 		// the used FileReader passes the calls through to the System.IO methods.
 		internal DynatraceMetadataEnricher(ILogger logger, IFileReader fileReader)
 		{
-			this._logger = logger;
-			this._fileReader = fileReader;
+			_logger = logger;
+			_fileReader = fileReader;
 		}
 
 		/// <summary>
@@ -48,7 +45,7 @@ namespace Dynatrace.MetricUtils
 		/// <param name="labels">The collection to which the lables should be added.</param>
 		public void EnrichWithDynatraceMetadata(ICollection<KeyValuePair<string, string>> labels)
 		{
-			var metadata = this.ProcessMetadata(this.GetMetadataFileContent());
+			var metadata = ProcessMetadata(GetMetadataFileContent());
 			foreach (var md in metadata)
 			{
 				labels.Add(new KeyValuePair<string, string>(md.Key, md.Value));
@@ -59,11 +56,11 @@ namespace Dynatrace.MetricUtils
 		{
 			foreach (var line in lines)
 			{
-				this._logger.LogDebug("Parsing metadata line: {Line}", line);
+				_logger.LogDebug("Parsing metadata line: {Line}", line);
 				var split = line.Split('=');
 				if (split.Length != 2)
 				{
-					this._logger.LogWarning("Failed to parse line from metadata file: {Line}", line);
+					_logger.LogWarning("Failed to parse line from metadata file: {Line}", line);
 					continue;
 				}
 
@@ -71,7 +68,7 @@ namespace Dynatrace.MetricUtils
 				var value = split[1];
 				if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(value))
 				{
-					this._logger.LogWarning("Failed to parse line from metadata file: {Line}", line);
+					_logger.LogWarning("Failed to parse line from metadata file: {Line}", line);
 					continue;
 				}
 
@@ -83,17 +80,17 @@ namespace Dynatrace.MetricUtils
 		{
 			try
 			{
-				var metadataFilePath = this._fileReader.ReadAllText(IndirectionFileName);
+				var metadataFilePath = _fileReader.ReadAllText(IndirectionFileName);
 				if (string.IsNullOrEmpty(metadataFilePath))
 				{
 					return Array.Empty<string>();
 				}
 
-				return this._fileReader.ReadAllLines(metadataFilePath);
+				return _fileReader.ReadAllLines(metadataFilePath);
 			}
 			catch (Exception e)
 			{
-				this._logger.LogWarning(
+				_logger.LogWarning(
 					"Could not read Dynatrace metadata. This is normal if OneAgent is not installed.",
 					e.Message);
 				return Array.Empty<string>();

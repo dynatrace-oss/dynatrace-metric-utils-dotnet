@@ -96,18 +96,18 @@ namespace Dynatrace.MetricUtils
 
 			public LongCounterValue(long value, bool isDelta = true)
 			{
-				this._value = value;
-				this._isDelta = isDelta;
+				_value = value;
+				_isDelta = isDelta;
 			}
 
 			public string Serialize()
 			{
-				if (this._isDelta)
+				if (_isDelta)
 				{
-					return $"count,delta={this._value}";
+					return $"count,delta={_value}";
 				}
 
-				return $"count,{this._value}";
+				return $"count,{_value}";
 			}
 		}
 
@@ -117,12 +117,12 @@ namespace Dynatrace.MetricUtils
 
 			public LongGaugeValue(long value)
 			{
-				this._value = value;
+				_value = value;
 			}
 
 			public string Serialize()
 			{
-				return $"gauge,{this._value}";
+				return $"gauge,{_value}";
 			}
 		}
 
@@ -145,15 +145,15 @@ namespace Dynatrace.MetricUtils
 					throw new MetricException("Min cannot be larger than max.");
 				}
 
-				this._min = min;
-				this._max = max;
-				this._sum = sum;
-				this._count = count;
+				_min = min;
+				_max = max;
+				_sum = sum;
+				_count = count;
 			}
 
 			public string Serialize()
 			{
-				return $"gauge,min={this._min},max={this._max},sum={this._sum},count={this._count}";
+				return $"gauge,min={_min},max={_max},sum={_sum},count={_count}";
 			}
 		}
 
@@ -165,18 +165,18 @@ namespace Dynatrace.MetricUtils
 			public DoubleCounterValue(double value, bool isDelta = true)
 			{
 				ThrowOnNanOrInfDouble(value);
-				this._value = value;
-				this._isDelta = isDelta;
+				_value = value;
+				_isDelta = isDelta;
 			}
 
 			public string Serialize()
 			{
-				if (this._isDelta)
+				if (_isDelta)
 				{
-					return $"count,delta={FormatDouble(this._value)}";
+					return $"count,delta={FormatDouble(_value)}";
 				}
 
-				return $"count,{FormatDouble(this._value)}";
+				return $"count,{FormatDouble(_value)}";
 			}
 		}
 
@@ -187,12 +187,12 @@ namespace Dynatrace.MetricUtils
 			public DoubleGaugeValue(double value)
 			{
 				ThrowOnNanOrInfDouble(value);
-				this._value = value;
+				_value = value;
 			}
 
 			public string Serialize()
 			{
-				return $"gauge,{FormatDouble(this._value)}";
+				return $"gauge,{FormatDouble(_value)}";
 			}
 		}
 
@@ -217,16 +217,16 @@ namespace Dynatrace.MetricUtils
 
 				ThrowOnNanOrInfDoubles(min, max, sum);
 
-				this._min = min;
-				this._max = max;
-				this._sum = sum;
-				this._count = count;
+				_min = min;
+				_max = max;
+				_sum = sum;
+				_count = count;
 			}
 
 			public string Serialize()
 			{
 				return
-					$"gauge,min={FormatDouble(this._min)},max={FormatDouble(this._max)},sum={FormatDouble(this._sum)},count={FormatDouble(this._count)}";
+					$"gauge,min={FormatDouble(_min)},max={FormatDouble(_max)},sum={FormatDouble(_sum)},count={FormatDouble(_count)}";
 			}
 		}
 	}

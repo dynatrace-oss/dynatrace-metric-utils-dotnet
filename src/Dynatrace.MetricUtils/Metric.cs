@@ -39,10 +39,10 @@ namespace Dynatrace.MetricUtils
 				throw new MetricException("Metric name can't be null or empty.");
 			}
 
-			this.MetricName = metricName;
-			this.Dimensions = dimensions;
-			this.Value = value;
-			this.Timestamp = timestamp;
+			MetricName = metricName;
+			Dimensions = dimensions;
+			Value = value;
+			Timestamp = timestamp;
 		}
 
 		/// <summary>

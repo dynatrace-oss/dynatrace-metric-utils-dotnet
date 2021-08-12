@@ -93,12 +93,10 @@ namespace Dynatrace.MetricUtils
 			IEnumerable<KeyValuePair<string, string>> defaultDimensions,
 			List<KeyValuePair<string, string>> staticDimensions)
 		{
-			this._logger = logger == null ? NullLogger.Instance : logger;
-			this._prefix = prefix;
-			this._defaultDimensions =
-				Normalize.DimensionList(defaultDimensions) ?? new List<KeyValuePair<string, string>>();
-			this._staticDimensions =
-				Normalize.DimensionList(staticDimensions) ?? new List<KeyValuePair<string, string>>();
+			_logger = logger == null ? NullLogger.Instance : logger;
+			_prefix = prefix;
+			_defaultDimensions = Normalize.DimensionList(defaultDimensions) ?? new List<KeyValuePair<string, string>>();
+			_staticDimensions = Normalize.DimensionList(staticDimensions) ?? new List<KeyValuePair<string, string>>();
 		}
 
 		// this is required to read the Dynatrace metadata dimensions and still use constructor chaining
@@ -133,7 +131,7 @@ namespace Dynatrace.MetricUtils
 		public string SerializeMetric(Metric metric)
 		{
 			var sb = new StringBuilder();
-			this.SerializeMetric(sb, metric);
+			SerializeMetric(sb, metric);
 			var serialized = sb.ToString();
 			if (serialized.Length > MetricLineMaxLength)
 			{
@@ -146,7 +144,7 @@ namespace Dynatrace.MetricUtils
 
 		private void SerializeMetric(StringBuilder sb, Metric metric)
 		{
-			var metricKey = this.CreateMetricKey(metric.MetricName);
+			var metricKey = CreateMetricKey(metric.MetricName);
 			// throw on lines with invalid metric keys.
 			if (string.IsNullOrEmpty(metricKey))
 			{
@@ -157,16 +155,16 @@ namespace Dynatrace.MetricUtils
 
 			// default dimensions and static dimensions are normalized once upon serializer creation.
 			// the labels from opentelemetry are normalized here, then all dimensions are merged.
-			var normalizedDimensions = MergeDimensions(this._defaultDimensions,
-				Normalize.DimensionList(metric.Dimensions), this._staticDimensions);
+			var normalizedDimensions = MergeDimensions(_defaultDimensions,
+				Normalize.DimensionList(metric.Dimensions), _staticDimensions);
 
 			// merged dimensions are normalized and escaped since we called Normalize.DimensionList on each of the sublists.
-			this.WriteDimensions(sb, normalizedDimensions);
+			WriteDimensions(sb, normalizedDimensions);
 			sb.Append($" {metric.Value.Serialize()}");
 
 			if (metric.Timestamp.HasValue)
 			{
-				this.WriteTimestamp(sb, metric.Timestamp.Value);
+				WriteTimestamp(sb, metric.Timestamp.Value);
 			}
 		}
 
@@ -180,7 +178,7 @@ namespace Dynatrace.MetricUtils
 				if (Interlocked.Increment(ref _timestampWarningCounter) == 1)
 				{
 					var time = timestamp.ToString(CultureInfo.InvariantCulture);
-					this._logger.LogWarning(
+					_logger.LogWarning(
 						$"Order of magnitude of the timestamp seems off ({time}). "
 						+ "The timestamp represents a time before the year 2000 or after the year 3000. "
 						+ "Skipping setting timestamp, the current server time will be added upon ingestion. "
@@ -203,9 +201,9 @@ namespace Dynatrace.MetricUtils
 		private string CreateMetricKey(string metricName)
 		{
 			var keyBuilder = new StringBuilder();
-			if (!string.IsNullOrEmpty(this._prefix))
+			if (!string.IsNullOrEmpty(_prefix))
 			{
-				keyBuilder.Append($"{this._prefix}.");
+				keyBuilder.Append($"{_prefix}.");
 			}
 
 			keyBuilder.Append(metricName);
