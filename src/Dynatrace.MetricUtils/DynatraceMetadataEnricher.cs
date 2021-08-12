@@ -29,11 +29,10 @@ namespace Dynatrace.MetricUtils
 		private readonly IFileReader _fileReader;
 		private readonly ILogger _logger;
 
-		public DynatraceMetadataEnricher(ILogger logger) : this(logger, new DefaultFileReader()) { }
 
 		// Allows mocking of File.ReadAllText and File.ReadAllLines methods. When using the public constructor,
 		// the used FileReader passes the calls through to the System.IO methods.
-		internal DynatraceMetadataEnricher(ILogger logger, IFileReader fileReader)
+		public DynatraceMetadataEnricher(ILogger logger, IFileReader fileReader)
 		{
 			_logger = logger;
 			_fileReader = fileReader;

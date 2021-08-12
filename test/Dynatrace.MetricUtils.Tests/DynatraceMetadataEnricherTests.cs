@@ -32,7 +32,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void ValidMultiline()
 		{
-			var enricher = new DynatraceMetadataEnricher(Logger);
+			var enricher = new DynatraceMetadataEnricher(Logger, new DefaultFileReader());
 			var metadata = enricher.ProcessMetadata(new[] {"a=123", "b=456"});
 			metadata.Should().Equal(new List<KeyValuePair<string, string>>
 			{
@@ -43,7 +43,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void WrongSyntax()
 		{
-			var enricher = new DynatraceMetadataEnricher(Logger);
+			var enricher = new DynatraceMetadataEnricher(Logger, new DefaultFileReader());
 			enricher.ProcessMetadata(new[] {"=0x5c14d9a68d569861"}).Should().BeEmpty();
 			enricher.ProcessMetadata(new[] {"otherKey="}).Should().BeEmpty();
 			enricher.ProcessMetadata(new[] {""}).Should().BeEmpty();

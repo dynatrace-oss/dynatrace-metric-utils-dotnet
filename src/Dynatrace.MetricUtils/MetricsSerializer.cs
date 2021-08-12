@@ -107,7 +107,7 @@ namespace Dynatrace.MetricUtils
 
 			if (enrichWithDynatraceMetadata)
 			{
-				var enricher = new DynatraceMetadataEnricher(logger == null ? NullLogger.Instance : logger);
+				var enricher = new DynatraceMetadataEnricher(logger == null ? NullLogger.Instance : logger, new DefaultFileReader());
 				enricher.EnrichWithDynatraceMetadata(staticDimensions);
 			}
 
