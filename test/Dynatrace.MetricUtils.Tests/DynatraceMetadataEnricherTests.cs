@@ -33,7 +33,7 @@ namespace Dynatrace.MetricUtils.Tests
 		public void ValidMultiline()
 		{
 			var enricher = new DynatraceMetadataEnricher(Logger);
-			var metadata = enricher.ProcessMetadata(new[] { "a=123", "b=456" });
+			var metadata = enricher.ProcessMetadata(new[] {"a=123", "b=456"});
 			metadata.Should().Equal(new List<KeyValuePair<string, string>>
 			{
 				new KeyValuePair<string, string>("a", "123"), new KeyValuePair<string, string>("b", "456")
@@ -44,11 +44,11 @@ namespace Dynatrace.MetricUtils.Tests
 		public void WrongSyntax()
 		{
 			var enricher = new DynatraceMetadataEnricher(Logger);
-			enricher.ProcessMetadata(new[] { "=0x5c14d9a68d569861" }).Should().BeEmpty();
-			enricher.ProcessMetadata(new[] { "otherKey=" }).Should().BeEmpty();
-			enricher.ProcessMetadata(new[] { "" }).Should().BeEmpty();
-			enricher.ProcessMetadata(new[] { "=" }).Should().BeEmpty();
-			enricher.ProcessMetadata(new[] { "===" }).Should().BeEmpty();
+			enricher.ProcessMetadata(new[] {"=0x5c14d9a68d569861"}).Should().BeEmpty();
+			enricher.ProcessMetadata(new[] {"otherKey="}).Should().BeEmpty();
+			enricher.ProcessMetadata(new[] {""}).Should().BeEmpty();
+			enricher.ProcessMetadata(new[] {"="}).Should().BeEmpty();
+			enricher.ProcessMetadata(new[] {"==="}).Should().BeEmpty();
 			enricher.ProcessMetadata(new string[] { }).Should().BeEmpty();
 		}
 
@@ -82,7 +82,7 @@ namespace Dynatrace.MetricUtils.Tests
 			var fileReader = Mock.Of<IFileReader>();
 			Mock.Get(fileReader).Setup(f => f.ReadAllText(It.IsAny<string>())).Throws<UnauthorizedAccessException>();
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
-			var targetList = new List<KeyValuePair<string, string>> { kv };
+			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
@@ -103,7 +103,7 @@ namespace Dynatrace.MetricUtils.Tests
 			// there is a whole host of exceptions that can be thrown by ReadAllText: https://docs.microsoft.com/en-us/dotnet/api/system.io.file.readalltext?view=net-5.0
 			Mock.Get(fileReader).Setup(f => f.ReadAllText(It.IsAny<string>())).Throws<Exception>();
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
-			var targetList = new List<KeyValuePair<string, string>> { kv };
+			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
@@ -123,7 +123,7 @@ namespace Dynatrace.MetricUtils.Tests
 			var fileReader = Mock.Of<IFileReader>();
 			Mock.Get(fileReader).Setup(f => f.ReadAllText(It.IsAny<string>())).Returns("");
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
-			var targetList = new List<KeyValuePair<string, string>> { kv };
+			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
@@ -150,7 +150,7 @@ namespace Dynatrace.MetricUtils.Tests
 
 			Mock.Get(fileReader).Setup(f => f.ReadAllText(It.IsAny<string>())).Returns(indirectionFileContent);
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
-			var targetList = new List<KeyValuePair<string, string>> { kv };
+			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
@@ -174,7 +174,7 @@ namespace Dynatrace.MetricUtils.Tests
 				.Returns("indirection_file_name.properties");
 			Mock.Get(fileReader).Setup(f => f.ReadAllLines(It.IsAny<string>())).Throws<FileNotFoundException>();
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
-			var targetList = new List<KeyValuePair<string, string>> { kv };
+			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
@@ -197,7 +197,7 @@ namespace Dynatrace.MetricUtils.Tests
 				.Returns("indirection_file_name.properties");
 			Mock.Get(fileReader).Setup(f => f.ReadAllLines(It.IsAny<string>())).Throws<AccessViolationException>();
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
-			var targetList = new List<KeyValuePair<string, string>> { kv };
+			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
@@ -220,7 +220,7 @@ namespace Dynatrace.MetricUtils.Tests
 				.Returns("indirection_file_name.properties");
 			Mock.Get(fileReader).Setup(f => f.ReadAllLines(It.IsAny<string>())).Throws<Exception>();
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
-			var targetList = new List<KeyValuePair<string, string>> { kv };
+			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
@@ -243,7 +243,7 @@ namespace Dynatrace.MetricUtils.Tests
 				.Returns("indirection_file_name.properties");
 			Mock.Get(fileReader).Setup(f => f.ReadAllLines(It.IsAny<string>())).Returns(Array.Empty<string>());
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
-			var targetList = new List<KeyValuePair<string, string>> { kv };
+			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
@@ -265,9 +265,9 @@ namespace Dynatrace.MetricUtils.Tests
 			Mock.Get(fileReader).Setup(f => f.ReadAllText(It.IsAny<string>()))
 				.Returns("indirection_file_name.properties");
 			Mock.Get(fileReader).Setup(f => f.ReadAllLines(It.IsAny<string>()))
-				.Returns(new[] { "key1=value1", "key2=value2" });
+				.Returns(new[] {"key1=value1", "key2=value2"});
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
-			var targetList = new List<KeyValuePair<string, string>> { kv };
+			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);
@@ -292,9 +292,9 @@ namespace Dynatrace.MetricUtils.Tests
 			Mock.Get(fileReader).Setup(f => f.ReadAllText(It.IsAny<string>()))
 				.Returns("indirection_file_name.properties");
 			Mock.Get(fileReader).Setup(f => f.ReadAllLines(It.IsAny<string>()))
-				.Returns(new[] { "key1=value1", "key2=", "=value2", "===" });
+				.Returns(new[] {"key1=value1", "key2=", "=value2", "==="});
 			var kv = new KeyValuePair<string, string>("initialDimensionKey", "initialDimensionValue");
-			var targetList = new List<KeyValuePair<string, string>> { kv };
+			var targetList = new List<KeyValuePair<string, string>> {kv};
 
 			var unitUnderTest = new DynatraceMetadataEnricher(Logger, fileReader);
 			unitUnderTest.EnrichWithDynatraceMetadata(targetList);

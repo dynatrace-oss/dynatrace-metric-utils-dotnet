@@ -32,15 +32,9 @@ namespace Dynatrace.MetricUtils
 	internal class DefaultFileReader : IFileReader
 	{
 		/// <summary>Returns the result of File.ReadAllLines(filename).</summary>
-		public string[] ReadAllLines(string filename)
-		{
-			return File.ReadAllLines(filename);
-		}
+		public string[] ReadAllLines(string filename) => File.ReadAllLines(filename);
 
 		/// <summary>Returns the result of File.ReadAllText(filename).</summary>
-		public string ReadAllText(string filename)
-		{
-			return File.ReadAllText(filename);
-		}
+		public string ReadAllText(string filename) => File.ReadAllText(filename);
 	}
 }

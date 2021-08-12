@@ -79,16 +79,12 @@ namespace Dynatrace.MetricUtils.Tests
 		[InlineData("invalid example 3", "metriÄ", "metri_")]
 		[InlineData("invalid example 4", "Ätric", "_tric")]
 		[InlineData("invalid example 5", "meträääääÖÖÖc", "metr_c")]
-		public void MetricKeyNormalizedCorrectly(string name, string input, string expected)
-		{
+		public void MetricKeyNormalizedCorrectly(string name, string input, string expected) =>
 			Assert.Equal(expected, Normalize.MetricKey(input));
-		}
 
 		[Fact]
-		public void MetricKeyTruncatedCorrectly()
-		{
+		public void MetricKeyTruncatedCorrectly() =>
 			Assert.Equal(new string('a', 250), Normalize.MetricKey(new string('a', 270)));
-		}
 
 		[Theory]
 		[InlineData("valid case", "dim", "dim")]
@@ -146,16 +142,12 @@ namespace Dynatrace.MetricUtils.Tests
 		[InlineData("invalid example 5", "ääätag", "_tag")]
 		[InlineData("invalid example 6", "ä_ätag", "___tag")]
 		[InlineData("invalid example 7", "Bla___", "bla___")]
-		public void DimensionKeyNormalizedCorrectly(string name, string input, string expected)
-		{
+		public void DimensionKeyNormalizedCorrectly(string name, string input, string expected) =>
 			Assert.Equal(expected, Normalize.DimensionKey(input));
-		}
 
 		[Fact]
-		public void DimensionKeyTruncatedCorrectly()
-		{
+		public void DimensionKeyTruncatedCorrectly() =>
 			Assert.Equal(new string('a', 100), Normalize.DimensionKey(new string('a', 110)));
-		}
 
 		[Theory]
 		[InlineData("valid value", "value", "value")]
@@ -184,16 +176,12 @@ namespace Dynatrace.MetricUtils.Tests
 		[InlineData("invalid trailing unicode NUL", "a\u0000", "a_")]
 		[InlineData("invalid enclosed unicode NUL", "a\u0000b", "a_b")]
 		[InlineData("invalid consecutive enclosed unicode NUL", "a\u0000\u0007\u0000b", "a_b")]
-		public void DimensionValueNormalizedCorrectly(string name, string input, string expected)
-		{
+		public void DimensionValueNormalizedCorrectly(string name, string input, string expected) =>
 			Assert.Equal(expected, Normalize.DimensionValue(input));
-		}
 
 		[Fact]
-		public void DimensionValueTruncatedCorrectly()
-		{
+		public void DimensionValueTruncatedCorrectly() =>
 			Assert.Equal(new string('a', 250), Normalize.DimensionValue(new string('a', 270)));
-		}
 
 		[Theory]
 		[InlineData("escape spaces", "a b", "a\\ b")]
@@ -204,10 +192,8 @@ namespace Dynatrace.MetricUtils.Tests
 		[InlineData("escape multiple special chars", " ,=\\", "\\ \\,\\=\\\\")]
 		[InlineData("escape consecutive special chars", "  ,,==\\\\", "\\ \\ \\,\\,\\=\\=\\\\\\\\")]
 		[InlineData("escape key-value pair", "key=\"value\"", "key\\=\\\"value\\\"")]
-		public void DimensionValueEscapedCorrectly(string name, string input, string expected)
-		{
+		public void DimensionValueEscapedCorrectly(string name, string input, string expected) =>
 			Assert.Equal(expected, Normalize.EscapeDimensionValue(input));
-		}
 
 		[Fact]
 		public void DimensionValueTruncatedCorrectlyAfterEscaping()

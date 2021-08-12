@@ -115,15 +115,9 @@ namespace Dynatrace.MetricUtils
 		{
 			private readonly long _value;
 
-			public LongGaugeValue(long value)
-			{
-				_value = value;
-			}
+			public LongGaugeValue(long value) => _value = value;
 
-			public string Serialize()
-			{
-				return $"gauge,{_value}";
-			}
+			public string Serialize() => $"gauge,{_value}";
 		}
 
 		internal sealed class LongSummaryValue : IMetricValue
@@ -151,10 +145,7 @@ namespace Dynatrace.MetricUtils
 				_count = count;
 			}
 
-			public string Serialize()
-			{
-				return $"gauge,min={_min},max={_max},sum={_sum},count={_count}";
-			}
+			public string Serialize() => $"gauge,min={_min},max={_max},sum={_sum},count={_count}";
 		}
 
 		internal sealed class DoubleCounterValue : IMetricValue
@@ -190,10 +181,7 @@ namespace Dynatrace.MetricUtils
 				_value = value;
 			}
 
-			public string Serialize()
-			{
-				return $"gauge,{FormatDouble(_value)}";
-			}
+			public string Serialize() => $"gauge,{FormatDouble(_value)}";
 		}
 
 		internal sealed class DoubleSummaryValue : IMetricValue
@@ -223,11 +211,8 @@ namespace Dynatrace.MetricUtils
 				_count = count;
 			}
 
-			public string Serialize()
-			{
-				return
-					$"gauge,min={FormatDouble(_min)},max={FormatDouble(_max)},sum={FormatDouble(_sum)},count={FormatDouble(_count)}";
-			}
+			public string Serialize() =>
+				$"gauge,min={FormatDouble(_min)},max={FormatDouble(_max)},sum={FormatDouble(_sum)},count={FormatDouble(_count)}";
 		}
 	}
 }

@@ -32,7 +32,7 @@ namespace Dynatrace.MetricUtils.Tests
 
 		// string representation of the above DateTime in Unix milliseconds
 		private static readonly string TestTimestamp =
-		$"{new DateTimeOffset(TestDatetime.ToLocalTime()).ToUnixTimeMilliseconds()}";
+			$"{new DateTimeOffset(TestDatetime.ToLocalTime()).ToUnixTimeMilliseconds()}";
 
 		private static readonly IEnumerable<KeyValuePair<string, string>> TestDimensions =
 			new List<KeyValuePair<string, string>>
@@ -165,7 +165,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDimensionValuesNormalized()
 		{
-			var dims = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("dim1", "\\=\" ==") };
+			var dims = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("dim1", "\\=\" ==")};
 			var metric = MetricsFactory.CreateLongCounterDelta("metric1", 100, dims, TestDatetime);
 
 			var serialized = new MetricsSerializer(Logger).SerializeMetric(metric);
@@ -244,7 +244,7 @@ namespace Dynatrace.MetricUtils.Tests
 				};
 
 			var staticDimensions =
-				new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("dim3", "static3") };
+				new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("dim3", "static3")};
 
 			var metric = MetricsFactory.CreateLongCounterDelta("metric", 100, metricDimensions, TestDatetime);
 
@@ -286,7 +286,7 @@ namespace Dynatrace.MetricUtils.Tests
 				};
 
 			var staticDimensions =
-				new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("dim3", "static3") };
+				new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("dim3", "static3")};
 
 			MetricsSerializer.MergeDimensions(defaultDimensions, metricDimensions, staticDimensions).Should()
 				.Equal(new List<KeyValuePair<string, string>>
@@ -395,9 +395,6 @@ namespace Dynatrace.MetricUtils.Tests
 		}
 
 		[Fact]
-		public void TestAllDefaultValues()
-		{
-			FluentActions.Invoking(() => new MetricsSerializer()).Should().NotThrow();
-		}
+		public void TestAllDefaultValues() => FluentActions.Invoking(() => new MetricsSerializer()).Should().NotThrow();
 	}
 }
