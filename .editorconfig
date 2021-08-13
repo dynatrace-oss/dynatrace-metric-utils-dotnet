@@ -225,3 +225,6 @@ csharp_space_between_square_brackets = false
 # Do not use new("a", "b") instead of new KeyValuePair<string, string>("a", "b") as this is a C# 9.0 language feature and breaks the build for .netcoreapp2.1
 csharp_object_creation_when_type_evident = explicitly_typed
 csharp_object_creation_when_type_not_evident = explicitly_typed
+resharper_xmldoc_indent_text = zero_indent
+resharper_xmldoc_keep_user_linebreaks = false
+resharper_xmldoc_wrap_text = true

@@ -20,9 +20,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Dynatrace.MetricUtils
 {
-	/// <summary>
-	///     Queries Dynatrace metadata to be added metric attributes.
-	/// </summary>
+	/// <summary>Queries Dynatrace metadata to be added metric attributes.</summary>
 	internal class DynatraceMetadataEnricher
 	{
 		private const string IndirectionFileName = "dt_metadata_e617c525669e072eebe3d0f08212e8f2.properties";
@@ -38,9 +36,7 @@ namespace Dynatrace.MetricUtils
 			_fileReader = fileReader;
 		}
 
-		/// <summary>
-		///     Read and add Dynatrace metadata to the passed Collection
-		/// </summary>
+		/// <summary>Read and add Dynatrace metadata to the passed Collection</summary>
 		/// <param name="labels">The collection to which the lables should be added.</param>
 		public void EnrichWithDynatraceMetadata(ICollection<KeyValuePair<string, string>> labels)
 		{

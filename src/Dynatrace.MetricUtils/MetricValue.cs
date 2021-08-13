@@ -19,14 +19,10 @@ using System.Globalization;
 
 namespace Dynatrace.MetricUtils
 {
-	/// <summary>
-	///     Interface for the Metric values.
-	/// </summary>
+	/// <summary>Interface for the Metric values.</summary>
 	public interface IMetricValue
 	{
-		/// <summary>
-		///     Transforms the <see cref="MetricValue" /> to a <see cref="string" />.
-		/// </summary>
+		/// <summary>Transforms the <see cref="MetricValue" /> to a <see cref="string" />.</summary>
 		/// <returns>The string representation for the <see cref="MetricValue" /></returns>
 		string Serialize();
 	}
@@ -55,12 +51,11 @@ namespace Dynatrace.MetricUtils
 		}
 
 		/// <remarks>
-		///     Numbers with an absolute value smaller than 10^-15 (except 0) are serialized in exponential notation.
-		///     Numbers with an absolute value larger than 10^15 are serialized in exponential notation.
-		///     All other numbers are serialized with a maximum of 15 decimal places.
-		///     This is specified due to doubles being serialized with a different number of decimal places
-		///     depending on the used .NET core version when using the generic double.ToString method,
-		///     This discrepancy would break the unit tests and is therefore explicitly specified.
+		/// Numbers with an absolute value smaller than 10^-15 (except 0) are serialized in exponential notation. Numbers
+		/// with an absolute value larger than 10^15 are serialized in exponential notation. All other numbers are serialized with
+		/// a maximum of 15 decimal places. This is specified due to doubles being serialized with a different number of decimal
+		/// places depending on the used .NET core version when using the generic double.ToString method, This discrepancy would
+		/// break the unit tests and is therefore explicitly specified.
 		/// </remarks>
 		internal static string FormatDouble(double d)
 		{

@@ -20,15 +20,12 @@ using System.Linq;
 
 namespace Dynatrace.MetricUtils
 {
-	/// <summary>
-	///     Static class with methods to create <see cref="Metric" /> objects.
-	/// </summary>
+	/// <summary>Static class with methods to create <see cref="Metric" /> objects.</summary>
 	public static class MetricsFactory
 	{
 		/// <summary>
-		///     Creates a counter metric for an integer.
-		///     The value will be serialized as "count,delta=[value]".
-		///     Only a delta to the previously exported value should be specified here.
+		/// Creates a counter metric for an integer. The value will be serialized as "count,delta=[value]". Only a delta
+		/// to the previously exported value should be specified here.
 		/// </summary>
 		/// <param name="metricName">The name of the metric.</param>
 		/// <param name="value">The value to be set on the metric.</param>
@@ -46,10 +43,7 @@ namespace Dynatrace.MetricUtils
 			return new Metric(metricName, dimensions, new MetricValue.LongCounterValue(value), timestamp);
 		}
 
-		/// <summary>
-		///     Creates a gauge metric for an integer.
-		///     The value will be serialized as "gauge,[value]".
-		/// </summary>
+		/// <summary>Creates a gauge metric for an integer. The value will be serialized as "gauge,[value]".</summary>
 		/// <param name="metricName">The name of the metric.</param>
 		/// <param name="value">The value to be set on the metric.</param>
 		/// <param name="dimensions">A list of key-value pairs to set on this metric.</param>
@@ -67,8 +61,8 @@ namespace Dynatrace.MetricUtils
 		}
 
 		/// <summary>
-		///     Creates a summary metric for integers.
-		///     The value will be serialized as "gauge,min=[min],max=[max],sum=[sum],count=[count]".
+		/// Creates a summary metric for integers. The value will be serialized as
+		/// "gauge,min=[min],max=[max],sum=[sum],count=[count]".
 		/// </summary>
 		/// <param name="metricName">The name of the metric.</param>
 		/// <param name="min">The smallest value in the summary</param>
@@ -91,9 +85,8 @@ namespace Dynatrace.MetricUtils
 		}
 
 		/// <summary>
-		///     Creates a counter metric for a decimal number.
-		///     The value will be serialized as "count,delta=[value]".
-		///     Only a delta to the previously exported value should be specified here.
+		/// Creates a counter metric for a decimal number. The value will be serialized as "count,delta=[value]". Only a
+		/// delta to the previously exported value should be specified here.
 		/// </summary>
 		/// <param name="metricName">The name of the metric.</param>
 		/// <param name="value">The value to be set on the metric.</param>
@@ -111,10 +104,7 @@ namespace Dynatrace.MetricUtils
 			return new Metric(metricName, dimensions, new MetricValue.DoubleCounterValue(value), timestamp);
 		}
 
-		/// <summary>
-		///     Creates a gauge metric for a floating point number.
-		///     The value will be serialized as "gauge,[value]".
-		/// </summary>
+		/// <summary>Creates a gauge metric for a floating point number. The value will be serialized as "gauge,[value]".</summary>
 		/// <param name="metricName">The name of the metric.</param>
 		/// <param name="value">The value to be set on the metric.</param>
 		/// <param name="dimensions">A list of key-value pairs to set on this metric.</param>
@@ -132,8 +122,8 @@ namespace Dynatrace.MetricUtils
 		}
 
 		/// <summary>
-		///     Creates a summary metric for floating point numbers.
-		///     The value will be serialized as "gauge,min=[min],max=[max],sum=[sum],count=[count]".
+		/// Creates a summary metric for floating point numbers. The value will be serialized as
+		/// "gauge,min=[min],max=[max],sum=[sum],count=[count]".
 		/// </summary>
 		/// <param name="metricName">The name of the metric.</param>
 		/// <param name="min">The smallest value in the summary</param>

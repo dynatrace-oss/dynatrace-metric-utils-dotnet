@@ -19,14 +19,10 @@ using System.Collections.Generic;
 
 namespace Dynatrace.MetricUtils
 {
-	/// <summary>
-	///     Metric is the intermittent data type that can then be serialized.
-	/// </summary>
+	/// <summary>Metric is the intermittent data type that can then be serialized.</summary>
 	public class Metric
 	{
-		/// <summary>
-		///     Internal constructor to be used by the <c>MetricsFactory</c>
-		/// </summary>
+		/// <summary>Internal constructor to be used by the <c>MetricsFactory</c></summary>
 		/// <param name="metricName">The name of the metric.</param>
 		/// <param name="dimensions">A list of dimensions to be added to this metric</param>
 		/// <param name="value">The metric value, one of the implementations in MetricValue.cs</param>
@@ -45,24 +41,16 @@ namespace Dynatrace.MetricUtils
 			Timestamp = timestamp;
 		}
 
-		/// <summary>
-		///     The name of the metric.
-		/// </summary>
+		/// <summary>The name of the metric.</summary>
 		public string MetricName { get; }
 
-		/// <summary>
-		///     Dimensions for this metric.
-		/// </summary>
+		/// <summary>Dimensions for this metric.</summary>
 		public IEnumerable<KeyValuePair<string, string>> Dimensions { get; }
 
-		/// <summary>
-		///     The metric vale in the form of a <see cref="IMetricValue" />.
-		/// </summary>
+		/// <summary>The metric vale in the form of a <see cref="IMetricValue" />.</summary>
 		public IMetricValue Value { get; }
 
-		/// <summary>
-		///     An optional timestamp for the metric.
-		/// </summary>
+		/// <summary>An optional timestamp for the metric.</summary>
 		/// <value></value>
 		public DateTime? Timestamp { get; }
 	}

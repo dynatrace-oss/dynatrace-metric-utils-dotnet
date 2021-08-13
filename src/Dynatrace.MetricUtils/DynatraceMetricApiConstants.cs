@@ -16,9 +16,7 @@
 
 namespace Dynatrace.MetricUtils
 {
-	/// <summary>
-	///     Common constants to be used by applications consuming this library.
-	/// </summary>
+	/// <summary>Common constants to be used by applications consuming this library.</summary>
 	public static class DynatraceMetricApiConstants
 	{
 		private const string OneAgentEndpoint = "http://localhost:14499/metrics/ingest";
@@ -26,14 +24,12 @@ namespace Dynatrace.MetricUtils
 		private const int MaxDims = 50;
 
 		/// <summary>
-		///     The default local OneAgent endpoint to which metrics can be exported.
-		///     Find more information in
-		///     <see
-		///         href="https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/local-api/">
-		///         the
-		///         Dynatrace documentation
-		///     </see>
-		///     .
+		/// The default local OneAgent endpoint to which metrics can be exported. Find more information in
+		/// <see
+		///     href="https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/local-api/">
+		/// the Dynatrace documentation
+		/// </see>
+		/// .
 		/// </summary>
 		public static string DefaultOneAgentEndpoint => OneAgentEndpoint;
 
