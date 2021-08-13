@@ -89,21 +89,9 @@ namespace Dynatrace.MetricUtils
 			private readonly bool _isDelta;
 			private readonly long _value;
 
-			public LongCounterValue(long value, bool isDelta = true)
-			{
-				_value = value;
-				_isDelta = isDelta;
-			}
+			public LongCounterValue(long value) => _value = value;
 
-			public string Serialize()
-			{
-				if (_isDelta)
-				{
-					return $"count,delta={_value}";
-				}
-
-				return $"count,{_value}";
-			}
+			public string Serialize() => $"count,delta={_value}";
 		}
 
 		internal sealed class LongGaugeValue : IMetricValue
@@ -148,22 +136,13 @@ namespace Dynatrace.MetricUtils
 			private readonly bool _isDelta;
 			private readonly double _value;
 
-			public DoubleCounterValue(double value, bool isDelta = true)
+			public DoubleCounterValue(double value)
 			{
 				ThrowOnNanOrInfDouble(value);
 				_value = value;
-				_isDelta = isDelta;
 			}
 
-			public string Serialize()
-			{
-				if (_isDelta)
-				{
-					return $"count,delta={FormatDouble(_value)}";
-				}
-
-				return $"count,{FormatDouble(_value)}";
-			}
+			public string Serialize() => $"count,delta={FormatDouble(_value)}";
 		}
 
 		internal sealed class DoubleGaugeValue : IMetricValue

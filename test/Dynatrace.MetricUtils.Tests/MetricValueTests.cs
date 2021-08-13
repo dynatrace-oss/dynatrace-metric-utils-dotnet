@@ -24,155 +24,128 @@ namespace Dynatrace.MetricUtils.Tests
 {
 	public class MetricValueTests
 	{
-		[Fact]
-		public void TestLongCounterValueDelta()
-		{
-			new LongCounterValue(100).Serialize().Should().Be("count,delta=100");
-			new LongCounterValue(-10).Serialize().Should().Be("count,delta=-10");
-			new LongCounterValue(long.MaxValue).Serialize().Should().Be("count,delta=9223372036854775807");
-			new LongCounterValue(long.MinValue).Serialize().Should().Be("count,delta=-9223372036854775808");
-		}
+		[Theory]
+		[InlineData(100, "count,delta=100")]
+		[InlineData(-10, "count,delta=-10")]
+		[InlineData(long.MaxValue, "count,delta=9223372036854775807")]
+		[InlineData(long.MinValue, "count,delta=-9223372036854775808")]
+		public void TestLongCounterValueDelta(long input, string expected) =>
+			new LongCounterValue(input).Serialize().Should().Be(expected);
+
+
+		[Theory]
+		[InlineData(100, "gauge,100")]
+		[InlineData(-10, "gauge,-10")]
+		[InlineData(long.MaxValue, "gauge,9223372036854775807")]
+		[InlineData(long.MinValue, "gauge,-9223372036854775808")]
+		public void TestLongGaugeValue(long input, string expected) =>
+			new LongGaugeValue(input).Serialize().Should().Be(expected);
+
+		[Theory]
+		[InlineData(1, 6, 10, 5, "gauge,min=1,max=6,sum=10,count=5")]
+		[InlineData(-5, -1, -10, 5, "gauge,min=-5,max=-1,sum=-10,count=5")]
+		[InlineData(1, 1, 1, 1, "gauge,min=1,max=1,sum=1,count=1")]
+		[InlineData(1, 6, 10, 0, "gauge,min=1,max=6,sum=10,count=0")]
+		public void TestLongSummaryValue(long min, long max, long sum, long count, string expected) =>
+			new LongSummaryValue(min, max, sum, count).Serialize().Should().Be(expected);
 
 		[Fact]
-		public void TestLongCounterValueTotal()
+		public void TestInvalidValuesLongSummaryValue()
 		{
-			new LongCounterValue(100, false).Serialize().Should().Be("count,100");
-			new LongCounterValue(-10, false).Serialize().Should().Be("count,-10");
-			new LongCounterValue(long.MaxValue, false).Serialize().Should().Be("count,9223372036854775807");
-			new LongCounterValue(long.MinValue, false).Serialize().Should().Be("count,-9223372036854775808");
-		}
-
-		[Fact]
-		public void TestLongGaugeValue()
-		{
-			new LongGaugeValue(100).Serialize().Should().Be("gauge,100");
-			new LongGaugeValue(-10).Serialize().Should().Be("gauge,-10");
-			new LongGaugeValue(long.MaxValue).Serialize().Should().Be("gauge,9223372036854775807");
-			new LongGaugeValue(long.MinValue).Serialize().Should().Be("gauge,-9223372036854775808");
-		}
-
-		[Fact]
-		public void TestLongSummaryValue()
-		{
-			new LongSummaryValue(1, 6, 10, 5).Serialize().Should().Be("gauge,min=1,max=6,sum=10,count=5");
-			new LongSummaryValue(-5, -1, -10, 5).Serialize().Should().Be("gauge,min=-5,max=-1,sum=-10,count=5");
-			new LongSummaryValue(1, 1, 1, 1).Serialize().Should().Be("gauge,min=1,max=1,sum=1,count=1");
-			new LongSummaryValue(1, 6, 10, 0).Serialize().Should().Be("gauge,min=1,max=6,sum=10,count=0");
-
 			FluentActions.Invoking(() => new LongSummaryValue(1, 6, 10, -3)).Should().Throw<MetricException>()
 				.WithMessage("Count cannot be less than 0.");
 			FluentActions.Invoking(() => new LongSummaryValue(6, 1, 10, 5)).Should().Throw<MetricException>()
 				.WithMessage("Min cannot be larger than max.");
 		}
 
-		[Fact]
-		public void TestFormatDouble()
-		{
-			FormatDouble(0).Should().Be("0");
-			FormatDouble(-0).Should().Be("0");
-			FormatDouble(0.0).Should().Be("0");
-			FormatDouble(-0.0).Should().Be("0");
-			FormatDouble(.0000000000000).Should().Be("0");
-			FormatDouble(-0.0000000000000).Should().Be("0");
-			FormatDouble(123.456).Should().Be("123.456");
-			FormatDouble(-123.456).Should().Be("-123.456");
-			FormatDouble(1.0 / 3).Should().Be("0.333333333333333");
-			FormatDouble(double.MinValue).Should().Be("-1.79769313486232E+308");
-			FormatDouble(double.MaxValue).Should().Be("1.79769313486232E+308");
-			FormatDouble(1e100).Should().Be("1.0E+100");
-			FormatDouble(1e-100).Should().Be("1.0E-100");
-			FormatDouble(-1e100).Should().Be("-1.0E+100");
-			FormatDouble(-1e-100).Should().Be("-1.0E-100");
-			FormatDouble(1.234e100).Should().Be("1.234E+100");
-			FormatDouble(1.234e-100).Should().Be("1.234E-100");
-			FormatDouble(-1.234e100).Should().Be("-1.234E+100");
-			FormatDouble(-1.234e-100).Should().Be("-1.234E-100");
-			FormatDouble(1_000_000_000_000_000_000).Should().Be("1.0E+18");
-			FormatDouble(-1_000_000_000_000_000_000).Should().Be("-1.0E+18");
-			FormatDouble(1_100_000_000_000_000_000).Should().Be("1.1E+18");
-			FormatDouble(-1_100_000_000_000_000_000).Should().Be("-1.1E+18");
-			FormatDouble(0.000_000_000_000_000_001).Should().Be("1.0E-18");
-			FormatDouble(-0.000_000_000_000_000_001).Should().Be("-1.0E-18");
-			FormatDouble(1_234_000_000_000_000_000).Should().Be("1.234E+18");
-			FormatDouble(-1_234_000_000_000_000_000).Should().Be("-1.234E+18");
-			FormatDouble(0.000_000_000_000_000_001_234).Should().Be("1.234E-18");
-			FormatDouble(-0.000_000_000_000_000_001_234).Should().Be("-1.234E-18");
-			FormatDouble(1.1234567890123456789).Should().Be("1.12345678901235");
-			FormatDouble(-1.1234567890123456789).Should().Be("-1.12345678901235");
-			FormatDouble(200.00000000000).Should().Be("200");
-			FormatDouble(-200.000000000000).Should().Be("-200");
+		[Theory]
+		[InlineData(0, "0")]
+		[InlineData(-0, "0")]
+		[InlineData(0.0, "0")]
+		[InlineData(-0.0, "0")]
+		[InlineData(.0000000000000, "0")]
+		[InlineData(-0.0000000000000, "0")]
+		[InlineData(123.456, "123.456")]
+		[InlineData(-123.456, "-123.456")]
+		[InlineData(1.0 / 3, "0.333333333333333")]
+		[InlineData(double.MinValue, "-1.79769313486232E+308")]
+		[InlineData(double.MaxValue, "1.79769313486232E+308")]
+		[InlineData(1e100, "1.0E+100")]
+		[InlineData(1e-100, "1.0E-100")]
+		[InlineData(-1e100, "-1.0E+100")]
+		[InlineData(-1e-100, "-1.0E-100")]
+		[InlineData(1.234e100, "1.234E+100")]
+		[InlineData(1.234e-100, "1.234E-100")]
+		[InlineData(-1.234e100, "-1.234E+100")]
+		[InlineData(-1.234e-100, "-1.234E-100")]
+		[InlineData(1_000_000_000_000_000_000, "1.0E+18")]
+		[InlineData(-1_000_000_000_000_000_000, "-1.0E+18")]
+		[InlineData(1_100_000_000_000_000_000, "1.1E+18")]
+		[InlineData(-1_100_000_000_000_000_000, "-1.1E+18")]
+		[InlineData(0.000_000_000_000_000_001, "1.0E-18")]
+		[InlineData(-0.000_000_000_000_000_001, "-1.0E-18")]
+		[InlineData(1_234_000_000_000_000_000, "1.234E+18")]
+		[InlineData(-1_234_000_000_000_000_000, "-1.234E+18")]
+		[InlineData(0.000_000_000_000_000_001_234, "1.234E-18")]
+		[InlineData(-0.000_000_000_000_000_001_234, "-1.234E-18")]
+		[InlineData(1.1234567890123456789, "1.12345678901235")]
+		[InlineData(-1.1234567890123456789, "-1.12345678901235")]
+		[InlineData(200.00000000000, "200")]
+		[InlineData(-200.000000000000, "-200")]
+		// these should never happen, as the MetricValue constructors should throw.
+		[InlineData(double.NegativeInfinity, "-Infinity")]
+		[InlineData(double.PositiveInfinity, "Infinity")]
+		[InlineData(double.NaN, "NaN")]
+		public void TestFormatDouble(double input, string expected) => FormatDouble(input).Should().Be(expected);
 
-			// these should never happen, as the MetricValue constructors should throw.
-			FormatDouble(double.NegativeInfinity).Should().Be("-Infinity");
-			FormatDouble(double.PositiveInfinity).Should().Be("Infinity");
-			FormatDouble(double.NaN).Should().Be("NaN");
-		}
+		[Theory]
+		[InlineData(0, "count,delta=0")]
+		[InlineData(-0.0, "count,delta=0")]
+		[InlineData(123.456, "count,delta=123.456")]
+		[InlineData(-123.456, "count,delta=-123.456")]
+		[InlineData(1.0 / 3, "count,delta=0.333333333333333")]
+		[InlineData(200.00000000000000, "count,delta=200")]
+		public void TestDoubleCounterValueDelta(double input, string expected) =>
+			new DoubleCounterValue(input).Serialize().Should().Be(expected);
 
-		[Fact]
-		public void TestDoubleCounterValueDelta()
-		{
-			new DoubleCounterValue(0).Serialize().Should().Be("count,delta=0");
-			new DoubleCounterValue(-0.0).Serialize().Should().Be("count,delta=0");
-			new DoubleCounterValue(123.456).Serialize().Should().Be("count,delta=123.456");
-			new DoubleCounterValue(-123.456).Serialize().Should().Be("count,delta=-123.456");
-			new DoubleCounterValue(1.0 / 3).Serialize().Should().Be("count,delta=0.333333333333333");
-			new DoubleCounterValue(200.00000000000000).Serialize().Should().Be("count,delta=200");
+		[Theory]
+		[InlineData(double.NegativeInfinity, "Value is infinite.")]
+		[InlineData(double.PositiveInfinity, "Value is infinite.")]
+		[InlineData(double.NaN, "Value is NaN.")]
+		public void TestDoubleCounterValueDeltaInvalid(double input, string expectedError) =>
+			FluentActions.Invoking(() => new DoubleCounterValue(input)).Should()
+				.Throw<MetricException>().WithMessage(expectedError);
 
-			FluentActions.Invoking(() => new DoubleCounterValue(double.NegativeInfinity)).Should()
-				.Throw<MetricException>().WithMessage("Value is infinite.");
-			FluentActions.Invoking(() => new DoubleCounterValue(double.PositiveInfinity)).Should()
-				.Throw<MetricException>().WithMessage("Value is infinite.");
-			FluentActions.Invoking(() => new DoubleCounterValue(double.NaN)).Should().Throw<MetricException>()
-				.WithMessage("Value is NaN.");
-		}
+		[Theory]
+		[InlineData(0, "gauge,0")]
+		[InlineData(-0.0, "gauge,0")]
+		[InlineData(123.456, "gauge,123.456")]
+		[InlineData(-123.456, "gauge,-123.456")]
+		[InlineData(1.0 / 3, "gauge,0.333333333333333")]
+		[InlineData(200.00000000000000, "gauge,200")]
+		public void TestDoubleGaugeValue(double input, string expected) =>
+			new DoubleGaugeValue(input).Serialize().Should().Be(expected);
 
-		[Fact]
-		public void TestDoubleCounterValueTotal()
-		{
-			new DoubleCounterValue(0, false).Serialize().Should().Be("count,0");
-			new DoubleCounterValue(-0.0, false).Serialize().Should().Be("count,0");
-			new DoubleCounterValue(123.456, false).Serialize().Should().Be("count,123.456");
-			new DoubleCounterValue(-123.456, false).Serialize().Should().Be("count,-123.456");
-			new DoubleCounterValue(1.0 / 3, false).Serialize().Should().Be("count,0.333333333333333");
-			new DoubleCounterValue(200.00000000000000, false).Serialize().Should().Be("count,200");
+		[Theory]
+		[InlineData(double.NegativeInfinity, "Value is infinite.")]
+		[InlineData(double.PositiveInfinity, "Value is infinite.")]
+		[InlineData(double.NaN, "Value is NaN.")]
+		public void TestDoubleGaugeValueInvalid(double input, string expectedError) =>
+			FluentActions.Invoking(() => new DoubleGaugeValue(input)).Should()
+				.Throw<MetricException>().WithMessage(expectedError);
 
-			FluentActions.Invoking(() => new DoubleCounterValue(double.NegativeInfinity, false)).Should()
-				.Throw<MetricException>().WithMessage("Value is infinite.");
-			FluentActions.Invoking(() => new DoubleCounterValue(double.PositiveInfinity, false)).Should()
-				.Throw<MetricException>().WithMessage("Value is infinite.");
-			FluentActions.Invoking(() => new DoubleCounterValue(double.NaN, false)).Should().Throw<MetricException>()
-				.WithMessage("Value is NaN.");
-		}
-
-
-		[Fact]
-		public void TestDoubleGaugeValue()
-		{
-			new DoubleGaugeValue(0).Serialize().Should().Be("gauge,0");
-			new DoubleGaugeValue(-0.0).Serialize().Should().Be("gauge,0");
-			new DoubleGaugeValue(123.456).Serialize().Should().Be("gauge,123.456");
-			new DoubleGaugeValue(-123.456).Serialize().Should().Be("gauge,-123.456");
-			new DoubleGaugeValue(1.0 / 3).Serialize().Should().Be("gauge,0.333333333333333");
-			new DoubleGaugeValue(200.00000000000000).Serialize().Should().Be("gauge,200");
-
-			FluentActions.Invoking(() => new DoubleGaugeValue(double.NegativeInfinity)).Should()
-				.Throw<MetricException>().WithMessage("Value is infinite.");
-			FluentActions.Invoking(() => new DoubleGaugeValue(double.PositiveInfinity)).Should()
-				.Throw<MetricException>().WithMessage("Value is infinite.");
-			FluentActions.Invoking(() => new DoubleGaugeValue(double.NaN)).Should().Throw<MetricException>()
-				.WithMessage("Value is NaN.");
-		}
+		[Theory]
+		[InlineData(1.2, 3.4, 8.9, 4, "gauge,min=1.2,max=3.4,sum=8.9,count=4")]
+		[InlineData(double.MinValue, double.MaxValue, double.MaxValue, 5,
+			"gauge,min=-1.79769313486232E+308,max=1.79769313486232E+308,sum=1.79769313486232E+308,count=5")]
+		[InlineData(1.23e-18, 1.23e18, 5.6e18, 7, "gauge,min=1.23E-18,max=1.23E+18,sum=5.6E+18,count=7")]
+		[InlineData(1.2, 1.2, 1.2, 4, "gauge,min=1.2,max=1.2,sum=1.2,count=4")]
+		public void TestDoubleSummaryValue(double min, double max, double sum, long count, string expected) =>
+			new DoubleSummaryValue(min, max, sum, count).Serialize().Should().Be(expected);
 
 		[Fact]
-		public void TestDoubleSummaryValue()
+		public void TestDoubleSummaryValueInvlid()
 		{
-			new DoubleSummaryValue(1.2, 3.4, 8.9, 4).Serialize().Should().Be("gauge,min=1.2,max=3.4,sum=8.9,count=4");
-			new DoubleSummaryValue(double.MinValue, double.MaxValue, double.MaxValue, 5).Serialize().Should().Be(
-				"gauge,min=-1.79769313486232E+308,max=1.79769313486232E+308,sum=1.79769313486232E+308,count=5");
-			new DoubleSummaryValue(1.23e-18, 1.23e18, 5.6e18, 7).Serialize().Should()
-				.Be("gauge,min=1.23E-18,max=1.23E+18,sum=5.6E+18,count=7");
-			new DoubleSummaryValue(1.2, 1.2, 1.2, 4).Serialize().Should().Be("gauge,min=1.2,max=1.2,sum=1.2,count=4");
-
 			FluentActions.Invoking(() => new DoubleSummaryValue(1.2, 2.3, 5.6, -3)).Should().Throw<MetricException>()
 				.WithMessage("Count cannot be less than 0.");
 			FluentActions.Invoking(() => new DoubleSummaryValue(6.5, 1.2, 10.7, 5)).Should().Throw<MetricException>()
