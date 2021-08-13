@@ -32,11 +32,11 @@ namespace Dynatrace.MetricUtils
 
 		//  Metric keys (mk)
 		//  characters not valid as leading characters in the first identifier key section
-		private static readonly Regex ReMkFirstIdentifierSectionStart =
+		private static readonly Regex ReMkFirstIdentifierSectionInvalidStartRange =
 			new Regex("^[^a-zA-Z_]+", RegexOptions.Compiled);
 
 		// characters not valid as leading characters in subsequent subsections.
-		private static readonly Regex ReMkSubsequentIdentifierSectionStart =
+		private static readonly Regex ReMkSubsequentIdentifierSectionInvalidStartRange =
 			new Regex("^[^a-zA-Z0-9_]+", RegexOptions.Compiled);
 
 		// invalid characters for the rest of the key.
@@ -44,7 +44,7 @@ namespace Dynatrace.MetricUtils
 
 		// Dimension keys (dk)
 		// Dimension keys start with a lowercase letter or an underscore.
-		private static readonly Regex ReDkSectionStart = new Regex("^[^a-z_]+", RegexOptions.Compiled);
+		private static readonly Regex ReDkSectionInvalidStartRange = new Regex("^[^a-z_]+", RegexOptions.Compiled);
 
 		// invalid characters in the rest of the dimension key
 		private static readonly Regex ReDkInvalidCharacters = new Regex("[^a-z0-9_\\-:]+", RegexOptions.Compiled);
@@ -98,8 +98,8 @@ namespace Dynatrace.MetricUtils
 
 				// first key section cannot start with a number while subsequent sections can.
 				var normalizedSection = firstSection
-					? ReMkFirstIdentifierSectionStart.Replace(section, "_")
-					: ReMkSubsequentIdentifierSectionStart.Replace(section, "_");
+					? ReMkFirstIdentifierSectionInvalidStartRange.Replace(section, "_")
+					: ReMkSubsequentIdentifierSectionInvalidStartRange.Replace(section, "_");
 
 				// replace invalid chars with an underscore
 				normalizedSection = ReMkInvalidCharacters.Replace(normalizedSection, "_");
@@ -145,7 +145,7 @@ namespace Dynatrace.MetricUtils
 					// move to lowercase
 					var normalizedSection = section.ToLower();
 					// replace consecutive leading chars with an underscore.
-					normalizedSection = ReDkSectionStart.Replace(normalizedSection, "_");
+					normalizedSection = ReDkSectionInvalidStartRange.Replace(normalizedSection, "_");
 					// replace consecutive invalid characters within the section with one underscore:
 					normalizedSection = ReDkInvalidCharacters.Replace(normalizedSection, "_");
 
