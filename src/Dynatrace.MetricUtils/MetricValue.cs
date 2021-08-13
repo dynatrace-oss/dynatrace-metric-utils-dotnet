@@ -86,7 +86,6 @@ namespace Dynatrace.MetricUtils
 
 		internal sealed class LongCounterValue : IMetricValue
 		{
-			private readonly bool _isDelta;
 			private readonly long _value;
 
 			public LongCounterValue(long value) => _value = value;
@@ -133,7 +132,6 @@ namespace Dynatrace.MetricUtils
 
 		internal sealed class DoubleCounterValue : IMetricValue
 		{
-			private readonly bool _isDelta;
 			private readonly double _value;
 
 			public DoubleCounterValue(double value)
