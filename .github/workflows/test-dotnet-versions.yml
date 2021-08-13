@@ -17,10 +17,6 @@ jobs:
     - uses: actions/checkout@v2
 
     # this will set up all three dot net versions as the runtimes are apparently all needed at the same time for testing.
-    - name: Setup .NET Core 2.1
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 2.1.x
     - name: Setup .NET Core 3.1
       uses: actions/setup-dotnet@v1
       with:
@@ -35,9 +31,6 @@ jobs:
 
     - name: Build
       run: dotnet build --configuration Release --no-restore
-
-    - name: Test on .NET Core 2.1.x
-      run: dotnet test --no-restore --verbosity normal --framework netcoreapp2.1
 
     - name: Test on .NET Core 3.1.x
       run: dotnet test --no-restore --verbosity normal --framework netcoreapp3.1
