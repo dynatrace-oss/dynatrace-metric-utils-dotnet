@@ -58,13 +58,19 @@ namespace Dynatrace.MetricUtils.Tests
 				.WithMessage("Min cannot be larger than max.");
 		}
 
+		[Fact]
+		public void TestFormatDoubleZero()
+		{
+			// test these as Fact, as xUnit will assume them to be equal and not test them
+			FormatDouble(0).Should().Be("0");
+			FormatDouble(-0).Should().Be("0");
+			FormatDouble(0.0).Should().Be("0");
+			FormatDouble(-0.0).Should().Be("0");
+			FormatDouble(.0000000000000).Should().Be("0");
+			FormatDouble(-0.0000000000000).Should().Be("0");
+		}
+
 		[Theory]
-		[InlineData(0, "0")]
-		[InlineData(-0, "0")]
-		[InlineData(0.0, "0")]
-		[InlineData(-0.0, "0")]
-		[InlineData(.0000000000000, "0")]
-		[InlineData(-0.0000000000000, "0")]
 		[InlineData(123.456, "123.456")]
 		[InlineData(-123.456, "-123.456")]
 		[InlineData(1.0 / 3, "0.333333333333333")]
