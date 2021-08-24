@@ -16,7 +16,7 @@ dotnet add package Dynatrace.MetricUtils
 Using this library to create metric lines is a two-step process.
 First, create lines using the `MetricsFactory`.
 Then, serialize them using a `MetricsSerializer`.
-Furthermore, this library contains static constants for use in projects consuming this library.
+Furthermore, this library contains constants for use in projects consuming this library.
 This repository also contains [an example project](src/Dynatrace.MetricUtils.Example) demonstrating the use of the `MetricsFactory` and the `MetricsSerializer`.
 
 ### Metric Creation
@@ -52,15 +52,11 @@ Finally, it is also possible to add a timestamp to the metric:
 
 ```csharp
 // Passing null for the dimensions will not add any dimensions to the metric.
-// Of course it is possible to pass dimensions and a timestamp at the same time.
 var metric = MetricsFactory.CreateLongCounterDelta("long-counter", 23, null, DateTime.Now))
 
 // Alternatively, the dimensions parameter can be skipped and timestamp can be passed as a named parameter.
-var metric = MetricsFactory.CreateLongCounterDelta("long-counter", 23, timestamp: new DateTime(2021, 01, 01, 12, 00, 00))
+var metric = MetricsFactory.CreateLongCounterDelta("long-counter", 23, timestamp: DateTime.Now)
 ```
-
-Timestamps that are before the year 2000 or after the year 3000 will be discarded.
-In that case, metrics will be serialized without a timestamp.
 
 If the metric timestamp is omitted or outside the range, the server timestamp is used upon ingestion.
 
@@ -85,10 +81,10 @@ var serializer = new MetricsSerializer(
   "prefix",           // A prefix added to all exported metric names.
   defaultDimensions,  // Default dimensions that will be added to all exported metrics.
   "metrics-source",   // Set the metrics source. Will be exported as dimension with "dt.metrics.source" as its key.
-  true                // Turn Dynatrace metadata enrichment on or off (true by default).
+  true                // Enable Dynatrace metadata enrichment (true by default).
 );
 
-var metric = MetricsFactory.CreateLongCounterDelta("long-counter", 23, timestamp: new DateTime(2021, 01, 01, 12, 00, 00));
+var metric = MetricsFactory.CreateLongCounterDelta("long-counter", 23, timestamp: DateTime.Now);
 
 // Serialize the metric
 Console.WriteLine(serializer.SerializeMetric(metric));
@@ -99,24 +95,19 @@ Console.WriteLine(serializer.SerializeMetric(metric));
 
 ### Common constants
 
-The constants can be accessed via the static getter methods on the `DynatraceMetricApiConstants` class:
-
-```csharp
-Console.WriteLine(DynatraceMetricApiConstants.DefaultOneAgentEndpoint);
-```
-
-The use of the common constants is also shown in [the example project](src/Dynatrace.MetricUtils.Example)
+The constants can be accessed via the static getter methods on the `DynatraceMetricApiConstants` class.
+Their use is also shown in [the example project](src/Dynatrace.MetricUtils.Example)
 
 Currently available constants are:
 
 - the default [local OneAgent metric API endpoint](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/local-api/) (`DefaultOneAgentEndpoint`)
 - the limit for how many metric lines can be ingested in one request (`PayloadLinesLimit`)
-- the limit for how many dimensions can be added to each metric key (`MaximumDimensions`)
+- the limit for how many dimensions can be added to each metric (`MaximumDimensions`)
 
 ### Dynatrace Metadata enrichment
 
-If the `enrichWithDynatraceMetadata` toggle in the `MetricsSerializer` constructor is set to `true`, an attempt is made to read Dynatrace metadata.
-On a host with a running OneAgent, setting this option will collect metadata and add them as dimensions to all serialized metrics.
+If the `enrichWithDynatraceMetadata` toggle in the `MetricsSerializer` constructor is set to `true` (= default), an attempt is made to read Dynatrace metadata.
+On a host with a running OneAgent, setting this option will collect metadata and add it as dimensions to all serialized metrics.
 Metadata typically consist of the Dynatrace host ID and process group ID.
 More information on the underlying feature that is used by the library can be found in the [Dynatrace documentation](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/enrich-metrics/).
 
