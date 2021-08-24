@@ -24,7 +24,7 @@ namespace Dynatrace.MetricUtils
 	/// Static class containing helper functions to normalize and escape metric keys, dimension keys, and dimension
 	/// values.
 	/// </summary>
-	public static class Normalize
+	internal static class Normalize
 	{
 		private const int MaxLengthMetricKey = 250;
 		private const int MaxLengthDimensionKey = 100;
