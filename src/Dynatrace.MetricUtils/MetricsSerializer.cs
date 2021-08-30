@@ -117,11 +117,10 @@ namespace Dynatrace.MetricUtils
 
 		/// <summary>
 		/// Create a <see cref="string" /> from a metric. Default dimensions of the serializer, dimensions on the metric,
-		/// Dynatrace metadata dimensions, and "dt.metrics.source" dimensions are merged and added to the metric line. Will throw a
-		/// <see cref="MetricException" /> if the metric name is invalid, or if the serialized line exceeds the line length
-		/// threshold.
+		/// Dynatrace metadata dimensions, and "dt.metrics.source" dimensions are merged and added to the metric line.
 		/// </summary>
 		/// <param name="metric"></param>
+		/// <exception cref="MetricException">Thrown when the serialized metric exceeds the line length limit.</exception>
 		/// <returns></returns>
 		public string SerializeMetric(Metric metric)
 		{

@@ -62,7 +62,8 @@ If the metric timestamp is omitted or outside the range, the server timestamp is
 
 ### Metric serialization
 
-The created metrics can then be serialized using a `MetricsSerializer`:
+The created metrics can then be serialized using a `MetricsSerializer`.
+A single instance of this serializer should be kept, unless different prefixes and/or dimensions are desired.
 
 ```csharp
 // The logger is optional, but not providing one will result in all log messages being discarded:

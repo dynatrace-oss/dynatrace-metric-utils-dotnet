@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dynatrace.MetricUtils
 {
@@ -27,12 +28,18 @@ namespace Dynatrace.MetricUtils
 		/// <param name="dimensions">A list of dimensions to be added to this metric</param>
 		/// <param name="value">The metric value, one of the implementations in MetricValue.cs</param>
 		/// <param name="timestamp">An optional timestamp.</param>
+		/// <exception cref="MetricException">Thrown when the metric name is null or empty.</exception>
 		internal Metric(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, IMetricValue value,
 			DateTime? timestamp)
 		{
 			if (string.IsNullOrEmpty(metricName))
 			{
 				throw new MetricException("Metric name can't be null or empty.");
+			}
+
+			if (dimensions == null)
+			{
+				dimensions = Enumerable.Empty<KeyValuePair<string, string>>();
 			}
 
 			MetricName = metricName;
