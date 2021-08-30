@@ -14,9 +14,6 @@
 // limitations under the License.
 // </copyright>
 
-using System;
-using System.Globalization;
-
 namespace Dynatrace.MetricUtils
 {
 	/// <summary>Interface for the Metric values.</summary>
@@ -48,40 +45,6 @@ namespace Dynatrace.MetricUtils
 			{
 				ThrowOnNanOrInfDouble(d);
 			}
-		}
-
-		/// <remarks>
-		/// Numbers with an absolute value smaller than 10^-15 (except 0) are serialized in exponential notation. Numbers
-		/// with an absolute value larger than 10^15 are serialized in exponential notation. All other numbers are serialized with
-		/// a maximum of 15 decimal places. This is specified due to doubles being serialized with a different number of decimal
-		/// places depending on the used .NET core version when using the generic double.ToString method, this discrepancy would
-		/// break the unit tests and is therefore explicitly specified.
-		/// </remarks>
-		internal static string FormatDouble(double d)
-		{
-			// d is exactly 0 or -0. Used to make sure -0 is exported as "0".
-			if (Math.Abs(d).Equals(0.0))
-			{
-				return "0";
-			}
-
-			// use exponential notation with 15 decimal places and at least one trailing decimal place before the exponent.
-			// for numbers greater than -10^-15 and smaller than 10^-15.
-			if (Math.Abs(d) < 1e-15)
-			{
-				return d.ToString("0.0##############E-0", CultureInfo.InvariantCulture);
-			}
-
-			// for numbers greater than 10^15 or smaller than -10^15
-			if (Math.Abs(d) > 1e+15)
-			{
-				return d.ToString("0.0##############E+0", CultureInfo.InvariantCulture);
-			}
-
-			// set a fixed number of decimal places, as different .net versions seem to have different defaults.
-			var serialized = d.ToString("0.###############", CultureInfo.InvariantCulture);
-
-			return serialized;
 		}
 
 		internal sealed class LongCounterValue : IMetricValue
@@ -140,7 +103,7 @@ namespace Dynatrace.MetricUtils
 				_value = value;
 			}
 
-			public string Serialize() => $"count,delta={FormatDouble(_value)}";
+			public string Serialize() => $"count,delta={_value}";
 		}
 
 		internal sealed class DoubleGaugeValue : IMetricValue
@@ -153,7 +116,7 @@ namespace Dynatrace.MetricUtils
 				_value = value;
 			}
 
-			public string Serialize() => $"gauge,{FormatDouble(_value)}";
+			public string Serialize() => $"gauge,{_value}";
 		}
 
 		internal sealed class DoubleSummaryValue : IMetricValue
@@ -184,7 +147,7 @@ namespace Dynatrace.MetricUtils
 			}
 
 			public string Serialize() =>
-				$"gauge,min={FormatDouble(_min)},max={FormatDouble(_max)},sum={FormatDouble(_sum)},count={FormatDouble(_count)}";
+				$"gauge,min={_min},max={_max},sum={_sum},count={_count}";
 		}
 	}
 }
