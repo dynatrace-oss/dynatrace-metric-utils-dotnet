@@ -25,7 +25,7 @@ namespace Dynatrace.MetricUtils
 	{
 		/// <summary>
 		/// Creates a counter metric for an integer. The value will be serialized as "count,delta=[value]". Only a delta
-		/// to the previously exported value should be specified here.
+		/// to the previously exported value can be specified here.
 		/// </summary>
 		/// <param name="metricName">The name of the metric.</param>
 		/// <param name="value">The value to be set on the metric.</param>
@@ -85,8 +85,8 @@ namespace Dynatrace.MetricUtils
 		}
 
 		/// <summary>
-		/// Creates a counter metric for a decimal number. The value will be serialized as "count,delta=[value]". Only a
-		/// delta to the previously exported value should be specified here.
+		/// Creates a counter metric for a floating point number. The value will be serialized as "count,delta=[value]". Only a
+		/// delta to the previously exported value can be specified here.
 		/// </summary>
 		/// <param name="metricName">The name of the metric.</param>
 		/// <param name="value">The value to be set on the metric.</param>
