@@ -96,7 +96,7 @@ Console.WriteLine(serializer.SerializeMetric(metric));
 
 ### Common constants
 
-The constants can be accessed via the static getter methods on the `DynatraceMetricApiConstants` class.
+The constants can be accessed via the static `DynatraceMetricApiConstants` class.
 Their use is also shown in [the example project](src/Dynatrace.MetricUtils.Example)
 
 Currently available constants are:
