@@ -58,52 +58,6 @@ namespace Dynatrace.MetricUtils.Tests
 				.WithMessage("Min cannot be larger than max.");
 		}
 
-		// [Fact]
-		// public void TestFormatDoubleZero()
-		// {
-		// 	// test these as Fact, as xUnit will assume them to be equal and not test them
-		// 	FormatDouble(0).Should().Be("0");
-		// 	FormatDouble(-0).Should().Be("0");
-		// 	FormatDouble(0.0).Should().Be("0");
-		// 	FormatDouble(-0.0).Should().Be("0");
-		// 	FormatDouble(.0000000000000).Should().Be("0");
-		// 	FormatDouble(-0.0000000000000).Should().Be("0");
-		// }
-
-		// [Theory]
-		// [InlineData(123.456, "123.456")]
-		// [InlineData(-123.456, "-123.456")]
-		// [InlineData(1.0 / 3, "0.333333333333333")]
-		// [InlineData(double.MinValue, "-1.79769313486232E+308")]
-		// [InlineData(double.MaxValue, "1.79769313486232E+308")]
-		// [InlineData(1e100, "1.0E+100")]
-		// [InlineData(1e-100, "1.0E-100")]
-		// [InlineData(-1e100, "-1.0E+100")]
-		// [InlineData(-1e-100, "-1.0E-100")]
-		// [InlineData(1.234e100, "1.234E+100")]
-		// [InlineData(1.234e-100, "1.234E-100")]
-		// [InlineData(-1.234e100, "-1.234E+100")]
-		// [InlineData(-1.234e-100, "-1.234E-100")]
-		// [InlineData(1_000_000_000_000_000_000, "1.0E+18")]
-		// [InlineData(-1_000_000_000_000_000_000, "-1.0E+18")]
-		// [InlineData(1_100_000_000_000_000_000, "1.1E+18")]
-		// [InlineData(-1_100_000_000_000_000_000, "-1.1E+18")]
-		// [InlineData(0.000_000_000_000_000_001, "1.0E-18")]
-		// [InlineData(-0.000_000_000_000_000_001, "-1.0E-18")]
-		// [InlineData(1_234_000_000_000_000_000, "1.234E+18")]
-		// [InlineData(-1_234_000_000_000_000_000, "-1.234E+18")]
-		// [InlineData(0.000_000_000_000_000_001_234, "1.234E-18")]
-		// [InlineData(-0.000_000_000_000_000_001_234, "-1.234E-18")]
-		// [InlineData(1.1234567890123456789, "1.12345678901235")]
-		// [InlineData(-1.1234567890123456789, "-1.12345678901235")]
-		// [InlineData(200.00000000000, "200")]
-		// [InlineData(-200.000000000000, "-200")]
-		// // these should never happen, as the MetricValue constructors should throw.
-		// [InlineData(double.NegativeInfinity, "-Infinity")]
-		// [InlineData(double.PositiveInfinity, "Infinity")]
-		// [InlineData(double.NaN, "NaN")]
-		// public void TestFormatDouble(double input, string expected) => FormatDouble(input).Should().Be(expected);
-
 		[Fact]
 		public void TestDoubleCounterValueDelta()
 		{
