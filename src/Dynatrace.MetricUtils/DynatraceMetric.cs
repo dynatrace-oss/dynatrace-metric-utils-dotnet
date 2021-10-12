@@ -21,20 +21,20 @@ using System.Linq;
 namespace Dynatrace.MetricUtils
 {
 	/// <summary>Metric is the intermittent data type that can then be serialized.</summary>
-	public class Metric
+	public class DynatraceMetric
 	{
 		/// <summary>Internal constructor to be used by the <c>MetricsFactory</c></summary>
 		/// <param name="metricName">The name of the metric.</param>
 		/// <param name="dimensions">A list of dimensions to be added to this metric</param>
-		/// <param name="value">The metric value, one of the implementations in MetricValue.cs</param>
+		/// <param name="value">The metric value, one of the implementations in DynatraceMetricValue.cs</param>
 		/// <param name="timestamp">An optional timestamp.</param>
-		/// <exception cref="MetricException">Thrown when the metric name is null or empty.</exception>
-		internal Metric(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, IMetricValue value,
+		/// <exception cref="DynatraceMetricException">Thrown when the metric name is null or empty.</exception>
+		internal DynatraceMetric(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, IDynatraceMetricValue value,
 			DateTime? timestamp)
 		{
 			if (string.IsNullOrEmpty(metricName))
 			{
-				throw new MetricException("Metric name can't be null or empty.");
+				throw new DynatraceMetricException("Metric name can't be null or empty.");
 			}
 
 			if (dimensions == null)
@@ -54,8 +54,8 @@ namespace Dynatrace.MetricUtils
 		/// <summary>Dimensions for this metric.</summary>
 		public IEnumerable<KeyValuePair<string, string>> Dimensions { get; }
 
-		/// <summary>The metric vale in the form of a <see cref="IMetricValue" />.</summary>
-		public IMetricValue Value { get; }
+		/// <summary>The metric vale in the form of a <see cref="IDynatraceMetricValue" />.</summary>
+		public IDynatraceMetricValue Value { get; }
 
 		/// <summary>An optional timestamp for the metric.</summary>
 		/// <value></value>

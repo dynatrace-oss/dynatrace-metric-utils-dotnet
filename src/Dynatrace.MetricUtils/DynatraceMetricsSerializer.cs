@@ -28,14 +28,14 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Dynatrace.MetricUtils
 {
 	/// <summary>
-	/// The MetricsSerializer can be used to transform <see cref="Metric" /> objects into strings that can be exported
+	/// The <see cref="DynatraceMetricsSerializer" /> can be used to transform <see cref="DynatraceMetric" /> objects into strings that can be exported
 	/// to a Dynatrace endpoint.
 	/// </summary>
-	public class MetricsSerializer
+	public class DynatraceMetricsSerializer
 	{
 		/// <summary>
-		/// The maximum length of a line. The <see cref="MetricsSerializer.SerializeMetric(Metric)" /> method will throw a
-		/// <see cref="MetricException" /> if this threshold is exceeded.
+		/// The maximum length of a line. The <see cref="DynatraceMetricsSerializer.SerializeMetric(DynatraceMetric)" /> method will throw a
+		/// <see cref="DynatraceMetricException" /> if this threshold is exceeded.
 		/// </summary>
 		private const int MetricLineMaxLength = 2000;
 
@@ -56,11 +56,11 @@ namespace Dynatrace.MetricUtils
 
 		/// <summary>
 		/// Static dimensions, e.g. Dynatrace metadata dimensions, and the <c>dt.metrics.source</c> dimension, which will
-		/// be added to all metric lines created with this <see cref="MetricsSerializer" />.
+		/// be added to all metric lines created with this <see cref="DynatraceMetricsSerializer" />.
 		/// </summary>
 		private readonly List<KeyValuePair<string, string>> _staticDimensions;
 
-		/// <summary>Create a new <see cref="MetricsSerializer" />.</summary>
+		/// <summary>Create a new <see cref="DynatraceMetricsSerializer" />.</summary>
 		/// <param name="logger">
 		/// The logger to which messages should be exported. If nothing is set, no log messages will be
 		/// printed.
@@ -75,7 +75,7 @@ namespace Dynatrace.MetricUtils
 		/// Read Dynatrace metadata and add it to all metric lines created. On (
 		/// <c>true</c>) by default.
 		/// </param>
-		public MetricsSerializer(ILogger logger = null, string prefix = null,
+		public DynatraceMetricsSerializer(ILogger logger = null, string prefix = null,
 			IEnumerable<KeyValuePair<string, string>> defaultDimensions = null,
 			string metricsSource = null, bool enrichWithDynatraceMetadata = true)
 			: this(logger, prefix, defaultDimensions,
@@ -84,7 +84,7 @@ namespace Dynatrace.MetricUtils
 		}
 
 		// internal constructor offers an interface for testing and is used by the public constructor
-		internal MetricsSerializer(ILogger logger, string prefix,
+		internal DynatraceMetricsSerializer(ILogger logger, string prefix,
 			IEnumerable<KeyValuePair<string, string>> defaultDimensions,
 			List<KeyValuePair<string, string>> staticDimensions)
 		{
@@ -120,29 +120,29 @@ namespace Dynatrace.MetricUtils
 		/// Dynatrace metadata dimensions, and "dt.metrics.source" dimensions are merged and added to the metric line.
 		/// </summary>
 		/// <param name="metric"></param>
-		/// <exception cref="MetricException">Thrown when the serialized metric exceeds the line length limit.</exception>
+		/// <exception cref="DynatraceMetricException">Thrown when the serialized metric exceeds the line length limit.</exception>
 		/// <returns></returns>
-		public string SerializeMetric(Metric metric)
+		public string SerializeMetric(DynatraceMetric metric)
 		{
 			var sb = new StringBuilder();
 			SerializeMetric(sb, metric);
 			var serialized = sb.ToString();
 			if (serialized.Length > MetricLineMaxLength)
 			{
-				throw new MetricException(
+				throw new DynatraceMetricException(
 					$"Metric line exceeds line length of {MetricLineMaxLength} characters (Metric name: '{metric.MetricName}').");
 			}
 
 			return serialized;
 		}
 
-		private void SerializeMetric(StringBuilder sb, Metric metric)
+		private void SerializeMetric(StringBuilder sb, DynatraceMetric metric)
 		{
 			var metricKey = CreateMetricKey(metric.MetricName);
 			// throw on lines with invalid metric keys.
 			if (string.IsNullOrEmpty(metricKey))
 			{
-				throw new MetricException("Metric name can't be null or empty.");
+				throw new DynatraceMetricException("Metric name can't be null or empty.");
 			}
 
 			sb.Append(metricKey);

@@ -14,14 +14,14 @@ dotnet add package Dynatrace.MetricUtils
 ## Usage
 
 Using this library to create metric lines is a two-step process.
-First, create lines using the `MetricsFactory`.
-Then, serialize them using a `MetricsSerializer`.
+First, create lines using the `DynatraceMetricsFactory`.
+Then, serialize them using a `DynatraceMetricsSerializer`.
 Furthermore, this library contains constants for use in projects consuming this library.
-This repository also contains [an example project](src/Dynatrace.MetricUtils.Example) demonstrating the use of the `MetricsFactory` and the `MetricsSerializer`.
+This repository also contains [an example project](src/Dynatrace.MetricUtils.Example) demonstrating the use of the `DynatraceMetricsFactory` and the `DynatraceMetricsSerializer`.
 
 ### Metric Creation
 
-To create metrics, call one of the static methods on the `MetricsFactory`.
+To create metrics, call one of the static methods on the `DynatraceMetricsFactory`.
 Available instruments are:
 
 - Counter: `CreateLongCounterDelta` / `CreateDoubleCounterDelta`
@@ -31,7 +31,7 @@ Available instruments are:
 In the simplest form, metric creation looks like this:
 
 ```csharp
-var metric = MetricsFactory.CreateLongCounterDelta("long-counter", 23);
+var metric = DynatraceMetricsFactory.CreateLongCounterDelta("long-counter", 23);
 ```
 
 Additionally, it is possible to pass a list of dimensions to the metric upon creation:
@@ -42,7 +42,7 @@ var dimensions = new List<KeyValuePair<string, string>> {
   new KeyValuePair<string, string>("dim2", "val2")
 };
 
-var metric = MetricsFactory.CreateLongCounterDelta("long-counter", 23, dimensions);
+var metric = DynatraceMetricsFactory.CreateLongCounterDelta("long-counter", 23, dimensions);
 ```
 
 The dimensions will be added to the serialized metric.
@@ -52,23 +52,23 @@ Finally, it is also possible to add a timestamp to the metric:
 
 ```csharp
 // Passing null for the dimensions will not add any dimensions to the metric.
-var metric = MetricsFactory.CreateLongCounterDelta("long-counter", 23, null, DateTime.Now))
+var metric = DynatraceMetricsFactory.CreateLongCounterDelta("long-counter", 23, null, DateTime.Now))
 
 // Alternatively, the dimensions parameter can be skipped and timestamp can be passed as a named parameter.
-var metric = MetricsFactory.CreateLongCounterDelta("long-counter", 23, timestamp: DateTime.Now)
+var metric = DynatraceMetricsFactory.CreateLongCounterDelta("long-counter", 23, timestamp: DateTime.Now)
 ```
 
 If the metric timestamp is omitted or outside the range, the server timestamp is used upon ingestion.
 
 ### Metric serialization
 
-The created metrics can then be serialized using a `MetricsSerializer`.
+The created metrics can then be serialized using a `DynatraceMetricsSerializer`.
 A single instance of this serializer should be kept, unless different prefixes and/or dimensions are desired.
 
 ```csharp
 // The logger is optional, but not providing one will result in all log messages being discarded:
 var loggerFactory = LoggerFactory.Create(builder => builder.SetMinimumLevel(LogLevel.Debug).AddConsole());
-var logger = loggerFactory.CreateLogger<MetricsSerializer>();
+var logger = loggerFactory.CreateLogger<DynatraceMetricsSerializer>();
 
 // Create a list of default dimensions which are added to all metrics serialized by this serializer.
 var defaultDimensions = new List<KeyValuePair<string, string>> {
@@ -76,8 +76,8 @@ var defaultDimensions = new List<KeyValuePair<string, string>> {
   new KeyValuePair<string, string>("default2", "value2")
 };
 
-// Set up the MetricsSerializer. All parameters are optional:
-var serializer = new MetricsSerializer(
+// Set up the DynatraceMetricsSerializer. All parameters are optional:
+var serializer = new DynatraceMetricsSerializer(
   logger,             // This logger will be used to log errors in normalization.
   "prefix",           // A prefix added to all exported metric names.
   defaultDimensions,  // Default dimensions that will be added to all exported metrics.
@@ -85,7 +85,7 @@ var serializer = new MetricsSerializer(
   true                // Enable Dynatrace metadata enrichment (true by default).
 );
 
-var metric = MetricsFactory.CreateLongCounterDelta("long-counter", 23, timestamp: DateTime.Now);
+var metric = DynatraceMetricsFactory.CreateLongCounterDelta("long-counter", 23, timestamp: DateTime.Now);
 
 // Serialize the metric
 Console.WriteLine(serializer.SerializeMetric(metric));
@@ -107,7 +107,7 @@ Currently available constants are:
 
 ### Dynatrace Metadata enrichment
 
-If the `enrichWithDynatraceMetadata` toggle in the `MetricsSerializer` constructor is set to `true` (= default), an attempt is made to read Dynatrace metadata.
+If the `enrichWithDynatraceMetadata` toggle in the `DynatraceMetricsSerializer` constructor is set to `true` (= default), an attempt is made to read Dynatrace metadata.
 On a host with a running OneAgent, setting this option will collect metadata and add it as dimensions to all serialized metrics.
 Metadata typically consist of the Dynatrace host ID and process group ID.
 More information on the underlying feature that is used by the library can be found in the [Dynatrace documentation](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/enrich-metrics/).
