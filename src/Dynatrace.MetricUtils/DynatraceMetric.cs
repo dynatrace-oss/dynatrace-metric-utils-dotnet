@@ -20,13 +20,13 @@ using System.Linq;
 
 namespace Dynatrace.MetricUtils
 {
-	/// <summary>Metric is the intermittent data type that can then be serialized.</summary>
+	/// <summary>The intermittent data type that can then be serialized.</summary>
 	public class DynatraceMetric
 	{
-		/// <summary>Internal constructor to be used by the <c>MetricsFactory</c></summary>
+		/// <summary>Internal constructor to be used by the <see cref="DynatraceMetricsFactory"/></summary>
 		/// <param name="metricName">The name of the metric.</param>
 		/// <param name="dimensions">A list of dimensions to be added to this metric</param>
-		/// <param name="value">The metric value, one of the implementations in DynatraceMetricValue.cs</param>
+		/// <param name="value">The metric value, one of the implementations of <see cref="IDynatraceMetricValue"/></param>
 		/// <param name="timestamp">An optional timestamp.</param>
 		/// <exception cref="DynatraceMetricException">Thrown when the metric name is null or empty.</exception>
 		internal DynatraceMetric(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, IDynatraceMetricValue value,
