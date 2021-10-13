@@ -24,9 +24,9 @@ namespace Dynatrace.MetricUtils.Example
 	{
 		private static void Main(string[] args)
 		{
-			// Create a logger for the MetricsSerializer. In this case, log to the console.
+			// Create a logger for the DynatraceMetricsSerializer. In this case, log to the console.
 			var loggerFactory = LoggerFactory.Create(builder => builder.SetMinimumLevel(LogLevel.Debug).AddConsole());
-			var logger = loggerFactory.CreateLogger<MetricsSerializer>();
+			var logger = loggerFactory.CreateLogger<DynatraceMetricsSerializer>();
 
 			// Set up default dimensions, which will be added to every serialized metric.
 			var defaultDimensions =
@@ -35,27 +35,27 @@ namespace Dynatrace.MetricUtils.Example
 					new KeyValuePair<string, string>("default1", "value1"),
 					new KeyValuePair<string, string>("default2", "value2")
 				};
-			// Set up a Metrics Serializer. All parameters are optional.
+			// Set up a DynatraceMetricsSerializer. All parameters are optional.
 			// If no logger is provided, log information is discarded.
 			// the serializer is intended to be used for many metrics.
-			var serializer = new MetricsSerializer(logger, "prefix", defaultDimensions);
+			var serializer = new DynatraceMetricsSerializer(logger, "prefix", defaultDimensions);
 
-			// then, create metrics themselves using the MetricsFactory
+			// then, create metrics themselves using the DynatraceMetricsFactory
 			var metricDimensions =
-				new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("dim1", "val1")};
-			var metrics = new List<Metric>
+				new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("dim1", "val1") };
+			var metrics = new List<DynatraceMetric>
 			{
 				// Specify the current time to add a timestamp to the metric line
-				MetricsFactory.CreateLongCounterDelta("long-counter", 23, metricDimensions, DateTime.Now),
+				DynatraceMetricsFactory.CreateLongCounterDelta("long-counter", 23, metricDimensions, DateTime.Now),
 				// But it is also possible to specify the DateTime as a specific time explicitly:
-				MetricsFactory.CreateLongGauge("long-gauge", 34, metricDimensions,
+				DynatraceMetricsFactory.CreateLongGauge("long-gauge", 34, metricDimensions,
 					new DateTime(2021, 01, 01, 12, 00, 00)),
 				// summary values combine min, max, sum, and count.
-				MetricsFactory.CreateLongSummary("long-summary", 3, 5, 18, 4, metricDimensions),
+				DynatraceMetricsFactory.CreateLongSummary("long-summary", 3, 5, 18, 4, metricDimensions),
 				// dimensions are optional.
-				MetricsFactory.CreateDoubleCounterDelta("double-summary", 3.1415),
-				MetricsFactory.CreateDoubleGauge("double-gauge", 4.567, metricDimensions),
-				MetricsFactory.CreateDoubleSummary("double-summary", 3.1, 6.543, 20.123, 4, metricDimensions)
+				DynatraceMetricsFactory.CreateDoubleCounterDelta("double-summary", 3.1415),
+				DynatraceMetricsFactory.CreateDoubleGauge("double-gauge", 4.567, metricDimensions),
+				DynatraceMetricsFactory.CreateDoubleSummary("double-summary", 3.1, 6.543, 20.123, 4, metricDimensions)
 			};
 
 			// Finally, serialize the metrics to strings:
@@ -81,20 +81,20 @@ namespace Dynatrace.MetricUtils.Example
 			try
 			{
 				// an empty metric name is not permitted
-				MetricsFactory.CreateLongGauge("", 2);
+				DynatraceMetricsFactory.CreateLongGauge("", 2);
 			}
-			catch (MetricException me)
+			catch (DynatraceMetricException me)
 			{
 				Console.WriteLine(me.Message);
 			}
 
-			// Upon creation of invalid metrics, a MetricException is thrown:
+			// Upon creation of invalid metrics, a DynatraceMetricException is thrown:
 			try
 			{
 				// min > max is an invalid state and will throw.
-				MetricsFactory.CreateLongSummary("metric", 100, 10, 10, 3);
+				DynatraceMetricsFactory.CreateLongSummary("metric", 100, 10, 10, 3);
 			}
-			catch (MetricException me)
+			catch (DynatraceMetricException me)
 			{
 				Console.WriteLine(me.Message);
 			}

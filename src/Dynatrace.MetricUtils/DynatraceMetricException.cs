@@ -20,34 +20,34 @@ using System.Runtime.Serialization;
 namespace Dynatrace.MetricUtils
 {
 	/// <summary>Exception thrown if errors appear in this library.</summary>
-	public class MetricException : ArgumentException
+	public class DynatraceMetricException : ArgumentException
 	{
 		/// <summary>Default constructor.</summary>
-		public MetricException()
+		public DynatraceMetricException()
 		{
 		}
 
 		/// <summary>
-		/// Create a <see cref="MetricException" /> with the given message. Passed on to the base class (
+		/// Create a <see cref="DynatraceMetricException" /> with the given message. Passed on to the base class (
 		/// <see cref="ArgumentException" />).
 		/// </summary>
-		public MetricException(string message) : base(message)
+		public DynatraceMetricException(string message) : base(message)
 		{
 		}
 
 		/// <summary>
-		/// Create a <see cref="MetricException" /> with the given message and inner exception. Passed on to the base
+		/// Create a <see cref="DynatraceMetricException" /> with the given message and inner exception. Passed on to the base
 		/// class ( <see cref="ArgumentException" />).
 		/// </summary>
-		public MetricException(string message, Exception innerException) : base(message, innerException)
+		public DynatraceMetricException(string message, Exception innerException) : base(message, innerException)
 		{
 		}
 
 		/// <summary>
-		/// Create a <see cref="MetricException" />  Serialization info and Streaming context. Passed on to the base class
+		/// Create a <see cref="DynatraceMetricException" />  Serialization info and Streaming context. Passed on to the base class
 		/// ( <see cref="ArgumentException" />).
 		/// </summary>
-		protected MetricException(SerializationInfo info, StreamingContext context) : base(info, context)
+		protected DynatraceMetricException(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 		}
 	}

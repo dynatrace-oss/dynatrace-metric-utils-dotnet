@@ -22,7 +22,7 @@ using static Dynatrace.MetricUtils.MetricValue;
 
 namespace Dynatrace.MetricUtils.Tests
 {
-	public class MetricValueTests
+	public class DynatraceMetricValueTests
 	{
 		[Theory]
 		[InlineData(100, "count,delta=100")]
@@ -52,9 +52,9 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestInvalidValuesLongSummaryValue()
 		{
-			FluentActions.Invoking(() => new LongSummaryValue(1, 6, 10, -3)).Should().Throw<MetricException>()
+			FluentActions.Invoking(() => new LongSummaryValue(1, 6, 10, -3)).Should().Throw<DynatraceMetricException>()
 				.WithMessage("Count cannot be less than 0.");
-			FluentActions.Invoking(() => new LongSummaryValue(6, 1, 10, 5)).Should().Throw<MetricException>()
+			FluentActions.Invoking(() => new LongSummaryValue(6, 1, 10, 5)).Should().Throw<DynatraceMetricException>()
 				.WithMessage("Min cannot be larger than max.");
 		}
 
@@ -76,7 +76,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[InlineData(double.NaN, "Value is NaN.")]
 		public void TestDoubleCounterValueDeltaInvalid(double input, string expectedError) =>
 			FluentActions.Invoking(() => new DoubleCounterValue(input)).Should()
-				.Throw<MetricException>().WithMessage(expectedError);
+				.Throw<DynatraceMetricException>().WithMessage(expectedError);
 
 		[Fact]
 		public void TestDoubleGaugeValue()
@@ -96,7 +96,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[InlineData(double.NaN, "Value is NaN.")]
 		public void TestDoubleGaugeValueInvalid(double input, string expectedError) =>
 			FluentActions.Invoking(() => new DoubleGaugeValue(input)).Should()
-				.Throw<MetricException>().WithMessage(expectedError);
+				.Throw<DynatraceMetricException>().WithMessage(expectedError);
 
 		[Fact]
 		public void TestDoubleSummaryValue()
@@ -115,16 +115,16 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDoubleSummaryValueInvlid()
 		{
-			FluentActions.Invoking(() => new DoubleSummaryValue(1.2, 2.3, 5.6, -3)).Should().Throw<MetricException>()
+			FluentActions.Invoking(() => new DoubleSummaryValue(1.2, 2.3, 5.6, -3)).Should().Throw<DynatraceMetricException>()
 				.WithMessage("Count cannot be less than 0.");
-			FluentActions.Invoking(() => new DoubleSummaryValue(6.5, 1.2, 10.7, 5)).Should().Throw<MetricException>()
+			FluentActions.Invoking(() => new DoubleSummaryValue(6.5, 1.2, 10.7, 5)).Should().Throw<DynatraceMetricException>()
 				.WithMessage("Min cannot be larger than max.");
 		}
 
 		[Fact]
 		public void TestDoubleSummaryValueInvalidsLoop()
 		{
-			var values = new List<double> {1.2, double.NegativeInfinity, double.PositiveInfinity, double.NaN};
+			var values = new List<double> { 1.2, double.NegativeInfinity, double.PositiveInfinity, double.NaN };
 			Func<double, bool> isValidDouble = d => !double.IsInfinity(d) && !double.IsNaN(d);
 			foreach (var i in values)
 			{
@@ -140,7 +140,7 @@ namespace Dynatrace.MetricUtils.Tests
 						else
 						{
 							FluentActions.Invoking(() => new DoubleSummaryValue(i, j, k, 1)).Should()
-								.Throw<MetricException>();
+								.Throw<DynatraceMetricException>();
 						}
 					}
 				}

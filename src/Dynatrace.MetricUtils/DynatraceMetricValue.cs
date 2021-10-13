@@ -17,7 +17,7 @@
 namespace Dynatrace.MetricUtils
 {
 	/// <summary>Interface for the Metric values.</summary>
-	public interface IMetricValue
+	public interface IDynatraceMetricValue
 	{
 		/// <summary>Transforms the <see cref="MetricValue" /> to a <see cref="string" />.</summary>
 		/// <returns>The string representation for the <see cref="MetricValue" /></returns>
@@ -30,12 +30,12 @@ namespace Dynatrace.MetricUtils
 		{
 			if (double.IsNaN(d))
 			{
-				throw new MetricException("Value is NaN.");
+				throw new DynatraceMetricException("Value is NaN.");
 			}
 
 			if (double.IsInfinity(d))
 			{
-				throw new MetricException("Value is infinite.");
+				throw new DynatraceMetricException("Value is infinite.");
 			}
 		}
 
@@ -47,7 +47,7 @@ namespace Dynatrace.MetricUtils
 			}
 		}
 
-		internal sealed class LongCounterValue : IMetricValue
+		internal sealed class LongCounterValue : IDynatraceMetricValue
 		{
 			private readonly long _value;
 
@@ -56,7 +56,7 @@ namespace Dynatrace.MetricUtils
 			public string Serialize() => $"count,delta={_value}";
 		}
 
-		internal sealed class LongGaugeValue : IMetricValue
+		internal sealed class LongGaugeValue : IDynatraceMetricValue
 		{
 			private readonly long _value;
 
@@ -65,7 +65,7 @@ namespace Dynatrace.MetricUtils
 			public string Serialize() => $"gauge,{_value}";
 		}
 
-		internal sealed class LongSummaryValue : IMetricValue
+		internal sealed class LongSummaryValue : IDynatraceMetricValue
 		{
 			private readonly long _count;
 			private readonly long _max;
@@ -76,12 +76,12 @@ namespace Dynatrace.MetricUtils
 			{
 				if (count < 0)
 				{
-					throw new MetricException("Count cannot be less than 0.");
+					throw new DynatraceMetricException("Count cannot be less than 0.");
 				}
 
 				if (min > max)
 				{
-					throw new MetricException("Min cannot be larger than max.");
+					throw new DynatraceMetricException("Min cannot be larger than max.");
 				}
 
 				_min = min;
@@ -93,7 +93,7 @@ namespace Dynatrace.MetricUtils
 			public string Serialize() => $"gauge,min={_min},max={_max},sum={_sum},count={_count}";
 		}
 
-		internal sealed class DoubleCounterValue : IMetricValue
+		internal sealed class DoubleCounterValue : IDynatraceMetricValue
 		{
 			private readonly double _value;
 
@@ -106,7 +106,7 @@ namespace Dynatrace.MetricUtils
 			public string Serialize() => $"count,delta={_value}";
 		}
 
-		internal sealed class DoubleGaugeValue : IMetricValue
+		internal sealed class DoubleGaugeValue : IDynatraceMetricValue
 		{
 			private readonly double _value;
 
@@ -119,7 +119,7 @@ namespace Dynatrace.MetricUtils
 			public string Serialize() => $"gauge,{_value}";
 		}
 
-		internal sealed class DoubleSummaryValue : IMetricValue
+		internal sealed class DoubleSummaryValue : IDynatraceMetricValue
 		{
 			private readonly long _count;
 			private readonly double _max;
@@ -130,12 +130,12 @@ namespace Dynatrace.MetricUtils
 			{
 				if (count < 0)
 				{
-					throw new MetricException("Count cannot be less than 0.");
+					throw new DynatraceMetricException("Count cannot be less than 0.");
 				}
 
 				if (min > max)
 				{
-					throw new MetricException("Min cannot be larger than max.");
+					throw new DynatraceMetricException("Min cannot be larger than max.");
 				}
 
 				ThrowOnNanOrInfDoubles(min, max, sum);
