@@ -29,7 +29,7 @@ namespace Dynatrace.MetricUtils.Tests
 				new KeyValuePair<string, string>("dim1", "val1"), new KeyValuePair<string, string>("dim2", "val2")
 			};
 
-		private static readonly DateTime TestTimestamp = new DateTime(2021, 1, 1, 6, 00, 00);
+		private static readonly DateTimeOffset TestTimestamp = new DateTimeOffset(2021, 1, 1, 6, 0, 0, TimeSpan.FromHours(0));
 
 		[Fact]
 		public void TestLongCounter()

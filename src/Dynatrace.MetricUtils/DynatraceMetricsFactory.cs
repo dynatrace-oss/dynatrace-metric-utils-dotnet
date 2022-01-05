@@ -32,7 +32,7 @@ namespace Dynatrace.MetricUtils
 		/// <param name="timestamp">The timestamp at which the metric was recorded.</param>
 		/// <returns>A <see cref="DynatraceMetric" /> object </returns>
 		public static DynatraceMetric CreateLongCounterDelta(string metricName, long value,
-			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime? timestamp = null) =>
+			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTimeOffset? timestamp = null) =>
 			new DynatraceMetric(metricName, dimensions, new MetricValue.LongCounterValue(value), timestamp);
 
 		/// <summary>Creates a gauge metric for an integer. The value will be serialized as "gauge,[value]".</summary>
@@ -42,7 +42,7 @@ namespace Dynatrace.MetricUtils
 		/// <param name="timestamp">The timestamp at which the metric was recorded.</param>
 		/// <returns>A <see cref="DynatraceMetric" /> object </returns>
 		public static DynatraceMetric CreateLongGauge(string metricName, long value,
-			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime? timestamp = null) =>
+			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTimeOffset? timestamp = null) =>
 			new DynatraceMetric(metricName, dimensions, new MetricValue.LongGaugeValue(value), timestamp);
 
 		/// <summary>
@@ -59,7 +59,7 @@ namespace Dynatrace.MetricUtils
 		/// <exception cref="DynatraceMetricException">Thrown when the count is lower than 0 or if min is larger than max.</exception>
 		/// <returns>A <see cref="DynatraceMetric" /> object </returns>
 		public static DynatraceMetric CreateLongSummary(string metricName, long min, long max, long sum, long count,
-			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime? timestamp = null) =>
+			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTimeOffset? timestamp = null) =>
 			new DynatraceMetric(metricName, dimensions, new MetricValue.LongSummaryValue(min, max, sum, count),
 				timestamp);
 
@@ -74,7 +74,7 @@ namespace Dynatrace.MetricUtils
 		/// <exception cref="DynatraceMetricException">Thrown if the value is Infinite or NaN.</exception>
 		/// <returns>A <see cref="DynatraceMetric" /> object </returns>
 		public static DynatraceMetric CreateDoubleCounterDelta(string metricName, double value,
-			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime? timestamp = null) =>
+			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTimeOffset? timestamp = null) =>
 			new DynatraceMetric(metricName, dimensions, new MetricValue.DoubleCounterValue(value), timestamp);
 
 		/// <summary>Creates a gauge metric for a floating point number. The value will be serialized as "gauge,[value]".</summary>
@@ -85,7 +85,7 @@ namespace Dynatrace.MetricUtils
 		/// <exception cref="DynatraceMetricException">Thrown if the value is Infinite or NaN.</exception>
 		/// <returns>A <see cref="DynatraceMetric" /> object </returns>
 		public static DynatraceMetric CreateDoubleGauge(string metricName, double value,
-			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime? timestamp = null) =>
+			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTimeOffset? timestamp = null) =>
 			new DynatraceMetric(metricName, dimensions, new MetricValue.DoubleGaugeValue(value), timestamp);
 
 		/// <summary>
@@ -105,7 +105,7 @@ namespace Dynatrace.MetricUtils
 		/// </exception>
 		/// <returns>A <see cref="DynatraceMetric" /> object </returns>
 		public static DynatraceMetric CreateDoubleSummary(string metricName, double min, double max, double sum, long count,
-			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTime? timestamp = null) =>
+			IEnumerable<KeyValuePair<string, string>> dimensions = null, DateTimeOffset? timestamp = null) =>
 			new DynatraceMetric(metricName, dimensions, new MetricValue.DoubleSummaryValue(min, max, sum, count),
 				timestamp);
 	}

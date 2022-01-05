@@ -28,11 +28,11 @@ namespace Dynatrace.MetricUtils.Tests
 		private static readonly ILogger<DynatraceMetricsSerializerTests> Logger = NullLogger<DynatraceMetricsSerializerTests>.Instance;
 
 		// use the same timestamp for all tests
-		private static readonly DateTime TestDatetime = DateTime.Now;
+		private static readonly DateTimeOffset TestDatetime = DateTimeOffset.UtcNow;
 
-		// string representation of the above DateTime in Unix milliseconds
+		// string representation of the above DateTimeOffset in Unix milliseconds
 		private static readonly string TestTimestamp =
-			$"{new DateTimeOffset(TestDatetime.ToLocalTime()).ToUnixTimeMilliseconds()}";
+			$"{TestDatetime.ToUnixTimeMilliseconds()}";
 
 		private static readonly IEnumerable<KeyValuePair<string, string>> TestDimensions =
 			new List<KeyValuePair<string, string>>
@@ -369,11 +369,11 @@ namespace Dynatrace.MetricUtils.Tests
 		{
 			var serializer = new DynatraceMetricsSerializer(Logger);
 			// 01. 01. 1999
-			var before2000 = DynatraceMetricsFactory.CreateLongGauge("before-2000", 3, timestamp: new DateTime(1999, 01, 01));
+			var before2000 = DynatraceMetricsFactory.CreateLongGauge("before-2000", 3, timestamp: new DateTimeOffset(new DateTime(1999, 01, 01)));
 			// 01. 01. 3500
-			var after3000 = DynatraceMetricsFactory.CreateLongGauge("after-3000", 3, timestamp: new DateTime(3500, 01, 01));
-			var minDate = DynatraceMetricsFactory.CreateLongGauge("min", 3, timestamp: DateTime.MinValue);
-			var maxDate = DynatraceMetricsFactory.CreateLongGauge("max", 3, timestamp: DateTime.MinValue);
+			var after3000 = DynatraceMetricsFactory.CreateLongGauge("after-3000", 3, timestamp: new DateTimeOffset(new DateTime(3500, 01, 01)));
+			var minDate = DynatraceMetricsFactory.CreateLongGauge("min", 3, timestamp: DateTimeOffset.MinValue);
+			var maxDate = DynatraceMetricsFactory.CreateLongGauge("max", 3, timestamp: DateTimeOffset.MinValue);
 
 			serializer.SerializeMetric(before2000).Should().Be("before-2000 gauge,3");
 			serializer.SerializeMetric(after3000).Should().Be("after-3000 gauge,3");
