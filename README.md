@@ -52,10 +52,10 @@ Finally, it is also possible to add a timestamp to the metric:
 
 ```csharp
 // Passing null for the dimensions will not add any dimensions to the metric.
-var metric = DynatraceMetricsFactory.CreateLongCounterDelta("long-counter", 23, null, DateTime.Now))
+var metric = DynatraceMetricsFactory.CreateLongCounterDelta("long-counter", 23, null, DateTimeOffset.UtcNow))
 
-// Alternatively, the dimensions parameter can be skipped and timestamp can be passed as a named parameter.
-var metric = DynatraceMetricsFactory.CreateLongCounterDelta("long-counter", 23, timestamp: DateTime.Now)
+// Alternatively, the dimensions parameter can be skipped and the timestamp can be provided using the named argument.
+var metric = DynatraceMetricsFactory.CreateLongCounterDelta("long-counter", 23, timestamp: DateTimeOffset.UtcNow)
 ```
 
 If the metric timestamp is omitted or outside the range, the server timestamp is used upon ingestion.
@@ -85,7 +85,7 @@ var serializer = new DynatraceMetricsSerializer(
   true                // Enable Dynatrace metadata enrichment (true by default).
 );
 
-var metric = DynatraceMetricsFactory.CreateLongCounterDelta("long-counter", 23, timestamp: DateTime.Now);
+var metric = DynatraceMetricsFactory.CreateLongCounterDelta("long-counter", 23, timestamp: DateTimeOffset.UtcNow);
 
 // Serialize the metric
 Console.WriteLine(serializer.SerializeMetric(metric));

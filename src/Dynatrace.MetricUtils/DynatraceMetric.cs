@@ -29,8 +29,11 @@ namespace Dynatrace.MetricUtils
 		/// <param name="value">The metric value, one of the implementations of <see cref="IDynatraceMetricValue"/></param>
 		/// <param name="timestamp">An optional timestamp.</param>
 		/// <exception cref="DynatraceMetricException">Thrown when the metric name is null or empty.</exception>
-		internal DynatraceMetric(string metricName, IEnumerable<KeyValuePair<string, string>> dimensions, IDynatraceMetricValue value,
-			DateTime? timestamp)
+		internal DynatraceMetric(
+			string metricName,
+			IEnumerable<KeyValuePair<string, string>> dimensions,
+			IDynatraceMetricValue value,
+			DateTimeOffset? timestamp)
 		{
 			if (string.IsNullOrEmpty(metricName))
 			{
@@ -59,6 +62,6 @@ namespace Dynatrace.MetricUtils
 
 		/// <summary>An optional timestamp for the metric.</summary>
 		/// <value></value>
-		public DateTime? Timestamp { get; }
+		public DateTimeOffset? Timestamp { get; }
 	}
 }

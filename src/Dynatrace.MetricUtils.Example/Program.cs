@@ -1,4 +1,4 @@
-﻿// <copyright company="Dynatrace LLC">
+// <copyright company="Dynatrace LLC">
 // Copyright 2021 Dynatrace LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,10 +46,10 @@ namespace Dynatrace.MetricUtils.Example
 			var metrics = new List<DynatraceMetric>
 			{
 				// Specify the current time to add a timestamp to the metric line
-				DynatraceMetricsFactory.CreateLongCounterDelta("long-counter", 23, metricDimensions, DateTime.Now),
-				// But it is also possible to specify the DateTime as a specific time explicitly:
+				DynatraceMetricsFactory.CreateLongCounterDelta("long-counter", 23, metricDimensions, DateTimeOffset.UtcNow),
+				// But it is also possible to specify the DateTimeOffset as a specific time explicitly:
 				DynatraceMetricsFactory.CreateLongGauge("long-gauge", 34, metricDimensions,
-					new DateTime(2021, 01, 01, 12, 00, 00)),
+					new DateTimeOffset(2021, 01, 01, 12, 00, 00, TimeSpan.Zero)),
 				// summary values combine min, max, sum, and count.
 				DynatraceMetricsFactory.CreateLongSummary("long-summary", 3, 5, 18, 4, metricDimensions),
 				// dimensions are optional.

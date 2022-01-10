@@ -163,7 +163,7 @@ namespace Dynatrace.MetricUtils
 		}
 
 		/// <summary>Add the timestamp to the builder.</summary>
-		private void WriteTimestamp(StringBuilder sb, DateTime timestamp)
+		private void WriteTimestamp(StringBuilder sb, DateTimeOffset timestamp)
 		{
 			if (timestamp.Year < 2000 || timestamp.Year > 3000)
 			{
@@ -181,8 +181,7 @@ namespace Dynatrace.MetricUtils
 				return;
 			}
 
-
-			sb.Append($" {new DateTimeOffset(timestamp.ToLocalTime()).ToUnixTimeMilliseconds()}");
+			sb.Append($" {timestamp.ToUnixTimeMilliseconds()}");
 		}
 
 		/// <summary>Create the metric key by prefixing a prefix if it exists and normalizing the key.</summary>
