@@ -181,7 +181,7 @@ namespace Dynatrace.MetricUtils
 				return;
 			}
 
-			sb.Append($" {timestamp.ToUniversalTime().ToUnixTimeMilliseconds()}");
+			sb.Append($" {timestamp.ToUnixTimeMilliseconds()}");
 		}
 
 		/// <summary>Create the metric key by prefixing a prefix if it exists and normalizing the key.</summary>
