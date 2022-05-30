@@ -2,7 +2,7 @@ name: .NET Build and Test
 
 on:
   push:
-    branches: [ main ]
+#    branches: [ main ]
   pull_request:
     branches: [ main ]
   # allows manually triggering the build.
@@ -21,10 +21,10 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.x
-    - name: Setup .NET 5.0
+    - name: Setup .NET 6.0
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.0.x
 
     - name: Install dependencies
       run: dotnet restore
@@ -35,8 +35,8 @@ jobs:
     - name: Test on .NET Core 3.1.x
       run: dotnet test --no-restore --verbosity normal --framework netcoreapp3.1
 
-    - name: Test on .NET Core 5.0.x
-      run: dotnet test --no-restore --verbosity normal --framework net5.0
+    - name: Test on .NET Core 6.0.x
+      run: dotnet test --no-restore --verbosity normal --framework net6.0
 
     - name: Package
       run: dotnet pack src/Dynatrace.MetricUtils --configuration Release --no-build
