@@ -5,7 +5,7 @@
     <Company>Dynatrace LLC</Company>
     <Product>Dynatrace Metrics Utils for .NET</Product>
     <PackageId>Dynatrace.MetricUtils</PackageId>
-    <Version>0.2.0-beta</Version>
+    <Version>0.3.0-beta</Version>
     <Description>See https://github.com/dynatrace-oss/dynatrace-metric-utils-dotnet#readme to learn more.</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Copyright>Copyright 2021 Dynatrace LLC; Licensed under the Apache License, Version 2.0</Copyright>

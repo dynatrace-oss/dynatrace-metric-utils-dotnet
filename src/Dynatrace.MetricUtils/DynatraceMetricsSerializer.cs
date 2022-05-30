@@ -37,7 +37,7 @@ namespace Dynatrace.MetricUtils
 		/// The maximum length of a line. The <see cref="DynatraceMetricsSerializer.SerializeMetric(DynatraceMetric)" /> method will throw a
 		/// <see cref="DynatraceMetricException" /> if this threshold is exceeded.
 		/// </summary>
-		private const int MetricLineMaxLength = 2000;
+		private const int MetricLineMaxLength = 50_000;
 
 		/// <summary>
 		/// If the timestamp describes a date before the year 2000 or after the year 3000, an error will be logged. Only

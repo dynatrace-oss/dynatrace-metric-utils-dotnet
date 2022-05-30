@@ -345,24 +345,12 @@ namespace Dynatrace.MetricUtils.Tests
 			FluentActions.Invoking(() => serializer.SerializeMetric(DynatraceMetricsFactory.CreateLongGauge(null, 3))).Should()
 				.Throw<DynatraceMetricException>().WithMessage("Metric name can't be null or empty.");
 		}
-
-		[Fact]
-		public void TestMetricLineTooLong()
-		{
-			var dimensions = new List<KeyValuePair<string, string>>();
-			// 20 dimensions of ~ 100 characters should result in lines with more than 2000 characters
-			for (var i = 0; i < 20; i++)
-			{
-				// creates a dimension that takes up a little more than 100 characters
-				dimensions.Add(new KeyValuePair<string, string>(new string('a', 50) + i, new string('b', 50) + i));
-			}
-
-			var serializer = new DynatraceMetricsSerializer(Logger);
-			var metric = DynatraceMetricsFactory.CreateLongGauge("metric", 4, dimensions);
-
-			FluentActions.Invoking(() => serializer.SerializeMetric(metric)).Should().Throw<DynatraceMetricException>()
-				.WithMessage("Metric line exceeds line length of 2000 characters (Metric name: 'metric').");
-		}
+		
+		// [Fact]
+		// public void TestMetricLineTooLong()
+		// {
+		// 	// TODO: cannot be tested currently since its impossible to create a line that exceeds the line length limit
+		// }
 
 		[Fact]
 		public void TestMetricTimestampInvalid()
