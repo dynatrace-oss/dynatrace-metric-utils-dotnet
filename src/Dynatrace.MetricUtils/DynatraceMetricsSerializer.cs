@@ -246,7 +246,7 @@ namespace Dynatrace.MetricUtils
 		}
 
 		/// <summary>
-		/// Serialize and add the dimensions to the builder. Pass only normalized dimensions to this method. =
+		/// Serialize and add the dimensions to the builder. Pass only normalized dimensions to this method.
 		/// </summary>
 		private void WriteDimensions(StringBuilder sb, List<KeyValuePair<string, string>> dimensions)
 		{
