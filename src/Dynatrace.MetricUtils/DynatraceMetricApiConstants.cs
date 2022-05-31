@@ -39,7 +39,7 @@ namespace Dynatrace.MetricUtils
 		public static int PayloadLinesLimit => LinesLimit;
 
 		/// <summary>The maximum number of dimensions that can be attached to one metric key.</summary>
-		[Obsolete("Dimensions are no longer dropped.")]
+		[Obsolete("All dimensions passed to the serializer are added")]
 		public static int MaximumDimensions => MaxDims;
 	}
 }
