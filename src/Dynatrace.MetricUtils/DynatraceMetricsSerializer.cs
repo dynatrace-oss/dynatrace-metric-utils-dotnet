@@ -19,7 +19,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using Microsoft.Extensions.Logging;
@@ -247,18 +246,11 @@ namespace Dynatrace.MetricUtils
 		}
 
 		/// <summary>
-		/// Serialize and add the dimensions to the builder. Pass only normalized dimensions to this method. If there are
-		/// more than the maximum number of dimensions, skips dimensions until only the maximum dimensions remains and serializes
-		/// those.
+		/// Serialize and add the dimensions to the builder. Pass only normalized dimensions to this method. =
 		/// </summary>
 		private void WriteDimensions(StringBuilder sb, List<KeyValuePair<string, string>> dimensions)
 		{
-			// should be negative if there are fewer dimensions than the maximum
-			var diffToMaxDimensions = DynatraceMetricApiConstants.MaximumDimensions - dimensions.Count;
-			var toSkip = diffToMaxDimensions < 0 ? Math.Abs(diffToMaxDimensions) : 0;
-
-			// if there are more dimensions, skip the first n dimensions so that 50 dimensions remain
-			foreach (var dimension in dimensions.Skip(toSkip))
+			foreach (var dimension in dimensions)
 			{
 				sb.Append($",{dimension.Key}={dimension.Value}");
 			}

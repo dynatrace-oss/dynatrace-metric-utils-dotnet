@@ -76,7 +76,6 @@ namespace Dynatrace.MetricUtils.Example
 			Console.WriteLine(
 				$"Default local OneAgent endpoint:\t{DynatraceMetricApiConstants.DefaultOneAgentEndpoint}");
 			Console.WriteLine($"Maximum lines per ingest request:\t{DynatraceMetricApiConstants.PayloadLinesLimit}");
-			Console.WriteLine($"Maximum dimensions per metric key:\t{DynatraceMetricApiConstants.MaximumDimensions}");
 
 			try
 			{
