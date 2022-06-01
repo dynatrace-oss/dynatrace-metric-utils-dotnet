@@ -25,7 +25,8 @@ namespace Dynatrace.MetricUtils.Tests
 {
 	public class DynatraceMetricsSerializerTests
 	{
-		private static readonly ILogger<DynatraceMetricsSerializerTests> Logger = NullLogger<DynatraceMetricsSerializerTests>.Instance;
+		private static readonly ILogger<DynatraceMetricsSerializerTests> Logger =
+			NullLogger<DynatraceMetricsSerializerTests>.Instance;
 
 		// use the same timestamp for all tests
 		private static readonly DateTimeOffset TestDatetime = DateTimeOffset.UtcNow;
@@ -53,7 +54,8 @@ namespace Dynatrace.MetricUtils.Tests
 				.Be("metric1,dim1=value1,dim2=value2 count,delta=100 " + TestTimestamp);
 
 			var serializedWithCurrentTimestamp =
-				serializer.SerializeMetric(DynatraceMetricsFactory.CreateLongCounterDelta("metric2", 200, TestDimensions));
+				serializer.SerializeMetric(
+					DynatraceMetricsFactory.CreateLongCounterDelta("metric2", 200, TestDimensions));
 			serializedWithCurrentTimestamp.Should().Be("metric2,dim1=value1,dim2=value2 count,delta=200");
 
 			var serializedWithMinimalParams =
@@ -92,7 +94,8 @@ namespace Dynatrace.MetricUtils.Tests
 				.Be("metric1,dim1=value1,dim2=value2 gauge,min=1,max=3,sum=7,count=4 " + TestTimestamp);
 
 			var serializedWithCurrentTimestamp =
-				serializer.SerializeMetric(DynatraceMetricsFactory.CreateLongSummary("metric2", 1, 3, 7, 4, TestDimensions));
+				serializer.SerializeMetric(
+					DynatraceMetricsFactory.CreateLongSummary("metric2", 1, 3, 7, 4, TestDimensions));
 			serializedWithCurrentTimestamp.Should()
 				.Be("metric2,dim1=value1,dim2=value2 gauge,min=1,max=3,sum=7,count=4");
 
@@ -113,7 +116,8 @@ namespace Dynatrace.MetricUtils.Tests
 				.Be("metric1,dim1=value1,dim2=value2 count,delta=123.456 " + TestTimestamp);
 
 			var serializedWithCurrentTimestamp =
-				serializer.SerializeMetric(DynatraceMetricsFactory.CreateDoubleCounterDelta("metric2", 223.456, TestDimensions));
+				serializer.SerializeMetric(
+					DynatraceMetricsFactory.CreateDoubleCounterDelta("metric2", 223.456, TestDimensions));
 			serializedWithCurrentTimestamp.Should().Be("metric2,dim1=value1,dim2=value2 count,delta=223.456");
 
 			var serializedWithMinimalParams =
@@ -133,7 +137,8 @@ namespace Dynatrace.MetricUtils.Tests
 				.Be("metric1,dim1=value1,dim2=value2 gauge,123.456 " + TestTimestamp);
 
 			var serializedWithCurrentTimestamp =
-				serializer.SerializeMetric(DynatraceMetricsFactory.CreateDoubleGauge("metric2", 223.456, TestDimensions));
+				serializer.SerializeMetric(
+					DynatraceMetricsFactory.CreateDoubleGauge("metric2", 223.456, TestDimensions));
 			serializedWithCurrentTimestamp.Should().Be("metric2,dim1=value1,dim2=value2 gauge,223.456");
 
 			var serializedWithMinimalParams =
@@ -147,7 +152,8 @@ namespace Dynatrace.MetricUtils.Tests
 			var serializer = new DynatraceMetricsSerializer(Logger);
 			var serializedWithAllParams =
 				serializer.SerializeMetric(
-					DynatraceMetricsFactory.CreateDoubleSummary("metric1", 1.2, 3.4, 7.8, 4, TestDimensions, TestDatetime));
+					DynatraceMetricsFactory.CreateDoubleSummary("metric1", 1.2, 3.4, 7.8, 4, TestDimensions,
+						TestDatetime));
 			serializedWithAllParams.Should()
 				.Be("metric1,dim1=value1,dim2=value2 gauge,min=1.2,max=3.4,sum=7.8,count=4 " + TestTimestamp);
 
@@ -165,7 +171,7 @@ namespace Dynatrace.MetricUtils.Tests
 		[Fact]
 		public void TestDimensionValuesNormalized()
 		{
-			var dims = new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("dim1", "\\=\" ==") };
+			var dims = new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("dim1", "\\=\" ==")};
 			var metric = DynatraceMetricsFactory.CreateLongCounterDelta("metric1", 100, dims, TestDatetime);
 
 			var serialized = new DynatraceMetricsSerializer(Logger).SerializeMetric(metric);
@@ -187,7 +193,8 @@ namespace Dynatrace.MetricUtils.Tests
 		public void TestPrefixWithTrailingDot()
 		{
 			var metric = DynatraceMetricsFactory.CreateLongCounterDelta("metric", 100, timestamp: TestDatetime);
-			var serializedWithTrailingPrefixDot = new DynatraceMetricsSerializer(Logger, "prefix.").SerializeMetric(metric);
+			var serializedWithTrailingPrefixDot =
+				new DynatraceMetricsSerializer(Logger, "prefix.").SerializeMetric(metric);
 			serializedWithTrailingPrefixDot.Should()
 				.Be("prefix.metric count,delta=100 " + TestTimestamp);
 		}
@@ -244,7 +251,7 @@ namespace Dynatrace.MetricUtils.Tests
 				};
 
 			var staticDimensions =
-				new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("dim3", "static3") };
+				new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("dim3", "static3")};
 
 			var metric = DynatraceMetricsFactory.CreateLongCounterDelta("metric", 100, metricDimensions, TestDatetime);
 
@@ -286,7 +293,7 @@ namespace Dynatrace.MetricUtils.Tests
 				};
 
 			var staticDimensions =
-				new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("dim3", "static3") };
+				new List<KeyValuePair<string, string>> {new KeyValuePair<string, string>("dim3", "static3")};
 
 			DynatraceMetricsSerializer.MergeDimensions(defaultDimensions, metricDimensions, staticDimensions).Should()
 				.Equal(new List<KeyValuePair<string, string>>
@@ -340,28 +347,31 @@ namespace Dynatrace.MetricUtils.Tests
 		public void TestMetricKeyEmpty()
 		{
 			var serializer = new DynatraceMetricsSerializer(Logger);
-			FluentActions.Invoking(() => serializer.SerializeMetric(DynatraceMetricsFactory.CreateLongGauge("", 3))).Should()
+			FluentActions.Invoking(() => serializer.SerializeMetric(DynatraceMetricsFactory.CreateLongGauge("", 3)))
+				.Should()
 				.Throw<DynatraceMetricException>().WithMessage("Metric name can't be null or empty.");
-			FluentActions.Invoking(() => serializer.SerializeMetric(DynatraceMetricsFactory.CreateLongGauge(null, 3))).Should()
+			FluentActions.Invoking(() => serializer.SerializeMetric(DynatraceMetricsFactory.CreateLongGauge(null, 3)))
+				.Should()
 				.Throw<DynatraceMetricException>().WithMessage("Metric name can't be null or empty.");
 		}
 
 		[Fact]
 		public void TestMetricLineTooLong()
 		{
-			var dimensions = new List<KeyValuePair<string, string>>();
-			// 20 dimensions of ~ 100 characters should result in lines with more than 2000 characters
-			for (var i = 0; i < 20; i++)
+			// 50000 characters max per line, minimum length of 'dim0=val0' (9 chars) per dimension.
+			var numDimensions = 50_000 / 9;
+			var dimensions = new List<KeyValuePair<string, string>>(numDimensions);
+			// should be almost enough to fill up 50000 characters, but adding name and value will make the line longer.
+			for (int i = 0; i < numDimensions; i++)
 			{
-				// creates a dimension that takes up a little more than 100 characters
-				dimensions.Add(new KeyValuePair<string, string>(new string('a', 50) + i, new string('b', 50) + i));
+				dimensions.Add(new KeyValuePair<string, string>($"dim{i}", $"val{i}"));
 			}
 
 			var serializer = new DynatraceMetricsSerializer(Logger);
 			var metric = DynatraceMetricsFactory.CreateLongGauge("metric", 4, dimensions);
 
 			FluentActions.Invoking(() => serializer.SerializeMetric(metric)).Should().Throw<DynatraceMetricException>()
-				.WithMessage("Metric line exceeds line length of 2000 characters (Metric name: 'metric').");
+				.WithMessage("Metric line exceeds line length of 50000 characters (Metric name: 'metric').");
 		}
 
 		[Fact]
@@ -369,9 +379,11 @@ namespace Dynatrace.MetricUtils.Tests
 		{
 			var serializer = new DynatraceMetricsSerializer(Logger);
 			// 01. 01. 1999
-			var before2000 = DynatraceMetricsFactory.CreateLongGauge("before-2000", 3, timestamp: new DateTimeOffset(new DateTime(1999, 01, 01)));
+			var before2000 = DynatraceMetricsFactory.CreateLongGauge("before-2000", 3,
+				timestamp: new DateTimeOffset(new DateTime(1999, 01, 01)));
 			// 01. 01. 3500
-			var after3000 = DynatraceMetricsFactory.CreateLongGauge("after-3000", 3, timestamp: new DateTimeOffset(new DateTime(3500, 01, 01)));
+			var after3000 = DynatraceMetricsFactory.CreateLongGauge("after-3000", 3,
+				timestamp: new DateTimeOffset(new DateTime(3500, 01, 01)));
 			var minDate = DynatraceMetricsFactory.CreateLongGauge("min", 3, timestamp: DateTimeOffset.MinValue);
 			var maxDate = DynatraceMetricsFactory.CreateLongGauge("max", 3, timestamp: DateTimeOffset.MinValue);
 
@@ -395,6 +407,7 @@ namespace Dynatrace.MetricUtils.Tests
 		}
 
 		[Fact]
-		public void TestAllDefaultValues() => FluentActions.Invoking(() => new DynatraceMetricsSerializer()).Should().NotThrow();
+		public void TestAllDefaultValues() =>
+			FluentActions.Invoking(() => new DynatraceMetricsSerializer()).Should().NotThrow();
 	}
 }

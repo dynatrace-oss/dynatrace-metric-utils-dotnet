@@ -14,6 +14,8 @@
 // limitations under the License.
 // </copyright>
 
+using System;
+
 namespace Dynatrace.MetricUtils
 {
 	/// <summary>Common constants to be used by applications consuming this library.</summary>
@@ -37,6 +39,7 @@ namespace Dynatrace.MetricUtils
 		public static int PayloadLinesLimit => LinesLimit;
 
 		/// <summary>The maximum number of dimensions that can be attached to one metric key.</summary>
+		[Obsolete("All dimensions passed to the serializer are added")]
 		public static int MaximumDimensions => MaxDims;
 	}
 }
