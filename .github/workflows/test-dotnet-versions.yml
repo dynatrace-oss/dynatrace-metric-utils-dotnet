@@ -2,7 +2,7 @@ name: .NET Build and Test
 
 on:
   push:
-      branches: [ main ]
+#      branches: [ main ]
   pull_request:
     branches: [ main ]
   # allows manually triggering the build.
@@ -25,10 +25,8 @@ jobs:
 
       - name: Setup dotnet (multiple versions)
         uses: actions/setup-dotnet@v2
-        # install all .net versions we want to test against
         with:
           dotnet-version: |
-            3.1.x
             6.0.x
 
       - name: Install dependencies
