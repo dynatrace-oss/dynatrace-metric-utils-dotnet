@@ -2,47 +2,52 @@ name: .NET Build and Test
 
 on:
   push:
-    branches: [ main ]
+      branches: [ main ]
   pull_request:
     branches: [ main ]
   # allows manually triggering the build.
   workflow_dispatch:
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
+  build-test:
+    strategy:
+      matrix: 
+        os: [
+          ubuntu-latest,
+          windows-latest,
+          macos-latest
+        ]
+    
+    runs-on: ${{ matrix.os }}
+    
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-    # this will set up all three dot net versions as the runtimes are apparently all needed at the same time for testing.
-    - name: Setup .NET Core 3.1
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.x
-    - name: Setup .NET 5.0
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
+      - name: Setup dotnet (multiple versions)
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: |
+            3.1.x
+            6.0.x
 
-    - name: Install dependencies
-      run: dotnet restore
+      - name: Install dependencies
+        run: dotnet restore
 
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
 
-    - name: Test on .NET Core 3.1.x
-      run: dotnet test --no-restore --verbosity normal --framework netcoreapp3.1
+      - name: Test
+        # runs tests for all dotnet versions specified in the .csproj for the tests project (netcoreapp3.1, net6.0)
+        run: dotnet test --configuration Release --no-build
 
-    - name: Test on .NET Core 5.0.x
-      run: dotnet test --no-restore --verbosity normal --framework net5.0
-
-    - name: Package
-      run: dotnet pack src/Dynatrace.MetricUtils --configuration Release --no-build
-
-    - name: Archive nupkg
-      uses: actions/upload-artifact@v2
-      with:
-        name: nupkg
-        path: 'src/Dynatrace.MetricUtils/bin/Release/*.*nupkg'
+      # packaging and uploading the nupkg, it should be enough to build this on one OS, it can be used for all OSes
+      - name: Package library
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: dotnet pack src/Dynatrace.MetricUtils --configuration Release --no-build
+       
+      - name: Archive nupkg
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: nupkg
+          path: 'src/Dynatrace.MetricUtils/bin/Release/*.*nupkg'
