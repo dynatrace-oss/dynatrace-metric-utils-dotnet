@@ -2,7 +2,7 @@ name: .NET Build and Test
 
 on:
   push:
-      branches: [ main ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
   # allows manually triggering the build.
@@ -11,12 +11,11 @@ on:
 jobs:
   build-test:
     strategy:
-      matrix: 
-        os: [
-          ubuntu-latest,
-          windows-latest,
-          macos-latest
-        ]
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
     
     runs-on: ${{ matrix.os }}
     
@@ -44,7 +43,7 @@ jobs:
       - name: Package library
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: dotnet pack src/Dynatrace.MetricUtils --configuration Release --no-build
-       
+
       - name: Archive nupkg
         if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: actions/upload-artifact@v2
