@@ -50,11 +50,3 @@ jobs:
         with:
           name: nupkg
           path: 'src/Dynatrace.MetricUtils/bin/Release/*.*nupkg'
-  
-  all-passed:
-    needs:
-      - build-test
-    runs-on: ubuntu-latest
-    steps:
-      - name: All checks passed
-        run: 'true'
