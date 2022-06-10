@@ -58,4 +58,3 @@ jobs:
     steps:
       - name: All checks passed
         run: 'true'
-        
