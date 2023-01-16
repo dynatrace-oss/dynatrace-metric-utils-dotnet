@@ -14,6 +14,8 @@
 // limitations under the License.
 // </copyright>
 
+using System;
+
 namespace Dynatrace.MetricUtils
 {
 	/// <summary>Interface for the Metric values.</summary>
@@ -53,7 +55,7 @@ namespace Dynatrace.MetricUtils
 
 			public LongCounterValue(long value) => _value = value;
 
-			public string Serialize() => $"count,delta={_value}";
+			public string Serialize() => FormattableString.Invariant($"count,delta={_value}");
 		}
 
 		internal sealed class LongGaugeValue : IDynatraceMetricValue
@@ -62,7 +64,7 @@ namespace Dynatrace.MetricUtils
 
 			public LongGaugeValue(long value) => _value = value;
 
-			public string Serialize() => $"gauge,{_value}";
+			public string Serialize() => FormattableString.Invariant($"gauge,{_value}");
 		}
 
 		internal sealed class LongSummaryValue : IDynatraceMetricValue
@@ -90,7 +92,7 @@ namespace Dynatrace.MetricUtils
 				_count = count;
 			}
 
-			public string Serialize() => $"gauge,min={_min},max={_max},sum={_sum},count={_count}";
+			public string Serialize() => FormattableString.Invariant($"gauge,min={_min},max={_max},sum={_sum},count={_count}");
 		}
 
 		internal sealed class DoubleCounterValue : IDynatraceMetricValue
@@ -103,7 +105,7 @@ namespace Dynatrace.MetricUtils
 				_value = value;
 			}
 
-			public string Serialize() => $"count,delta={_value}";
+			public string Serialize() => FormattableString.Invariant($"count,delta={_value}");
 		}
 
 		internal sealed class DoubleGaugeValue : IDynatraceMetricValue
@@ -116,7 +118,7 @@ namespace Dynatrace.MetricUtils
 				_value = value;
 			}
 
-			public string Serialize() => $"gauge,{_value}";
+			public string Serialize() => FormattableString.Invariant($"gauge,{_value}");
 		}
 
 		internal sealed class DoubleSummaryValue : IDynatraceMetricValue
@@ -147,7 +149,7 @@ namespace Dynatrace.MetricUtils
 			}
 
 			public string Serialize() =>
-				$"gauge,min={_min},max={_max},sum={_sum},count={_count}";
+				FormattableString.Invariant($"gauge,min={_min},max={_max},sum={_sum},count={_count}");
 		}
 	}
 }
