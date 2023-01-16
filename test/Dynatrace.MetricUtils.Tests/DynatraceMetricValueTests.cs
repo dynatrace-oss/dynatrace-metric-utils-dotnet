@@ -16,6 +16,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Threading;
 using FluentAssertions;
 using Xunit;
 using static Dynatrace.MetricUtils.MetricValue;
@@ -145,6 +147,27 @@ namespace Dynatrace.MetricUtils.Tests
 					}
 				}
 			}
+		}
+
+		[Theory]
+		[InlineData("en-US")]
+		[InlineData("en-GB")]
+		[InlineData("pt-BR")]
+		[InlineData("de-AT")]
+		[InlineData("fi-FI")]
+		public void TestAllMetricValuesWithCulture(string locale)
+		{
+			var originalCulture = Thread.CurrentThread.CurrentCulture;
+			Thread.CurrentThread.CurrentCulture = new CultureInfo(locale);
+
+			new LongCounterValue(10).Serialize().Should().Be("count,delta=10");
+			new LongGaugeValue(10).Serialize().Should().Be("gauge,10");
+			new LongSummaryValue(1, 6, 10, 5).Serialize().Should().Be("gauge,min=1,max=6,sum=10,count=5");
+			new DoubleCounterValue(10.3).Serialize().Should().Be("count,delta=10.3");
+			new DoubleGaugeValue(10.3).Serialize().Should().Be("gauge,10.3");
+			new DoubleSummaryValue(1.2, 3.4, 8.9, 4).Serialize().Should().Be("gauge,min=1.2,max=3.4,sum=8.9,count=4");
+
+			Thread.CurrentThread.CurrentCulture = originalCulture;
 		}
 	}
 }
